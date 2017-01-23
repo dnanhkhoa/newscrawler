@@ -1,14 +1,33 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 import logging
+import re
+from abc import ABC, abstractmethod
+from datetime import datetime
 
 import requests
+from bs4 import BeautifulSoup
 
 
-class BaseParser(object):
-    def __int__(self):
+class BaseParser(ABC):
+    _special_chars = '“”–'
+    _normal_chars = '""-'
+
+    _special_chars_removes_map = dict(zip(_special_chars, _normal_chars))
+    _special_chars_removes_regex = re.compile('|'.join(_special_chars))
+
+    def __init__(self):
         self._logger = logging.getLogger(__name__)
-        self.domain = None
+        self._domain = None
+
+    @staticmethod
+    def remove_special_chars(string):
+        return BaseParser._special_chars_removes_regex.sub(lambda m: BaseParser._special_chars_removes_map[m.group(0)],
+                                                           string)
+
+    @staticmethod
+    def normalize_string(string):
+        return re.sub(r'\s+', ' ', BaseParser.remove_special_chars(string)).strip()
 
     # Tải nội dung web
     def get_html(self, url, timeout=15):
@@ -20,64 +39,84 @@ class BaseParser(object):
             self._logger.exception(e)
         return None
 
-    def get_source(self, content):
+    def get_page_title(self, html):
+        return self.normalize_string(html.title.string)
+
+    def get_meta_keywords(self, html):
+        meta_tag = html.find('meta', attrs={'name': 'keywords'})
+        if meta_tag is None or not meta_tag.has_attr('content'):
+            return None
+        keywords = meta_tag.get('content').split(',')
+        normalized_keywords = []
+        for keyword in keywords:
+            normalized_keywords.append(self.normalize_string(keyword))
+        return ', '.join(normalized_keywords)
+
+    def get_meta_description(self, html):
+        meta_tag = html.find('meta', attrs={'name': 'description'})
+        if meta_tag is None or not meta_tag.has_attr('content'):
+            return None
+        return self.normalize_string(meta_tag.get('content'))
+
+    @abstractmethod
+    def get_author(self, html):
         pass
 
-    def get_title(self, content):
+    @abstractmethod
+    def get_tags(self, html):
         pass
 
-    def get_author(self, content):
+    @abstractmethod
+    def get_thumbnail(self, html):
         pass
 
-    def parse(self, url, timeout=15):
-        html = self.get_html(url, timeout=timeout)
+    @abstractmethod
+    def get_publish_date(self, html):
+        pass
+
+    @abstractmethod
+    def get_summary(self, html):
+        pass
+
+    @abstractmethod
+    def get_content(self, html):
+        pass
+
+    def get_plain_content(self, html):
         if html is None:
             return None
+        return None
 
+    def parse(self, url, timeout=15):
+        raw_html = self.get_html(url=url, timeout=timeout)
+        if raw_html is None:
+            return Exception('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
 
-        '''
-        Format:
-+ Mỗi paragraph nằm trong thẻ <p></p>
-+ Hình nằm trong thẻ <img...>
-    + Alt: Title của bài
-    + Src: link ảnh
-    Caption: <p class="caption"></p> và liền sau ảnh
-+ Video: <video></video>
-<video width="375" height="280">
-    <source src="movie.mp4" type="video/mp4">
-    <source src="movie.ogg" type="video/ogg">
-</video>
+        html = BeautifulSoup(raw_html, 'html5lib')
 
-<img alt="" src="">
+        page_title = self.get_page_title(html=html)
+        meta_keywords = self.get_meta_keywords(html=html)
+        meta_description = self.get_meta_description(html=html)
+        publish_date = self.get_publish_date(html=html)
+        summary = self.get_summary(html=html)
+        content = self.get_content(html=html)
+        thumbnail = self.get_thumbnail(html=html)
+        author = self.get_author(html=html)
+        tags = self.get_tags(html=html)
+        plain_content = self.get_plain_content(html=content)
 
-
-
-        normalize:
-        get_title
-        get_description
-        get_content
-        remove_htmltag and content
-        get_tag -> loop -> process image, video, text | loop over child
-        clear html tag
-        escape_html
-        image
-        video
-        content
-        '''
-
-        print(html)
         return {
-            "SourcePage": "",
-            "Title": "",
-            "Url": "",
-            "Author": "",
-            "Thumbnail": "",
-            "Tag": "",
-            "ShortIntro": "",
-            "PublishDate": "",
-            "MetaDescription": "",
-            "MetaKeywords": "",
-            "CrawledDate": "",
-            "Content": "",
-            "Plain_Content": "",
+            'SourcePage': '' if self._domain is None else self._domain,
+            'Title': '' if page_title is None else page_title,
+            'Url': '' if url is None else url,
+            'Author': '' if author is None else author,
+            'Thumbnail': '' if thumbnail is None else thumbnail,
+            'Tag': '' if tags is None else tags,
+            'ShortIntro': '' if summary is None else summary,
+            'PublishDate': '' if publish_date is None else publish_date,
+            'MetaDescription': '' if meta_description is None else meta_description,
+            'MetaKeywords': '' if meta_keywords is None else meta_keywords,
+            'CrawledDate': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'Content': '' if content is None else content,
+            'Plain_Content': '' if plain_content is None else plain_content,
         }

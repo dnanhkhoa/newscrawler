@@ -4,7 +4,7 @@ import logging
 
 
 class Normalizer(object):
-    def __int__(self):
+    def __init__(self):
         self._logger = logging.getLogger(__name__)
         self.parser = {}
         # Load parsers

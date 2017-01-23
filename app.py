@@ -1,12 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
+from normalizer.parser.laodongxahoinet import LaoDongXaHoiNetParser
+from utils import *
 from normalizer import *
 
 def main():
-    bp = BaseParser()
-    'http://www.nguoiduatin.vn/c/thoi-su'
-    bp.parse('http://laodongxahoi.net/to-chuc-im-japan-trao-tang-xe-lan-cho-thuong-binh-va-nguoi-khuyet-tat-viet-nam-1305719.html')
-
+    bp = LaoDongXaHoiNetParser()
+    result = bp.parse('http://laodongxahoi.net/chuong-trinh-tuoi-gia-khong-co-don-trao-qua-tet-cho-cac-cu-cao-nien-o-huyen-soc-son-1305726.html')
+    print(json.dumps(result, indent=4, ensure_ascii=False))
 
 if __name__ == '__main__':
     main()
