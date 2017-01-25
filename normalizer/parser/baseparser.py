@@ -27,6 +27,7 @@ class BaseParser(ABC):
 
     @staticmethod
     def normalize_string(string):
+        string = re.sub(r'\\(\S)', r'\g<1>', string)
         return re.sub(r'\s+', ' ', BaseParser.remove_special_chars(string)).strip()
 
     # Tải nội dung web
@@ -59,51 +60,58 @@ class BaseParser(ABC):
         return self.normalize_string(meta_tag.get('content'))
 
     @abstractmethod
-    def get_author(self, html):
+    def get_main_content(self, html, title):
         pass
 
     @abstractmethod
-    def get_tags(self, html):
+    def get_content(self, main_content):
         pass
 
-    @abstractmethod
-    def get_thumbnail(self, html):
-        pass
-
-    @abstractmethod
-    def get_publish_date(self, html):
-        pass
-
-    @abstractmethod
-    def get_summary(self, html):
-        pass
-
-    @abstractmethod
-    def get_content(self, html):
-        pass
-
-    def get_plain_content(self, html):
-        if html is None:
+    def get_plain_content(self, content):
+        if content is None:
             return None
         return None
+
+    @abstractmethod
+    def get_publish_date(self, html, main_content):
+        pass
+
+    @abstractmethod
+    def get_summary(self, html, main_content):
+        pass
+
+    @abstractmethod
+    def get_thumbnail(self, html, main_content):
+        pass
+
+    @abstractmethod
+    def get_author(self, html, main_content):
+        pass
+
+    @abstractmethod
+    def get_tags(self, html, main_content):
+        pass
 
     def parse(self, url, timeout=15):
         raw_html = self.get_html(url=url, timeout=timeout)
         if raw_html is None:
-            return Exception('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
+            raise Exception('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
 
         html = BeautifulSoup(raw_html, 'html5lib')
 
         page_title = self.get_page_title(html=html)
         meta_keywords = self.get_meta_keywords(html=html)
         meta_description = self.get_meta_description(html=html)
-        publish_date = self.get_publish_date(html=html)
-        summary = self.get_summary(html=html)
-        content = self.get_content(html=html)
-        thumbnail = self.get_thumbnail(html=html)
-        author = self.get_author(html=html)
-        tags = self.get_tags(html=html)
-        plain_content = self.get_plain_content(html=content)
+
+        main_content = self.get_main_content(html=html, title=page_title)
+        content = self.get_content(main_content=main_content)
+        plain_content = self.get_plain_content(content=content)
+
+        publish_date = self.get_publish_date(html=html, main_content=main_content)
+        summary = self.get_summary(html=html, main_content=main_content)
+        thumbnail = self.get_thumbnail(html=html, main_content=main_content)
+        author = self.get_author(html=html, main_content=main_content)
+        tags = self.get_tags(html=html, main_content=main_content)
 
         return {
             'SourcePage': '' if self._domain is None else self._domain,
@@ -118,5 +126,5 @@ class BaseParser(ABC):
             'MetaKeywords': '' if meta_keywords is None else meta_keywords,
             'CrawledDate': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'Content': '' if content is None else content,
-            'Plain_Content': '' if plain_content is None else plain_content,
+            'Plain_Content': '' if plain_content is None else plain_content
         }

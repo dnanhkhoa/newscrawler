@@ -1,8 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
+import importlib
 import json
 import logging
 import os
+from inspect import getmembers, isclass
+from os.path import splitext
 
 APP_PATH = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
 
@@ -99,3 +102,40 @@ def write_json(obj, file_name):
             f.write(json.dumps(obj, ensure_ascii=False).encode('UTF-8'))
         except Exception as e:
             _logger.exception(e)
+
+
+"""
+Hàm trả về danh sách các files có trong thư mục
+"""
+
+
+def read_folder(folder_path, has_extension=True, extension_filter=None):
+    assert path_info(folder_path) == -1, 'Folder does not exist!'
+    files = []
+    try:
+        for child in os.listdir(folder_path):
+            if os.path.isfile('%s/%s' % (folder_path, child)):
+                parts = splitext(child)
+                if extension_filter is None or parts[1] in extension_filter:
+                    files.append(child if has_extension else parts[0])
+    except Exception as e:
+        _logger.exception(e)
+    return files
+
+
+"""
+Hàm khởi tạo các đối tượng Parser từ các files trong folder
+"""
+
+
+def create_parser_from_files(folder_path, base_class):
+    parsers = {}
+    files = read_folder(folder_path, has_extension=False, extension_filter=['.py'])
+    for file in files:
+        module = importlib.import_module('%s.%s' % ('.'.join(folder_path.split('/')), file))
+        members = getmembers(module)
+        for member in members:
+            if isclass(member[1]) and issubclass(member[1], base_class) and member[1] is not base_class:
+                instance = member[1]()
+                parsers[instance._domain] = instance
+    return parsers
