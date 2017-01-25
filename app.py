@@ -14,8 +14,11 @@ def main():
     ]
     crawler = Crawler()
     normalizer = Normalizer()
-    result = normalizer.normalize(link[2])
+    #result = crawler.crawl('http://www.phunutoday.vn/lam-me/')
+    result = normalizer.normalize('http://www.phunutoday.vn/clip-6-ly-do-dan-van-phong-khong-nen-an-trua-tai-ban-lam-viec-d133041.html#0gTA1UUvArfgRhvI.97')
     print(json.dumps(result, indent=4, ensure_ascii=False))
+
+
 
 
 if __name__ == '__main__':

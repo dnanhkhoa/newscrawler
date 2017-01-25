@@ -50,7 +50,7 @@ Hàm đọc file theo dòng hỗ trợ UTF-8
 
 
 def read_lines(file_name):
-    assert os.path.exists(file_name), 'File does not exist!'
+    assert path_info(file_name) == 1, 'File does not exist!'
     lines = []
     with open(file_name, 'rb') as f:
         try:
@@ -82,7 +82,7 @@ Hàm đọc file json hỗ trợ UTF-8
 
 
 def read_json(file_name):
-    assert os.path.exists(file_name), 'File does not exist!'
+    assert path_info(file_name) == 1, 'File does not exist!'
     with open(file_name, 'rb') as f:
         try:
             return json.loads(f.read().decode('UTF-8'))
@@ -137,5 +137,5 @@ def create_parser_from_files(folder_path, base_class):
         for member in members:
             if isclass(member[1]) and issubclass(member[1], base_class) and member[1] is not base_class:
                 instance = member[1]()
-                parsers[instance._domain] = instance
+                parsers[instance.get_domain()] = instance
     return parsers

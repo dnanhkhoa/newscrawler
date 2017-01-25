@@ -20,6 +20,9 @@ class BaseParser(ABC):
         self._logger = logging.getLogger(__name__)
         self._domain = None
 
+    def get_domain(self):
+        return self._domain
+
     @staticmethod
     def remove_special_chars(string):
         return BaseParser._special_chars_removes_regex.sub(lambda m: BaseParser._special_chars_removes_map[m.group(0)],
@@ -31,9 +34,9 @@ class BaseParser(ABC):
         return re.sub(r'\s+', ' ', BaseParser.remove_special_chars(string)).strip()
 
     # Tải nội dung web
-    def get_html(self, url, timeout=15):
+    def get_html(self, url, timeout=15, allow_redirects=True):
         try:
-            response = requests.get(url=url, timeout=timeout)
+            response = requests.get(url=url, timeout=timeout, allow_redirects=allow_redirects)
             if response.status_code == requests.codes.ok:
                 return response.content.decode('UTF-8')
         except Exception as e:
@@ -93,7 +96,7 @@ class BaseParser(ABC):
         pass
 
     def parse(self, url, timeout=15):
-        raw_html = self.get_html(url=url, timeout=timeout)
+        raw_html = self.get_html(url=url, timeout=timeout, allow_redirects=False)
         if raw_html is None:
             raise Exception('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
 
@@ -104,14 +107,16 @@ class BaseParser(ABC):
         meta_description = self.get_meta_description(html=html)
 
         main_content = self.get_main_content(html=html, title=page_title)
-        content = self.get_content(main_content=main_content)
-        plain_content = self.get_plain_content(content=content)
+        if main_content is None:
+            main_content = html
 
         publish_date = self.get_publish_date(html=html, main_content=main_content)
         summary = self.get_summary(html=html, main_content=main_content)
         thumbnail = self.get_thumbnail(html=html, main_content=main_content)
         author = self.get_author(html=html, main_content=main_content)
         tags = self.get_tags(html=html, main_content=main_content)
+        content = self.get_content(main_content=main_content)
+        plain_content = None if content is None else self.get_plain_content(content=content)
 
         return {
             'SourcePage': '' if self._domain is None else self._domain,

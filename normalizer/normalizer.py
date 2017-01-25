@@ -1,14 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 import logging
-import re
+
+import regex
 
 from normalizer.parser import BaseParser
 from utils import create_parser_from_files
 
 
 class Normalizer(object):
-    _domain_regex = re.compile(r'^https?://(?:www\.)?(\w+(?:\.\w+)+)', re.IGNORECASE)
+    _domain_regex = regex.compile(r'^https?://(?:www\.)?(\w+(?:\.\w+)+)', regex.IGNORECASE)
 
     def __init__(self):
         self._logger = logging.getLogger(__name__)
