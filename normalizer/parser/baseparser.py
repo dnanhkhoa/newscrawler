@@ -2,9 +2,13 @@
 # -*- coding: utf8 -*-
 import logging
 import re
+import urllib
 from abc import ABC, abstractmethod
 from datetime import datetime
+from urllib.parse import urljoin
 
+import pafy
+import regex
 import requests
 from bs4 import BeautifulSoup
 
@@ -15,6 +19,8 @@ class BaseParser(ABC):
 
     _special_chars_removes_map = dict(zip(_special_chars, _normal_chars))
     _special_chars_removes_regex = re.compile('|'.join(_special_chars))
+
+    _youtube_id_regex = regex.compile(r'(?:youtu|youtube)(?:\.com|\.be)\/(?:watch\?v=)?([\w\W]+)', regex.IGNORECASE)
 
     def __init__(self):
         self._logger = logging.getLogger(__name__)
@@ -28,10 +34,15 @@ class BaseParser(ABC):
         return BaseParser._special_chars_removes_regex.sub(lambda m: BaseParser._special_chars_removes_map[m.group(0)],
                                                            string)
 
+    # Chuẩn hóa chuỗi họp lệ
     @staticmethod
     def normalize_string(string):
         string = re.sub(r'\\(\S)', r'\g<1>', string)
         return re.sub(r'\s+', ' ', BaseParser.remove_special_chars(string)).strip()
+
+    # Hàm chuyển đường dẫn sang url tuyệt đối
+    def get_absolute_url(self, path):
+        return urljoin(self._domain, path)
 
     # Tải nội dung web
     def get_html(self, url, timeout=15, allow_redirects=True):
@@ -39,6 +50,34 @@ class BaseParser(ABC):
             response = requests.get(url=url, timeout=timeout, allow_redirects=allow_redirects)
             if response.status_code == requests.codes.ok:
                 return response.content.decode('UTF-8')
+        except Exception as e:
+            self._logger.exception(e)
+        return None
+
+    # Lấy Content-Type của url
+    def get_mime_from_url(self, url):
+        try:
+            with urllib.request.urlopen(url) as response:
+                info = response.info()
+                return info.get_content_type()
+        except Exception as e:
+            self._logger.exception(e)
+        return None
+
+    # Lấy link trực tiếp tạm thời từ youtube
+    def get_direct_youtube_video(self, url):
+        # Method 1
+        # youtube_id = BaseParser._youtube_id_regex.search(url)
+        # if youtube_id is None:
+        #     return None
+        # youtube_id = youtube_id.group(1)
+        # return 'http://www.youtubeinmp4.com/redirect.php?video=%s' % youtube_id, 'video/mp4'
+
+        # Method 2
+        try:
+            video = pafy.new(url=url)
+            stream = video.getbest(preftype='mp4')
+            return stream.url, 'video/mp4'
         except Exception as e:
             self._logger.exception(e)
         return None
@@ -70,10 +109,19 @@ class BaseParser(ABC):
     def get_content(self, main_content):
         pass
 
-    def get_plain_content(self, content):
-        if content is None:
+    def get_plain_content(self, main_content):
+        if main_content is None:
             return None
-        return None
+
+        paragraphs = []
+
+        tags = main_content.find_all(True)
+        for tag in tags:
+            if tag.name == 'p' and not tag.has_attr('class'):
+                normalized_string = self.normalize_string(str(tag.string))
+                if len(normalized_string) > 0:
+                    paragraphs.append(normalized_string)
+        return None if len(paragraphs) is 0 else ' '.join(paragraphs)
 
     @abstractmethod
     def get_publish_date(self, html, main_content):
@@ -106,7 +154,8 @@ class BaseParser(ABC):
         meta_keywords = self.get_meta_keywords(html=html)
         meta_description = self.get_meta_description(html=html)
 
-        main_content = self.get_main_content(html=html, title=page_title)
+        main_content = self.get_main_content(html=html,
+                                             title=self.normalize_string(regex.sub(r'\W+', ' ', page_title)))
         if main_content is None:
             main_content = html
 
@@ -116,7 +165,7 @@ class BaseParser(ABC):
         author = self.get_author(html=html, main_content=main_content)
         tags = self.get_tags(html=html, main_content=main_content)
         content = self.get_content(main_content=main_content)
-        plain_content = None if content is None else self.get_plain_content(content=content)
+        plain_content = self.get_plain_content(main_content=main_content)
 
         return {
             'SourcePage': '' if self._domain is None else self._domain,

@@ -1,3 +1,6 @@
+regex
 requests
 beautifulsoup4
 html5lib
+pafy
+bleach

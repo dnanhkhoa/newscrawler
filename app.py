@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
+
 from crawler import *
 from normalizer import *
 from utils import *
@@ -12,13 +13,15 @@ def main():
         'http://laodongxahoi.net/gap-mat-cac-can-bo-huu-tri-tai-phia-nam-1305712.html',
         'http://laodongxahoi.net/nga-chan-hon-900-phan-tu-khung-bo-am-muu-xam-nhap-lanh-tho-1305678.html'
     ]
+
     crawler = Crawler()
     normalizer = Normalizer()
-    #result = crawler.crawl('http://www.phunutoday.vn/lam-me/')
-    result = normalizer.normalize('http://www.phunutoday.vn/clip-6-ly-do-dan-van-phong-khong-nen-an-trua-tai-ban-lam-viec-d133041.html#0gTA1UUvArfgRhvI.97')
+    # result = crawler.crawl('http://www.phunutoday.vn/lam-me/')
+    result = normalizer.normalize('http://www.phunutoday.vn/clip-nhin-nhung-suat-com-nay-be-nha-ban-se-an-that-ngoan-d128693.html')
+
+    # result = normalizer.normalize(
+    #     'http://www.phunutoday.vn/le-chua-dau-nam-2017-cung-sao-giai-han-the-nao-cho-dung-d133048.html#BLTvdE85svs3m65i.97')
     print(json.dumps(result, indent=4, ensure_ascii=False))
-
-
 
 
 if __name__ == '__main__':
