@@ -17,8 +17,8 @@ def main():
     crawler = Crawler()
     normalizer = Normalizer()
     # result = crawler.crawl('http://www.phunutoday.vn/lam-me/')
-    result = normalizer.normalize('http://www.phunutoday.vn/clip-nhin-nhung-suat-com-nay-be-nha-ban-se-an-that-ngoan-d128693.html')
-
+    #result = normalizer.normalize('http://www.phunutoday.vn/clip-nhin-nhung-suat-com-nay-be-nha-ban-se-an-that-ngoan-d128693.html')
+    result = normalizer.normalize('http://www.phunutoday.vn/vbiz-25-1-ngoc-trinh-dap-tra-hoang-kieu-phi-thanh-van-len-tieng-chuyen-ly-hon-chong-tre-d134129.html#ix7o6Bq3KSyquzdr.97')
     # result = normalizer.normalize(
     #     'http://www.phunutoday.vn/le-chua-dau-nam-2017-cung-sao-giai-han-the-nao-cho-dung-d133048.html#BLTvdE85svs3m65i.97')
     print(json.dumps(result, indent=4, ensure_ascii=False))

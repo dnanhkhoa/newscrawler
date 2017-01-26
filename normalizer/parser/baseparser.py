@@ -14,11 +14,13 @@ from bs4 import BeautifulSoup
 
 
 class BaseParser(ABC):
+    # Bộ lọc các kí tự đặc biệt
     _special_chars = '“”–'
     _normal_chars = '""-'
-
     _special_chars_removes_map = dict(zip(_special_chars, _normal_chars))
     _special_chars_removes_regex = re.compile('|'.join(_special_chars))
+
+    _beautiful_soup = BeautifulSoup('', 'html5lib')
 
     _youtube_id_regex = regex.compile(r'(?:youtu|youtube)(?:\.com|\.be)\/(?:watch\?v=)?([\w\W]+)', regex.IGNORECASE)
 

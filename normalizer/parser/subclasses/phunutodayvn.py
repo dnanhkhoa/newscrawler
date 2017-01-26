@@ -107,7 +107,7 @@ class PhuNuTodayVnParser(BaseParser):
                 if child.name in ['img', 'video']:
                     paragraphs.append(str(child))
                 elif 'cap' in child.name:
-                    paragraphs.append('<p class="caption">%s</p>' % self.normalize_string(str(child.cap)))
+                    paragraphs.append('<p class="caption">%s</p>' % self.normalize_string(child.get_text()))
             elif isinstance(child, NavigableString):
                 normalized_string = self.normalize_string(child.string)
                 if len(normalized_string) > 0:
