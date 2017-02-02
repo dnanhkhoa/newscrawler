@@ -10,13 +10,13 @@ class Crawler(object):
     _domain_regex = regex.compile(r'^https?://(?:www\.)?(\w+(?:\.\w+)+)', regex.IGNORECASE)
 
     def __init__(self):
-        self.parser = create_parser_from_files('crawler/parser/subclasses', BaseParser)
+        self._parser = create_parser_from_files('crawler/parser/subclasses', BaseParser)
 
     def crawl(self, url, date=None, timeout=15):
         matcher = self._domain_regex.search(url)
         if matcher is None:
             raise Exception('URL không hợp lệ: %s' % url)
         domain = matcher.group(1)
-        if domain not in self.parser:
+        if domain not in self._parser:
             raise Exception('Tên miền %s chưa được hỗ trợ.' % domain)
-        return self.parser[domain].parse(url=url, date=date, timeout=timeout)
+        return self._parser[domain].parse(url=url, date=date, timeout=timeout)

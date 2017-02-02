@@ -44,13 +44,13 @@ def normalize_special_chars(string):
 
 # Hàm lọc bỏ các kí tự không cần thiết, các kí tự đặc biệt và các khoảng trắng
 def normalize_string(string):
-    string = regex.sub(r'\\(\S)', r'\g<1>', string)
+    string = regex.sub(r'\\+(\S)', r'\g<1>', string)
     return regex.sub(r'\s+', ' ', normalize_special_chars(string)).strip()
 
 
 # Hàm lọc bỏ các kí tự đặc biệt
 def remove_special_chars(string):
-    return regex.sub(r'\W+', ' ', normalize_string(string=string)).strip()
+    return normalize_string(string=regex.sub(r'\W+', ' ', string))
 
 
 # Lấy Content-Type của url
@@ -91,6 +91,11 @@ def get_direct_youtube_video(url):
 # Tạo thẻ html
 def create_html_tag(tag):
     return _BEAUTIFUL_SOUP.new_tag(tag)
+
+
+# Tạo đối tượng BeautifulSoup
+def get_soup(string):
+    return BeautifulSoup(string, features='html5lib')
 
 
 # Tạo thẻ video theo format yêu cầu
@@ -236,9 +241,14 @@ def create_parser_from_files(folder_path, base_class):
         module = importlib.import_module('%s.%s' % ('.'.join(folder_path.split('/')), file))
         members = getmembers(module)
         for member in members:
-            if isclass(member[1]) and issubclass(member[1], base_class) and member[1] is not base_class:
-                instance = member[1]()
-                parsers[instance.get_domain()] = instance
+            if isclass(member[1]) and issubclass(member[1], base_class):
+                try:
+                    instance = member[1]()
+                    if instance.get_domain() is None:
+                        continue
+                    parsers[instance.get_domain()] = instance
+                except TypeError:
+                    pass
     return parsers
 
 # *****************************
