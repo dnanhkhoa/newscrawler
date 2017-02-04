@@ -6,7 +6,7 @@ from crawler import *
 class PhuNuTodayVnParser(BaseParser):
     def __init__(self):
         super().__init__()
-        self._domain = 'phunutoday.vn'
+        self.domain = 'phunutoday.vn'
 
     def get_post_date(self, url):
         pass

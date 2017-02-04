@@ -1,30 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-import logging
 from abc import ABC, abstractmethod
 from datetime import datetime
 
-import requests
 from bs4 import BeautifulSoup
 
 
 class BaseParser(ABC):
     def __init__(self):
-        self._logger = logging.getLogger(__name__)
-        self.domain = None
+        self._domain = None
 
     def get_domain(self):
         return self._domain
-
-    # Tải nội dung web
-    def get_html(self, url, timeout=15, allow_redirects=True):
-        try:
-            response = requests.get(url=url, timeout=timeout, allow_redirects=allow_redirects)
-            if response.status_code == requests.codes.ok:
-                return response.content.decode('UTF-8')
-        except Exception as e:
-            self._logger.exception(e)
-        return None
 
     @abstractmethod
     def get_category_urls(self, html):
@@ -35,7 +22,6 @@ class BaseParser(ABC):
         pass
 
     # Hàm phân tích trang và trả về danh sách các URLs có trong URL chủ đề
-    # noinspection PyTypeChecker
     def parse(self, url, date=None, timeout=15):
         raw_html = self.get_html(url=url, timeout=timeout, allow_redirects=False)
         if raw_html is None:

@@ -1,5 +1,6 @@
 regex
 requests
+cchardet
 beautifulsoup4
 html5lib
 pafy

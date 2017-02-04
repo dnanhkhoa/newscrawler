@@ -7,6 +7,8 @@ import os
 import urllib.request
 from inspect import getmembers, isclass
 from os.path import splitext
+from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
 
 import pafy
 import regex
@@ -50,7 +52,34 @@ def normalize_string(string):
 
 # Hàm lọc bỏ các kí tự đặc biệt
 def remove_special_chars(string):
-    return normalize_string(string=regex.sub(r'\W+', ' ', string))
+    return normalize_string(string=regex.sub(r'[\W_]+', ' ', string))
+
+
+# Kiểm tra một chuỗi có hợp lệ hay không
+def is_valid_string(string):
+    string = regex.sub(r'[\W_]+', '', string).strip()
+    return len(string) > 0
+
+
+# Định dạng ngày hợp lệ
+def format_datetime(obj):
+    return obj.strftime('%Y-%m-%d %H:%M:%S')
+
+
+# Xóa bỏ các tham số có trong url
+def clean_url_query(url):
+    obj = urlparse(url)
+    return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path)
+
+
+# Kiểm tra image url hợp lệ
+def is_valid_image_url(url):
+    try:
+        with urllib.request.urlopen(url) as response:
+            return response.getcode() == 200
+    except (HTTPError, URLError):
+        pass
+    return False
 
 
 # Lấy Content-Type của url
@@ -59,8 +88,8 @@ def get_mime_type_from_url(url):
         with urllib.request.urlopen(url) as response:
             info = response.info()
             return info.get_content_type()
-    except Exception as e:
-        log(e)
+    except (HTTPError, URLError):
+        pass
     return None
 
 
@@ -89,8 +118,8 @@ def get_direct_youtube_video(url):
 
 
 # Tạo thẻ html
-def create_html_tag(tag):
-    return _BEAUTIFUL_SOUP.new_tag(tag)
+def create_html_tag(tag, is_self_closing=False):
+    return BeautifulSoup('<%s>' % tag, features='xml').find(tag) if is_self_closing else _BEAUTIFUL_SOUP.new_tag(tag)
 
 
 # Tạo đối tượng BeautifulSoup

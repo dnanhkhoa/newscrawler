@@ -11,10 +11,19 @@ class BaseParser(ABC):
     def __init__(self):
         self._source_page = None
         self._domain = None
+        self._vars = {}
 
     # Trả về URL tuyệt đối
-    def _get_absolute_url(self, uri):
-        return urljoin(self._domain, uri)
+    def _get_absolute_url(self, url):
+        return urljoin(self._domain, url)
+
+    # Trả về image url hợp lệ
+    def _get_valid_image_url(self, url):
+        image_url = self._get_absolute_url(url=url)
+        cleaned_image_url = clean_url_query(url=image_url)
+        if is_valid_image_url(cleaned_image_url):
+            image_url = cleaned_image_url
+        return image_url
 
     # Trả về kết quả có cấu trúc theo yêu cầu
     def _build_json(self, url=None, title=None, meta_keywords=None, meta_description=None, publish_date=None,
@@ -27,10 +36,10 @@ class BaseParser(ABC):
             'Thumbnail': '' if thumbnail is None else thumbnail,
             'Tag': '' if tags is None else tags,
             'ShortIntro': '' if summary is None else summary,
-            'PublishDate': '' if publish_date is None else publish_date,
+            'PublishDate': '' if publish_date is None else format_datetime(publish_date),
             'MetaDescription': '' if meta_description is None else meta_description,
             'MetaKeywords': '' if meta_keywords is None else meta_keywords,
-            'CrawledDate': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'CrawledDate': format_datetime(datetime.now()),
             'Content': '' if content is None else content,
             'Plain_Content': '' if plain is None else plain
         }
