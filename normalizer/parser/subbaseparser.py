@@ -90,11 +90,47 @@ class SubBaseParser(BaseParser):
         # Xóa parent chứ ảnh và caption
         return html
 
-    def _remove_trash_before_normalizing(self, html):
+    def _pre_process_before_normalizing(self, html):
         return html
 
-    def _remove_trash_after_normalizing(self, html):
+    def _post_process_after_normalizing(self, html):
         return html
+
+    @staticmethod
+    def _get_special_tag_classes(tag):
+        classes = tag.get('class')
+        if classes is None:
+            classes = []
+
+        # Kiểm tra trong align
+        align = tag.get('align')
+        if align is not None:
+            align = align.lower()
+            if 'center' in align:
+                classes.append('center')
+            elif 'right' in align:
+                classes.append('right')
+
+        # Kiểm tra trong style
+        style = tag.get('style')
+        if style is not None:
+            style = style.lower()
+            if 'center' in style:
+                classes.append('center')
+            elif 'right' in style:
+                classes.append('right')
+
+        # Kiểm tra tên thẻ
+        if tag.name in ['table', 'td', 'caption', 'figcaption']:
+            classes.append('image')
+        elif tag.name in ['strong', 'b']:
+            classes.append('bold')
+        elif tag.name in ['em', 'i']:
+            classes.append('italic')
+        elif tag.name in ['center']:
+            classes.append('center')
+
+        return list(set(classes))
 
     def _normalize_content(self, html, title=None, timeout=15):
         get_main_content_tag_func = self._vars.get('get_main_content_tag_func')
@@ -109,7 +145,7 @@ class SubBaseParser(BaseParser):
         content_tag = copy(main_content_tag)
 
         # Xóa rác
-        content_tag = self._remove_trash_before_normalizing(html=content_tag)
+        content_tag = self._pre_process_before_normalizing(html=content_tag)
 
         # Xử lí thẻ video
         content_tag = self._handle_video(html=content_tag, timeout=timeout)
@@ -117,28 +153,28 @@ class SubBaseParser(BaseParser):
         # Chuẩn hóa
         content_tag.name = 'main'
 
+        # Chuẩn hóa thẻ
+        tags = content_tag.find_all(['p', 'table', 'td', 'caption', 'figcaption', 'center', 'strong', 'b', 'em', 'i'])
+        for tag in tags:
+            classes = self._get_special_tag_classes(tag=tag)
+            tag.name = 'div' if tag.name in ['p', 'table', 'td', 'caption', 'figcaption', 'center'] else 'span'
+            tag.attrs = {'class': classes} if len(classes) > 0 else {}
+
         attrs = {
             'video': ['width', 'height'],
             'source': ['src', 'type'],
             'img': ['src', 'alt'],
-            'div': ['align', 'style'],
-            'p': ['align', 'style']
+            'div': ['class'],
+            'span': ['class']
         }
-        styles = ['text-align']
-        content_tag = bleach.clean(content_tag,
-                                   tags=['main', 'div', 'p', 'br', 'video', 'source', 'img', 'caption', 'center',
-                                         'strong', 'b', 'em', 'i'], attributes=attrs, styles=styles, strip=True,
-                                   strip_comments=True)
+        content_tag = bleach.clean(content_tag, tags=['main', 'div', 'br', 'video', 'source', 'img', 'span'],
+                                   attributes=attrs, strip=True, strip_comments=True)
 
         content_tag = get_soup(content_tag).main
 
-        block_tags = content_tag.find_all(['div', 'p', 'video', 'img', 'caption', 'center'])
-        for block_tag in block_tags:
-            block_tag.insert_before(create_html_tag('br', is_self_closing=True))
-            block_tag.insert_after(create_html_tag('br', is_self_closing=True))
-
         # Hỗ trợ dự đoán caption của image và tác giả bài viết
-        tags = content_tag.find_all(['div', 'p', 'video', 'img', 'caption', 'center', 'strong', 'b', 'em', 'i'])
+        """
+        tags = content_tag.find_all(['div', 'p', 'caption', 'center', 'strong', 'b', 'em', 'i'])
         for tag in tags:
             if tag.name in ['div', 'p']:
                 pass
@@ -146,18 +182,17 @@ class SubBaseParser(BaseParser):
                 pass
             elif tag.name in ['caption']:
                 pass
-
-        for k in content_tag.contents:
-            print('--------------')
-            print(k)
-
-        # print(content_tag.prettify())
+        """
+        print(content_tag)
+        # for k in content_tag.contents:
+        #     print('--------------')
+        #     print(k)
 
         # Xử lí thẻ image
         content_tag = self._handle_image(html=content_tag, title=title)
 
         # Chuẩn hóa kết quả
-        content_tag = self._remove_trash_after_normalizing(html=content_tag)
+        content_tag = self._post_process_after_normalizing(html=content_tag)
 
         # Khôi phục sau khi xử lí xong
         main_content_tag.replace_with(content_tag)

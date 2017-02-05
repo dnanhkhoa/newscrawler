@@ -58,9 +58,9 @@ class PhuNuTodayVnParser(SubBaseParser):
                 video_tag.replace_with(create_video_tag(src=video_url))
         return html
 
-    def _remove_trash_before_normalizing(self, html):
+    def _pre_process_before_normalizing(self, html):
         # Remove ads
         trash_items = html.find_all(class_=self._trash_classes_regex)
         for trash_item in trash_items:
             trash_item.decompose()
-        return super()._remove_trash_before_normalizing(html)
+        return super()._pre_process_before_normalizing(html)
