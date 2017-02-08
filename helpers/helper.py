@@ -56,8 +56,8 @@ def remove_special_chars(string):
 
 
 # Kiểm tra một chuỗi có hợp lệ hay không
-def is_valid_string(string):
-    string = regex.sub(r'[\W_]+', '', string).strip()
+def is_valid_string(string, pattern=r'[\W_]+'):
+    string = regex.sub(pattern, '', string).strip()
     return len(string) > 0
 
 
@@ -126,7 +126,9 @@ def create_html_tag(tag, is_self_closing=False, attrs=None):
 
 
 # Tạo đối tượng BeautifulSoup
-def get_soup(string):
+def get_soup(string, clear_special_chars=False):
+    if clear_special_chars:
+        string = regex.sub(r'\s+', ' ', string)
     return BeautifulSoup(string, features='html5lib')
 
 

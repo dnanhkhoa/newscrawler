@@ -170,7 +170,7 @@ class SubBaseParser(BaseParser):
         content_tag = bleach.clean(content_tag, tags=['main', 'div', 'br', 'video', 'source', 'img', 'span'],
                                    attributes=attrs, strip=True, strip_comments=True)
 
-        content_tag = get_soup(content_tag).main
+        content_tag = get_soup(content_tag, clear_special_chars=True).main
 
         # Hỗ trợ dự đoán caption của image và tác giả bài viết
         """

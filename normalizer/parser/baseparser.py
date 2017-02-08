@@ -29,19 +29,19 @@ class BaseParser(ABC):
     def _build_json(self, url=None, title=None, meta_keywords=None, meta_description=None, publish_date=None,
                     author=None, tags=None, thumbnail=None, summary=None, content=None, plain=None):
         return {
-            'SourcePage': '' if self._source_page is None else self._source_page,
-            'Title': '' if title is None else title,
-            'Url': '' if url is None else url,
-            'Author': '' if author is None else author,
-            'Thumbnail': '' if thumbnail is None else thumbnail,
-            'Tag': '' if tags is None else tags,
-            'ShortIntro': '' if summary is None else summary,
-            'PublishDate': '' if publish_date is None else format_datetime(publish_date),
-            'MetaDescription': '' if meta_description is None else meta_description,
-            'MetaKeywords': '' if meta_keywords is None else meta_keywords,
-            'CrawledDate': format_datetime(datetime.now()),
-            'Content': '' if content is None else content,
-            'Plain_Content': '' if plain is None else plain
+            'sourcePage': '' if self._source_page is None else self._source_page,
+            'title': '' if title is None else title,
+            'sourceUrl': '' if url is None else url,
+            'author': '' if author is None else author,
+            'thumbnail': '' if thumbnail is None else thumbnail,
+            'tags': '' if tags is None else tags,
+            'description': '' if summary is None else summary,
+            'publishDate': '' if publish_date is None else format_datetime(publish_date),
+            'metaDescription': '' if meta_description is None else meta_description,
+            'metaKeywords': '' if meta_keywords is None else meta_keywords,
+            'crawledDate': format_datetime(datetime.now()),
+            'content': '' if content is None else content,
+            'plainContent': '' if plain is None else plain
         }
 
     # Trả về tiêu đề của bài viết
@@ -107,4 +107,4 @@ class BaseParser(ABC):
         raw_html = get_html(url=url, timeout=timeout)
         if raw_html is None:
             raise Exception('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
-        return self._parse(url=url, html=get_soup(raw_html), timeout=timeout)
+        return self._parse(url=url, html=get_soup(raw_html, clear_special_chars=True), timeout=timeout)
