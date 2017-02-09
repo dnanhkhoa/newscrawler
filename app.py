@@ -231,7 +231,7 @@ def _combine_div_tags(parent_tag):
 def main():
     # Catch exception ngoài này
 
-    url = 'http://www.phunutoday.vn/giai-tri/'
+    url = 'http://giaoducthoidai.vn/khoa-hoc/'
     from_date = '2017-02-09'
     to_date = '2017-02-09'
 
