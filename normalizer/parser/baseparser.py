@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
+
+# Done
 from abc import ABC, abstractmethod
 from datetime import datetime
 from urllib.parse import urljoin
@@ -18,6 +20,12 @@ class BaseParser(ABC):
     def _get_absolute_url(self, url):
         return urljoin(self._domain, url)
 
+    # Trả về alias từ url của bài viết
+    def _get_alias(self, url):
+        obj = urlparse(url)
+        alias = obj.path.strip('/').split('/')[-1]
+        return alias
+
     # Trả về image url hợp lệ
     def _get_valid_image_url(self, url):
         image_url = self._get_absolute_url(url=url)
@@ -27,12 +35,14 @@ class BaseParser(ABC):
         return image_url
 
     # Trả về kết quả có cấu trúc theo yêu cầu
-    def _build_json(self, url=None, title=None, meta_keywords=None, meta_description=None, publish_date=None,
-                    author=None, tags=None, thumbnail=None, summary=None, content=None, plain=None):
+    def _build_json(self, url=None, mobile_url=None, title=None, alias=None, meta_keywords=None, meta_description=None,
+                    publish_date=None, author=None, tags=None, thumbnail=None, summary=None, content=None, plain=None):
         return {
             'sourcePage': '' if self._source_page is None else self._source_page,
             'title': '' if title is None else title,
+            'alias': '' if alias is None else alias,
             'sourceUrl': '' if url is None else url,
+            'sourceUrlMobile': '' if mobile_url is None else mobile_url,
             'author': '' if author is None else author,
             'thumbnail': '' if thumbnail is None else thumbnail,
             'tags': '' if tags is None else tags,
@@ -44,6 +54,11 @@ class BaseParser(ABC):
             'content': '' if content is None else content,
             'plainContent': '' if plain is None else plain
         }
+
+    # Trả về mobile url của bài viết
+    @abstractmethod
+    def _get_mobile_url(self, html):
+        pass
 
     # Trả về tiêu đề của bài viết
     @abstractmethod
