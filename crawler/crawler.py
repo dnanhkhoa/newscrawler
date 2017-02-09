@@ -7,16 +7,29 @@ from helpers import create_parser_from_files
 
 
 class Crawler(object):
-    _domain_regex = regex.compile(r'^https?://(?:www\.)?(\w+(?:\.\w+)+)', regex.IGNORECASE)
-
     def __init__(self):
+        self._domain_regex = [regex.compile(r'^https?://(?:www\.)?(\w+(?:\.\w+)+)', regex.IGNORECASE)]
         self._parser = create_parser_from_files('crawler/parser/subclasses', BaseParser)
 
-    def crawl(self, url, date=None, timeout=15):
-        matcher = self._domain_regex.search(url)
-        if matcher is None:
-            raise Exception('URL không hợp lệ: %s' % url)
-        domain = matcher.group(1)
-        if domain not in self._parser:
+        # Thêm các domain_regex từ các parsers
+        for k in self._parser:
+            patterns = self._parser[k].get_domain_regex()
+            if isinstance(patterns, list):
+                self._domain_regex.extend(patterns)
+
+        # Lọc trùng
+        self._domain_regex = list(set(self._domain_regex))
+
+    def crawl(self, url, from_date=None, to_date=None, timeout=15):
+        domain = None
+        for pattern in self._domain_regex:
+            matcher = pattern.search(url)
+            if matcher is not None:
+                matcher = matcher.group(1)
+                if matcher in self._parser:
+                    domain = matcher
+                    break
+
+        if domain is None:
             raise Exception('Tên miền %s chưa được hỗ trợ.' % domain)
-        return self._parser[domain].parse(url=url, date=date, timeout=timeout)
+        return self._parser[domain].parse(url=url, date=from_date, to_date=to_date, timeout=timeout)
