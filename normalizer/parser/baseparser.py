@@ -11,6 +11,7 @@ class BaseParser(ABC):
     def __init__(self):
         self._source_page = None
         self._domain = None
+        self._domain_regex = None
         self._vars = {}
 
     # Trả về URL tuyệt đối
@@ -101,6 +102,10 @@ class BaseParser(ABC):
     # Trả về tên miền của đầu báo mà nó xử lí
     def get_domain(self):
         return self._domain
+
+    # Trả về danh sách các regex dùng để parse url sao cho trỏ đúng vào class tương ứng
+    def get_domain_regex(self):
+        return self._domain_regex
 
     # Hàm phân tích trang và trả về các kết quả yêu cầu
     def parse(self, url, timeout=15):

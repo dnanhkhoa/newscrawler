@@ -146,6 +146,7 @@ def create_video_tag(src, mime_type=None, width=375, height=280, video_tag_name=
     video_tag = create_html_tag(video_tag_name)
     video_tag['width'] = width
     video_tag['height'] = height
+    video_tag['controls'] = None
     video_tag.append(source_tag)
 
     return video_tag

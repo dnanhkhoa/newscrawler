@@ -4,6 +4,7 @@ from abc import abstractmethod
 from copy import copy
 
 import bleach
+from bs4 import NavigableString
 
 from helpers import *
 from normalizer.parser import BaseParser
@@ -131,6 +132,220 @@ class SubBaseParser(BaseParser):
             classes.append('center')
 
         return list(set(classes))
+
+    @staticmethod
+    def _combine_span_tags(span_tag, block_classes=None):
+        if span_tag is None or isinstance(span_tag, NavigableString) or span_tag.name != 'span':
+            return None
+
+        # Wrap lại bằng div để tránh rời rạc
+        span_tag.wrap(create_html_tag('div'))
+
+        parent_span_tag = span_tag.parent
+
+        if block_classes is None:
+            block_classes = []
+
+        span_classes = span_tag.get('class')
+        if span_classes is None:
+            span_classes = []
+
+        span_classes.extend(block_classes)
+
+        s = [(span_tag, list(set(span_classes)))]
+
+        while len(s) > 0:
+            tag, classes = s.pop()
+
+            current_tag = tag
+
+            # Lặp qua từng node con
+            children = list(tag.children)
+
+            if len(children) > 0:
+                temp_tag = create_html_tag('span', attrs={'class': classes} if len(classes) > 0 else {})
+
+                for child_tag in children:
+                    if isinstance(child_tag, NavigableString):
+                        temp_tag.append(child_tag.extract())
+                    else:
+                        # Bổ sung thẻ span vào cây nếu có dữ liệu, chỉ nhận thẻ span chứa nội dung có ý nghĩa
+                        if len(temp_tag.contents) > 0:
+                            # Chèn vào sau thẻ cha
+                            current_tag.insert_after(temp_tag)
+                            if not is_valid_string(temp_tag.text, r'\s+'):
+                                temp_tag.unwrap()
+
+                            current_tag = current_tag.next_sibling
+                            temp_tag = create_html_tag('span', attrs={'class': classes} if len(classes) > 0 else {})
+
+                        if child_tag.name == 'br':
+                            current_tag.insert_after(child_tag.extract())
+                            current_tag = current_tag.next_sibling
+                        else:
+                            # Lấy thẻ span con ra để khi thẻ cha bị xóa thì không bị xóa theo
+                            child_span_tag = child_tag.extract()
+
+                            span_classes = child_tag.get('class')
+                            if span_classes is None:
+                                span_classes = []
+
+                            span_classes.extend(classes)
+
+                            if len(child_span_tag.contents) > 0:
+                                current_tag.insert_after(child_span_tag)
+                                current_tag = current_tag.next_sibling
+                                s.append((child_span_tag, list(set(span_classes))))
+                            else:
+                                child_span_tag.decompose()
+
+                # Trường hợp không có tag để đóng lại
+                if len(temp_tag.contents) > 0:
+                    # Chèn vào sau thẻ cha
+                    current_tag.insert_after(temp_tag)
+                    if not is_valid_string(temp_tag.text, r'\s+'):
+                        temp_tag.unwrap()
+
+            # Xóa thẻ cha vì con của nó đã được đem lên cùng cấp nằm ở phía sau
+            tag.decompose()
+
+        return parent_span_tag
+
+    @staticmethod
+    def _combine_span_sibling_tags(div_tag):
+        if div_tag is None or isinstance(div_tag, NavigableString) or div_tag.name != 'div':
+            return None
+
+        children = list(div_tag.children)
+        children_size = len(children)
+
+        i = 0
+        while i < children_size - 1:
+            child_tag = children[i]
+
+            if child_tag.name == 'span':
+
+                j = i + 1
+                while j < children_size:
+                    next_sibling = children[j]
+
+                    if isinstance(next_sibling, NavigableString):
+                        if is_valid_string(str(next_sibling), r'\s+'):
+                            break
+                        else:
+                            # Gộp thẻ span và text gồm các khoảng trắng
+                            child_tag.append(next_sibling.extract())
+                            i = j
+                    else:
+                        if next_sibling.name == 'span':
+                            # Xử lí gộp hai span kề nhau có chung class
+                            child_classes = child_tag.get('class')
+                            if child_classes is None:
+                                child_classes = []
+
+                            next_sibling_classes = next_sibling.get('class')
+                            if next_sibling_classes is None:
+                                next_sibling_classes = []
+
+                            if set(child_classes) == set(next_sibling_classes):
+                                # Gộp 2 thẻ span
+                                child_tag.append(next_sibling.extract())
+                                next_sibling.unwrap()
+                                i = j
+                            else:
+                                break
+                        else:
+                            break
+                    j += 1
+            i += 1
+
+    @staticmethod
+    def _combine_div_tags(parent_tag):
+        if parent_tag is None or isinstance(parent_tag, NavigableString) or parent_tag.name != 'div':
+            return None
+
+        # Clone thẻ div để khi unwrap vẫn không bị mất.
+        parent_tag.wrap(create_html_tag('div', attrs=parent_tag.attrs))
+
+        classes = parent_tag.get('class')
+        s = [(parent_tag, [] if classes is None else classes)]
+
+        while len(s) > 0:
+            tag, classes = s.pop()
+
+            # Lặp qua từng node con
+            children = list(tag.children)
+            children_size = len(children)
+
+            if children_size > 0:
+                temp_tag = create_html_tag('div', attrs={'class': classes} if len(classes) > 0 else {})
+
+                i = 0
+                while i < children_size:
+                    child_tag = children[i]
+
+                    if isinstance(child_tag, NavigableString):
+                        temp_tag.append(child_tag.extract())
+                    elif child_tag.name == 'span':
+                        span_tags = SubBaseParser._combine_span_tags(span_tag=child_tag,
+                                                                     block_classes=temp_tag.attrs.get('class'))
+
+                        contents = list(span_tags.children)
+                        for child in contents:
+                            if child.name == 'br':
+                                if len(temp_tag.contents) > 0 and is_valid_string(temp_tag.text, r'\s+'):
+                                    span_tags.insert_before(temp_tag)
+
+                                    # Gộp các span anh em có chung class
+                                    SubBaseParser._combine_span_sibling_tags(div_tag=temp_tag)
+
+                                    temp_tag = create_html_tag('div',
+                                                               attrs={'class': classes} if len(classes) > 0 else {})
+                            else:
+                                temp_tag.append(child.extract())
+
+                        span_tags.decompose()
+                    else:
+                        # Bổ sung thẻ div vào cây nếu có dữ liệu, chỉ nhận thẻ div chứa nội dung có ý nghĩa
+                        if len(temp_tag.contents) > 0 and is_valid_string(temp_tag.text, r'\s+'):
+                            child_tag.insert_before(temp_tag)
+
+                            # Gộp các span anh em có chung class
+                            SubBaseParser._combine_span_sibling_tags(div_tag=temp_tag)
+
+                            temp_tag = create_html_tag('div', attrs={'class': classes} if len(classes) > 0 else {})
+
+                        if child_tag.name == 'div':
+                            # Thêm vào stack nếu là div
+                            child_classes = child_tag.get('class')
+                            if child_classes is None:
+                                child_classes = []
+                            child_classes.extend(classes)
+                            if len(child_tag.contents) > 0 and (
+                                        is_valid_string(child_tag.text, r'\s+') or child_tag.find(
+                                        ['video', 'img']) is not None):
+                                s.append((child_tag, list(set(child_classes))))
+                            else:
+                                child_tag.decompose()
+                        else:
+                            if child_tag.name not in ['video', 'img']:
+                                child_tag.decompose()
+
+                    i += 1
+
+                # Trường hợp không có tag để đóng lại, chỉ nhận thẻ div chứa nội dung có ý nghĩa
+                if len(temp_tag.contents) > 0 and is_valid_string(temp_tag.text, r'\s+'):
+                    # Đã duyệt qua tất cả thẻ con nên chỉ cần append để vào vị trí cuối
+                    tag.append(temp_tag)
+
+                    # Gộp các span anh em có chung class
+                    SubBaseParser._combine_span_sibling_tags(div_tag=temp_tag)
+
+                # Xóa thẻ div ngoài cùng nhưng vẫn giữ các thẻ con bên trong nó
+                tag.unwrap()
+            else:
+                # Xóa thẻ div nếu nó không có thẻ con
+                tag.decompose()
 
     def _normalize_content(self, html, title=None, timeout=15):
         get_main_content_tag_func = self._vars.get('get_main_content_tag_func')
