@@ -14,8 +14,10 @@ class BaseParser(ABC):
         self._vars = {}
 
     # Trả về URL tuyệt đối
-    def _get_absolute_url(self, url):
-        return urljoin(self._full_domain, url)
+    def _get_absolute_url(self, url, domain=None):
+        if domain is None:
+            domain = self._full_domain
+        return urljoin(domain, url)
 
     # Xử lí các trang có chuyên mục con trong chuyên mục chính
     @abstractmethod
@@ -38,7 +40,7 @@ class BaseParser(ABC):
     # Hàm trả về (urls, stop) gồm danh sách các urls của bài đăng có trong trang từ from_date đến to_date
     # Tham số stop = True sẽ dừng việc duyệt trang (vượt quá ngày, không có bài viết nào)
     @abstractmethod
-    def _get_urls_from_page(self, html, from_date=None, to_date=None, timeout=15):
+    def _get_urls_from_page(self, url, html, from_date=None, to_date=None, timeout=15):
         pass
 
     # Hàm trả về thời gian của bài đăng

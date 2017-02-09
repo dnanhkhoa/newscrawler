@@ -231,9 +231,9 @@ def _combine_div_tags(parent_tag):
 def main():
     # Catch exception ngoài này
 
-    url = 'http://laodongxahoi.net/suc-khoe-doi-song/'
-    from_date = '2017-01-05'
-    to_date = '2017-01-16'
+    url = 'http://www.phunutoday.vn/giai-tri/'
+    from_date = '2017-02-09'
+    to_date = '2017-02-09'
 
     crawler = Crawler()
     normalizer = Normalizer()

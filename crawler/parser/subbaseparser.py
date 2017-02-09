@@ -31,7 +31,7 @@ class SubBaseParser(BaseParser):
 
         return get_datetime_func(normalize_string(time_tag.text))
 
-    def _get_urls_from_page(self, html, from_date=None, to_date=None, timeout=15):
+    def _get_urls_from_page(self, url, html, from_date=None, to_date=None, timeout=15):
         urls = []
         stop = False
 
@@ -43,7 +43,7 @@ class SubBaseParser(BaseParser):
             if post_urls is None or len(post_urls) == 0:
                 stop = True
             else:
-                post_urls = [self._get_absolute_url(post_url) for post_url in post_urls]
+                post_urls = [self._get_absolute_url(url=post_url, domain=url) for post_url in post_urls]
 
                 last_post_date = self._get_date_from_post(url=post_urls[-1], timeout=timeout)
                 if from_date > last_post_date:
@@ -85,7 +85,7 @@ class SubBaseParser(BaseParser):
         next_page = active_tag.find_next_sibling('a')
         next_url = None if next_page is None else next_page.get('href')
 
-        return html, next_url
+        return html, self._get_absolute_url(url=next_url, domain=url)
 
     def _get_child_category_urls(self, url, timeout=15):
         get_child_category_section_func = self._vars.get('get_child_category_section_func')
@@ -104,7 +104,7 @@ class SubBaseParser(BaseParser):
                 if len(a_tags) > 0:
                     urls = []
                     for a_tag in a_tags:
-                        urls.append(a_tag.get('href'))
+                        urls.append(self._get_absolute_url(url=a_tag.get('href'), domain=url))
                     return urls
 
         return [url]
@@ -145,19 +145,21 @@ class SubBaseParser(BaseParser):
                 if page is None:
                     break
 
-                html, next_url = page
+                html, url = page
                 html = self._pre_process(html=html)
                 if html is None:
                     break
 
-                urls_from_page, stop = self._get_urls_from_page(html=html, from_date=from_date, to_date=to_date,
-                                                                timeout=timeout)
+                urls_from_page, stop = self._get_urls_from_page(url=url, html=html, from_date=from_date,
+                                                                to_date=to_date, timeout=timeout)
 
                 urls.extend(urls_from_page)
 
                 # Không còn trang kế tiếp nữa thì dừng
-                if stop or next_url is None:
+                if stop or url is None:
                     break
 
+                next_url = url
+
         # Trả về danh sách các urls
-        return list(set(urls))
+        return urls

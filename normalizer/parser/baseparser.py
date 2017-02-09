@@ -13,12 +13,15 @@ class BaseParser(ABC):
     def __init__(self):
         self._source_page = None
         self._domain = None
+        self._full_domain = None
         self._domain_regex = None
         self._vars = {}
 
     # Trả về URL tuyệt đối
-    def _get_absolute_url(self, url):
-        return urljoin(self._domain, url)
+    def _get_absolute_url(self, url, domain=None):
+        if domain is None:
+            domain = self._full_domain
+        return urljoin(domain, url)
 
     # Trả về alias từ url của bài viết
     def _get_alias(self, url):
