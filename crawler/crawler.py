@@ -2,10 +2,8 @@
 # -*- coding: utf8 -*-
 
 # Done
-import regex
-
 from crawler.parser import BaseParser
-from helpers import create_parser_from_files
+from helpers import *
 
 
 class Crawler(object):
@@ -33,5 +31,7 @@ class Crawler(object):
                     break
 
         if domain is None:
-            raise Exception('Tên miền %s chưa được hỗ trợ.' % domain)
-        return self._parser[domain].parse(url=url, date=from_date, to_date=to_date, timeout=timeout)
+            log('Tên miền %s chưa được hỗ trợ.' % domain)
+            return None
+
+        return self._parser[domain].parse(url=url, from_date=from_date, to_date=to_date, timeout=timeout)

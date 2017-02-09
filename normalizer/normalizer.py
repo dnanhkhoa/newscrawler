@@ -2,9 +2,7 @@
 # -*- coding: utf8 -*-
 
 # Done
-import regex
-
-from helpers import create_parser_from_files
+from helpers import *
 from normalizer.parser import BaseParser
 
 
@@ -33,5 +31,7 @@ class Normalizer(object):
                     break
 
         if domain is None:
-            raise Exception('Tên miền %s chưa được hỗ trợ.' % domain)
+            log('Tên miền %s chưa được hỗ trợ.' % domain)
+            return None
+
         return self._parser[domain].parse(url=url, timeout=timeout)

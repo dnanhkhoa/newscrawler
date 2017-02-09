@@ -229,6 +229,8 @@ def _combine_div_tags(parent_tag):
 
 
 def main():
+    # Catch exception ngoài này
+
     url = 'http://laodongxahoi.net/viec-lam'
     from_date = datetime.strptime('2017-02-09', '%Y-%m-%d')
     to_date = None

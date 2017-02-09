@@ -161,8 +161,9 @@ def create_image_tag(url, alt, image_tag_name='img'):
 
 
 # Tạo thẻ caption theo format yêu cầu
-def create_caption_tag(string, caption_tag_name='p'):
+def create_caption_tag(string, caption_tag_name='p', class_name='caption'):
     caption_tag = create_html_tag(caption_tag_name)
+    caption_tag.attrs = {'class': class_name}
     caption_tag.append(normalize_string(string))
     return caption_tag
 

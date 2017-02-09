@@ -14,6 +14,9 @@ class SubBaseParser(BaseParser):
     def __init__(self):
         super().__init__()
 
+    def _get_mobile_url(self, html):
+        pass
+
     def _get_post_title(self, html):
         get_title_tag_func = self._vars.get('get_title_tag_func')
         title_tag = html.title if get_title_tag_func is None else get_title_tag_func(html)

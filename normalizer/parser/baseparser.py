@@ -126,5 +126,7 @@ class BaseParser(ABC):
     def parse(self, url, timeout=15):
         raw_html = get_html(url=url, timeout=timeout)
         if raw_html is None:
-            raise Exception('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
+            log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
+            return None
+
         return self._parse(url=url, html=get_soup(raw_html, clear_special_chars=True), timeout=timeout)
