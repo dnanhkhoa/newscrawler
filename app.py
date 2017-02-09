@@ -231,16 +231,16 @@ def _combine_div_tags(parent_tag):
 def main():
     # Catch exception ngoài này
 
-    url = 'http://laodongxahoi.net/viec-lam'
-    from_date = datetime.strptime('2017-02-09', '%Y-%m-%d')
-    to_date = None
+    url = 'http://laodongxahoi.net/suc-khoe-doi-song/'
+    from_date = '2017-01-05'
+    to_date = '2017-01-16'
 
     crawler = Crawler()
     normalizer = Normalizer()
 
 
-    crawler.crawl(url=url, from_date=from_date, to_date=to_date)
-
+    r = crawler.crawl(url=url, from_date=from_date, to_date=to_date)
+    print(len(r), r)
     return
     d = '''
     <div>

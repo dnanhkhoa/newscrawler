@@ -10,7 +10,7 @@ class LaoDongXaHoiNetParser(SubBaseParser):
         self._source_page = 'Lao Động Xã Hội'
         self._domain = 'laodongxahoi.net'
 
-        # Thay đổi các hàm tron vars để thay đổi các tham số của hàm cha
+        # Thay đổi các hàm trong vars để thay đổi các tham số của hàm cha
         # Publish date
         self._vars['get_time_tag_func'] = lambda x: x.find('div', class_='time_detail_news')
         self._vars['get_datetime_func'] = lambda x: datetime.strptime(x, '%I:%M %p %d/%m/%Y')
