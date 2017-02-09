@@ -32,8 +32,9 @@ class BaseParser(ABC):
     def _pre_process(self, html):
         pass
 
+    # Hàm trả về danh sách các urls của bài đăng có trong trang từ from_date đến to_date
     @abstractmethod
-    def get_urls_from_page(self, html, from_date=None, to_date=None):
+    def get_urls_from_page(self, html, from_date=None, to_date=None, timeout=15):
         pass
 
     # Hàm trả về thời gian của bài đăng
@@ -50,5 +51,6 @@ class BaseParser(ABC):
         return self._domain_regex
 
     # Hàm phân tích trang và trả về danh sách các URLs có trong URL chủ đề
+    @abstractmethod
     def parse(self, url, from_date=None, to_date=None, timeout=15):
         pass
