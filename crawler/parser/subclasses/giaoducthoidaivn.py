@@ -60,6 +60,7 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         self._vars['get_post_urls_func'] = get_post_urls_func
 
     def _pre_process(self, html):
+        # Xóa rác
         section_tag = html.find('section', class_='browsing-focus')
         if section_tag is None:
             return None
