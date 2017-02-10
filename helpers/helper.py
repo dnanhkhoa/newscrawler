@@ -169,6 +169,15 @@ def create_caption_tag(string, caption_tag_name='p', class_name='caption'):
     return caption_tag
 
 
+# Xóa các thẻ đóng không cần thiết
+def remove_closing_tags(content, tags):
+    if content is None:
+        return None
+    if not isinstance(tags, list) or len(tags) == 0:
+        return content
+    return regex.sub(r'<\s*\/\s*(?:%s)\s*>' % '|'.join(tags), '', content)
+
+
 # Tải nội dung web
 def get_html(url, timeout=15, allow_redirects=False):
     try:

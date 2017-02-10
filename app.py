@@ -8,14 +8,14 @@ from normalizer import *
 from crawler import *
 from helpers import *
 
-
 configs = read_json('configs.txt')
 db = configs.get('database')
 category_mapping = configs.get('category_mapping')
 priority_mapping = configs.get('priority_mapping')
 clusters = configs.get('clusters')
 
-mysql = MySQL(user=db.get('user'), password=db.get('password'), db=db.get('db'), host=db.get('host'), port=db.get('port'))
+mysql = MySQL(user=db.get('user'), password=db.get('password'), db=db.get('db'), host=db.get('host'),
+              port=db.get('port'))
 
 
 def get_id_from_db(category):
@@ -40,8 +40,8 @@ def get_urls_from_db():
 
 def post_data_to_db(url, file_path, category, post_date, post_time, status, publish_date, priority):
     def do(connection, cursor):
-        sql = 'INSERT INTO `article` (`URL`, `Path`, `Category`, `Date`, `Time`, `Status`, `PublishDate`, `Priority`)' \
-              ' VALUES (%s, %s, %s, %s, %s, %s, %s, %s)'
+        sql = 'INSERT INTO `article` (`URL`, `Path`, `Category`, `Date`, `Time`, `Status`, `PublishDate`, `ID_Attachment`, `Priority`)' \
+              ' VALUES (%s, %s, %s, %s, %s, %s, %s, 0, %s)'
         cursor.execute(sql, (url, file_path, category, post_date, post_time, status, publish_date, priority))
         connection.commit()
 
@@ -63,17 +63,30 @@ def main():
         if id is None or url is None or category is None or priority is None:
             continue
 
-        post_urls = crawler.crawl(url=url)
-        post_urls = list(set(post_urls) - set(urls_in_db))
+        try:
 
-        max_id = get_id_from_db(category)
-        for post_url in post_urls:
-            result = normalizer.normalize(url=post_url)
-            write_json(result, '%s/%s/%s/%s.txt' % (clusters, str(date.today()).replace('-', ''), category, max_id))
-            write_json(result, '%s/%s/%s/%s.raw' % (clusters, str(date.today()).replace('-', ''), category, max_id))
+            post_urls = crawler.crawl(url=url)
+            post_urls = list(set(post_urls) - set(urls_in_db))
 
-            max_id += 1
 
+            max_id = get_id_from_db(category)
+            for post_url in post_urls:
+                result = normalizer.normalize(url=post_url)
+                file_name = '%s/%s/%s/%d' % (clusters, str(date.today()).replace('-', ''), category, max_id)
+                print(file_name)
+                write_json(result, file_name + '.txt')
+
+                # UNSET 3 VARS
+
+                write_json(result, file_name + '.raw')
+
+                post_data_to_db(url, file_name[2:] + '.txt', category, str(date.today()), datetime.now().strftime('%H:%M:%S'), 0, result['publishDate'], priority)
+
+
+                max_id += 1
+
+        except Exception  as e:
+            log(e)
 
 if __name__ == '__main__':
     main()

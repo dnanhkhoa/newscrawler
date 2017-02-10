@@ -4,7 +4,7 @@
     "password": "vertrigo",
     "db": "demo",
     "host": "localhost",
-    "port": "3306"
+    "port": 3306
   },
   "category_file": "../py_categories.txt",
   "clusters": "../mds_clusters",

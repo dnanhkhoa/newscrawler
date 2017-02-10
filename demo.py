@@ -28,7 +28,9 @@ def try_normalizer():
     news_normalizer = Normalizer()
 
     urls = [
-        'http://giaoducthoidai.vn/khoa-hoc/laban-key-am-tham-vuon-len-ung-dung-mien-phi-so-1-tren-ios-2903278-l.html']
+        'http://giaoducthoidai.vn/khoa-hoc/laban-key-am-tham-vuon-len-ung-dung-mien-phi-so-1-tren-ios-2903278-l.html',
+        'http://giaoducthoidai.vn/khoa-hoc/sinh-vat-giong-nguoi-tuyet-trong-rung-ukraine-2903321-l.html'
+    ]
 
     result = news_normalizer.normalize(url=urls[0], timeout=15)
     print(json.dumps(result, indent=4, ensure_ascii=False))

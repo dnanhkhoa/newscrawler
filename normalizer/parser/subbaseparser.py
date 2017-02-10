@@ -110,11 +110,23 @@ class SubBaseParser(BaseParser):
     def _pre_process(self, html):
         return html
 
-    @staticmethod
-    def _get_special_tag_classes(tag):
+    def _get_special_tag_classes(self, tag):
         classes = tag.get('class')
         if classes is None:
             classes = []
+        else:
+            predict_caption_tag = self._vars.get('predict_caption_tag')
+            predict_author_tag = self._vars.get('predict_author_tag')
+
+            cls = []
+
+            if predict_caption_tag is not None and predict_caption_tag(classes):
+                cls.append('caption')
+
+            if predict_author_tag is not None and predict_author_tag(classes):
+                cls.append('author')
+
+            classes.extend(cls)
 
         # Kiểm tra trong align
         align = tag.get('align')
@@ -136,7 +148,7 @@ class SubBaseParser(BaseParser):
 
         # Kiểm tra tên thẻ
         if tag.name in ['table', 'td', 'caption', 'figcaption']:
-            classes.append('image')
+            classes.append('caption')
         elif tag.name in ['strong', 'b']:
             classes.append('bold')
         elif tag.name in ['em', 'i']:
@@ -398,6 +410,11 @@ class SubBaseParser(BaseParser):
         if main_content_tag is None:
             return None
 
+        # Xóa thẻ script
+        script_tags = main_content_tag.find_all('script')
+        for script_tag in script_tags:
+            script_tag.decompose()
+
         # Xóa rác
         main_content_tag = self._pre_process(html=main_content_tag)
 
@@ -463,10 +480,12 @@ class SubBaseParser(BaseParser):
                         i += 1
                     break
             i += 1
-        return '\n'.join(authors)
+        return '<br/>'.join(authors)
 
     # Trả về url của ảnh đầu tiên trong content
     def _get_thumbnail(self, html):
+        if html is None:
+            return None
         img_tag = html.find('img', attrs={'src': True})
         if img_tag is None:
             return None
@@ -489,7 +508,7 @@ class SubBaseParser(BaseParser):
             tag.string = normalize_string(tag.text)
 
         content = html.decode(formatter=None)
-        return regex.sub(r'<main>|<\/main>', '', content)
+        return regex.sub(r'<main>|<\/main>', '', remove_closing_tags(content=content, tags=['source']))
 
     # Hàm trả về nội dung đã lọc thẻ html
     def _get_plain(self, html):
@@ -518,7 +537,7 @@ class SubBaseParser(BaseParser):
         summary = self._get_summary(html=html)
 
         normalized_content = self._normalize_content(html=html, title=remove_special_chars(post_title), timeout=timeout)
-        author = self._get_author(html=normalized_content)
+        author = self._get_author(html=html)
         thumbnail = self._get_thumbnail(html=normalized_content)
         content = self._get_content(html=normalized_content)
         plain = self._get_plain(html=normalized_content)

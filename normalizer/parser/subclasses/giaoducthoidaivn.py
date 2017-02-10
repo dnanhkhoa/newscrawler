@@ -13,9 +13,8 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
 
         # Thay đổi các hàm trong vars để thay đổi các tham số của hàm cha
 
-        # Nếu không gán hàm cho Child category urls thì mặc định
-        # chủ đề nào nó sẽ duyệt chủ đề đó, không duyệt thêm chủ đề con
-        # self._vars['get_child_category_section_func']
+        # Title
+        self._vars['get_title_tag_func'] = lambda x: x.find('h1', class_='cms-title')
 
         # Publish date
         def get_time_tag_func(html):
@@ -37,7 +36,25 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         self._vars['get_datetime_func'] = get_datetime_func
 
         # Main content
-        self._vars['get_main_content_tag_func'] = lambda x: x.find('div', id='articlecontent')
+        self._vars['get_main_content_tag_func'] = lambda x: x.find('div', id='abody')
 
     def _handle_video(self, html, timeout=15):
+        video_tags = html.find_all('div', class_='cms-video')
+        for video_tag in video_tags:
+            video_url = video_tag.get('data-video-src')
+            if video_url is None:
+                video_tag.decompose()  # Xóa bỏ thẻ nếu không thể lấy được URL trực tiếp của video
+            else:
+                video_tag.replace_with(create_video_tag(src=video_url))
         return html
+
+    def _get_tags(self, html):
+        return super()._get_meta_keywords(html)
+
+    def _get_summary(self, html):
+        return super()._get_meta_description(html)
+
+    def _get_author(self, html):
+        author = html.find('p', class_='author')
+        return None if author is None else author.text
+

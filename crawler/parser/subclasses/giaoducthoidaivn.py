@@ -12,6 +12,12 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         self._domain = 'giaoducthoidai.vn'
         self._full_domain = 'http://giaoducthoidai.vn'
 
+        # Thay đổi các hàm trong vars để thay đổi các tham số của hàm cha
+
+        # Nếu không gán hàm cho Child category urls thì mặc định
+        # chủ đề nào nó sẽ duyệt chủ đề đó, không duyệt thêm chủ đề con
+        # self._vars['get_child_category_section_func']
+
         # Active tag
         def get_active_tag_func(html):
             span_tag = html.find('span', id='ctl00_mainContent_ContentList1_pager')
