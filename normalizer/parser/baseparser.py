@@ -11,10 +11,15 @@ from helpers import *
 
 class BaseParser(ABC):
     def __init__(self):
+        # Tên trang web sử dụng kiểu Title Case
         self._source_page = None
+        # Tên miền không có http://www dùng để nhận dạng url
         self._domain = None
+        # Tên miền đầy đủ, không có / cuối cùng
         self._full_domain = None
+        # Đăng ký các regex dùng để parse một số domain đặc biệt
         self._domain_regex = None
+        # Biến chứa các hàm lambda hoặc con trỏ hàm giúp kế thùa linh động hơn.
         self._vars = {}
 
     # Trả về URL tuyệt đối

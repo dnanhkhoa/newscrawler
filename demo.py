@@ -15,8 +15,8 @@ def try_crawler():
 
     urls = ['http://giaoducthoidai.vn/khoa-hoc/',
             'http://giaoducthoidai.vn/thoi-su/']
-    from_date = '2017-02-05'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
-    to_date = '2017-02-05'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
+    from_date = '2017-02-10'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    to_date = '2017-02-10'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
     for url in urls:

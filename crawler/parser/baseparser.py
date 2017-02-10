@@ -8,18 +8,24 @@ from urllib.parse import urljoin
 
 class BaseParser(ABC):
     def __init__(self):
+        # Tên miền không có http://www dùng để nhận dạng url
         self._domain = None
+        # Tên miền đầy đủ, không có / cuối cùng
         self._full_domain = None
+        # Đăng ký các regex dùng để parse một số domain đặc biệt
         self._domain_regex = None
+        # Biến chứa các hàm lambda hoặc con trỏ hàm giúp kế thùa linh động hơn.
         self._vars = {}
 
     # Trả về URL tuyệt đối
+    # Tham số url làm segments hoặc url cần được đổi sang url tuyệt đối
+    # Tham số domain đóng góp làm tiền tố  cho url tuyệt đối
     def _get_absolute_url(self, url, domain=None):
         if domain is None:
             domain = self._full_domain
         return urljoin(domain, url)
 
-    # Xử lí các trang có chuyên mục con trong chuyên mục chính
+    # Xử lí lưu các trang có chuyên mục con trong chuyên mục chính nhằm lặp đệ qui
     @abstractmethod
     def _get_child_category_urls(self, url, timeout=15):
         pass

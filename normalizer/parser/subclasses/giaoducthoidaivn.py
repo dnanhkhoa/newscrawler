@@ -12,6 +12,11 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         self._full_domain = 'http://giaoducthoidai.vn'
 
         # Thay đổi các hàm trong vars để thay đổi các tham số của hàm cha
+
+        # Nếu không gán hàm cho Child category urls thì mặc định
+        # chủ đề nào nó sẽ duyệt chủ đề đó, không duyệt thêm chủ đề con
+        # self._vars['get_child_category_section_func']
+
         # Publish date
         def get_time_tag_func(html):
             div_tag = html.find('div', class_='toolbar')

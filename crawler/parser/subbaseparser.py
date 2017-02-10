@@ -12,6 +12,7 @@ class SubBaseParser(BaseParser):
     def __init__(self):
         super().__init__()
 
+    # Hàm lấy ngày giờ của bài viết
     def _get_date_from_post(self, url, timeout=15):
         get_time_tag_func = self._vars.get('get_time_tag_func')
         get_datetime_func = self._vars.get('get_datetime_func')
@@ -25,12 +26,15 @@ class SubBaseParser(BaseParser):
 
         html = get_soup(raw_html)
 
+        # Tìm được thẻ wrap chuỗi time -> lấy được time
         time_tag = get_time_tag_func(html)
         if time_tag is None:
             return None
 
+        # Hàm datetime_func sẽ format time theo định dạng chỉ định
         return get_datetime_func(normalize_string(time_tag.text))
 
+    # Hàm duyệt tìm các urls của bài viết trong trang
     def _get_urls_from_page(self, url, html, from_date=None, to_date=None, timeout=15):
         urls = []
         stop = False
@@ -63,9 +67,12 @@ class SubBaseParser(BaseParser):
                                 urls.append(post_url)
         return urls, stop
 
+    # Hàm tiền xử lí trước khi gọi hàm get_urls_from_page
+    # Kế thừa lại để xóa rác
     def _pre_process(self, html):
         return html
 
+    # Hàm lấy nội dung trang hiện tại và url đến trang kế tiếp
     def _get_next_page(self, url, timeout=15):
         get_active_tag_func = self._vars.get('get_active_tag_func')
         if get_active_tag_func is None:
@@ -82,11 +89,15 @@ class SubBaseParser(BaseParser):
         if active_tag is None:
             return None
 
+        # Lấy thẻ a anh em kế bên nhằm tìm link đến trang kế
         next_page = active_tag.find_next_sibling('a')
-        next_url = None if next_page is None else next_page.get('href')
+        # Có 1 số trường hợp dùng link tương đối cần chuyển sang tuyệt đối
+        next_url = None if next_page is None else self._get_absolute_url(url=next_page.get('href'), domain=url)
 
-        return html, self._get_absolute_url(url=next_url, domain=url)
+        return html, next_url
 
+    # Hàm trả về danh sách các urls chuyên mục con bên trong url của chuyên mục chính
+    # Nếu không override get_child_category_section_func thì mặc định sẽ không duyệt chuyên mục con
     def _get_child_category_urls(self, url, timeout=15):
         get_child_category_section_func = self._vars.get('get_child_category_section_func')
         if get_child_category_section_func is not None:
@@ -99,6 +110,7 @@ class SubBaseParser(BaseParser):
 
             child_category_section = get_child_category_section_func(html)
             if child_category_section is not None:
+                # Tự tìm tất cả thẻ a bên trong
                 a_tags = child_category_section.find_all('a', attrs={'href': True})
 
                 if len(a_tags) > 0:
