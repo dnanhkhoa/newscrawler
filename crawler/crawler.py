@@ -6,6 +6,7 @@ from crawler.parser import BaseParser
 from helpers import *
 
 
+# Lớp đảm nhận nhiệm load các parsers lên frước
 class Crawler(object):
     def __init__(self):
         self._domain_regex = [regex.compile(r'^https?://(?:www\.)?(\w+(?:\.\w+)+)', regex.IGNORECASE)]
