@@ -118,7 +118,6 @@ def get_direct_youtube_video(url):
 
 # ********** HTML **********
 
-
 # Tạo thẻ html
 def create_html_tag(tag, is_self_closing=False, attrs=None):
     new_tag = BeautifulSoup('<%s>' % tag, features='xml').find(tag) if is_self_closing else _BEAUTIFUL_SOUP.new_tag(tag)

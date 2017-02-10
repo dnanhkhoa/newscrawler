@@ -13,9 +13,11 @@ class SubBaseParser(BaseParser):
     def __init__(self):
         super().__init__()
 
+    # Hàm trả về mobile url nếu có
     def _get_mobile_url(self, html, url):
         return url
 
+    # Hàm trả về tiêu đề bài viết
     def _get_post_title(self, html):
         get_title_tag_func = self._vars.get('get_title_tag_func')
         title_tag = html.title if get_title_tag_func is None else get_title_tag_func(html)
@@ -23,6 +25,7 @@ class SubBaseParser(BaseParser):
             return None
         return normalize_string(title_tag.text) if is_valid_string(title_tag.text) else None
 
+    # Hàm lấy danh sách các keywords có trong thẻ meta
     def _get_meta_keywords(self, html):
         meta_tag = html.find('meta', attrs={'name': 'keywords', 'content': True})
         if meta_tag is None:
@@ -35,6 +38,7 @@ class SubBaseParser(BaseParser):
                 normalized_keywords.append(normalize_string(keyword))
         return ', '.join(normalized_keywords)
 
+    # Hàm lấy phần mô tả trong thẻ meta
     def _get_meta_description(self, html):
         meta_tag = html.find('meta', attrs={'name': 'description', 'content': True})
         if meta_tag is None:
@@ -43,6 +47,7 @@ class SubBaseParser(BaseParser):
         content = meta_tag.get('content')
         return normalize_string(content) if is_valid_string(content) else None
 
+    # Hàm lấy phần mô tả chính
     def _get_summary(self, html):
         get_summary_tag_func = self._vars.get('get_summary_tag_func')
         if get_summary_tag_func is None:
@@ -55,6 +60,7 @@ class SubBaseParser(BaseParser):
         content = summary_tag.text
         return normalize_string(content) if is_valid_string(content) else None
 
+    # Hàm lấy danh sách keywords
     def _get_tags(self, html):
         get_tags_tag_func = self._vars.get('get_tags_tag_func')
         if get_tags_tag_func is None:
@@ -71,6 +77,7 @@ class SubBaseParser(BaseParser):
                 normalized_keywords.append(normalize_string(keyword))
         return ', '.join(normalized_keywords)
 
+    # Hàm lấy ngày của bài đăng
     def _get_publish_date(self, html):
         get_time_tag_func = self._vars.get('get_time_tag_func')
         get_datetime_func = self._vars.get('get_datetime_func')
@@ -90,6 +97,7 @@ class SubBaseParser(BaseParser):
     def _handle_image(self, html, title=None):
         img_tags = html.find_all('img')
         for img_tag in img_tags:
+            img_tag['src'] = self._get_valid_image_url(img_tag.get('src'))
             next_tag = img_tag.find_next(True)
             if next_tag.name == 'div':
                 classes = next_tag.get('class')
@@ -98,10 +106,8 @@ class SubBaseParser(BaseParser):
                     next_tag.replace_with(caption_tag)
         return html
 
-    def _pre_process_before_normalizing(self, html):
-        return html
-
-    def _post_process_after_normalizing(self, html):
+    # Mỗi đầu báo có thể kế thừa hàm này để xử lí 1 số trường hợp riêng bị như xóa ads,...
+    def _pre_process(self, html):
         return html
 
     @staticmethod
@@ -393,7 +399,7 @@ class SubBaseParser(BaseParser):
             return None
 
         # Xóa rác
-        main_content_tag = self._pre_process_before_normalizing(html=main_content_tag)
+        main_content_tag = self._pre_process(html=main_content_tag)
 
         # Xử lí thẻ video
         main_content_tag = self._handle_video(html=main_content_tag, timeout=timeout)
@@ -427,9 +433,6 @@ class SubBaseParser(BaseParser):
 
         # Xử lí thẻ image
         main_content_tag = self._handle_image(html=main_content_tag, title=title)
-
-        # Chuẩn hóa kết quả
-        main_content_tag = self._post_process_after_normalizing(html=main_content_tag)
 
         main_content_tag.name = 'main'
         main_content_tag.attrs = {}
@@ -488,6 +491,7 @@ class SubBaseParser(BaseParser):
         content = html.decode(formatter=None)
         return regex.sub(r'<main>|<\/main>', '', content)
 
+    # Hàm trả về nội dung đã lọc thẻ html
     def _get_plain(self, html):
         if html is None:
             return None
@@ -497,7 +501,7 @@ class SubBaseParser(BaseParser):
         tags = html.find_all('p')
         for tag in tags:
             if tag.get('class') is None:
-                lines.append(tag.text)
+                lines.append(normalize_string(tag.text))
 
         return ' '.join(lines)
 
