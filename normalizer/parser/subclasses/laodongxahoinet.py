@@ -9,6 +9,7 @@ class LaoDongXaHoiNetParser(SubBaseParser):
 
         self._source_page = 'Lao Động Xã Hội'
         self._domain = 'laodongxahoi.net'
+        self._full_domain = None
 
         # Thay đổi các hàm trong vars để thay đổi các tham số của hàm cha
         # Publish date
@@ -18,8 +19,11 @@ class LaoDongXaHoiNetParser(SubBaseParser):
         # Main content
         self._vars['get_main_content_tag_func'] = lambda x: x.find('div', id='cotent_detail')
 
-    def _get_author(self, html):
-        pass
+    def _get_tags(self, html):
+        return super()._get_meta_keywords(html=html)
+
+    def _get_summary(self, html):
+        return super()._get_meta_description(html=html)
 
     def _handle_video(self, html, timeout=15):
         return html

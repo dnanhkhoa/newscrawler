@@ -30,8 +30,8 @@ class BaseParser(ABC):
         return alias
 
     # Trả về image url hợp lệ
-    def _get_valid_image_url(self, url):
-        image_url = self._get_absolute_url(url=url)
+    def _get_valid_image_url(self, url, domain=None):
+        image_url = self._get_absolute_url(url=url, domain=domain)
         cleaned_image_url = clean_url_query(url=image_url)
         if is_valid_image_url(cleaned_image_url):
             image_url = cleaned_image_url
@@ -40,6 +40,10 @@ class BaseParser(ABC):
     # Trả về kết quả có cấu trúc theo yêu cầu
     def _build_json(self, url=None, mobile_url=None, title=None, alias=None, meta_keywords=None, meta_description=None,
                     publish_date=None, author=None, tags=None, thumbnail=None, summary=None, content=None, plain=None):
+
+        if mobile_url is None:
+            mobile_url = url
+
         return {
             'sourcePage': '' if self._source_page is None else self._source_page,
             'title': '' if title is None else title,
@@ -60,7 +64,7 @@ class BaseParser(ABC):
 
     # Trả về mobile url của bài viết
     @abstractmethod
-    def _get_mobile_url(self, html):
+    def _get_mobile_url(self, html, url):
         pass
 
     # Trả về tiêu đề của bài viết
