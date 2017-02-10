@@ -9,7 +9,7 @@ class LaoDongXaHoiNetParser(SubBaseParser):
 
         self._source_page = 'Lao Động Xã Hội'
         self._domain = 'laodongxahoi.net'
-        self._full_domain = None
+        self._full_domain = 'http://laodongxahoi.net'
 
         # Thay đổi các hàm trong vars để thay đổi các tham số của hàm cha
         # Publish date
