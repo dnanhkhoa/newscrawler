@@ -77,7 +77,8 @@ def main():
                 write_json(result, file_name + '.txt')
 
                 # UNSET 3 VARS
-
+                del result['thumbnail']
+                del result['url']
                 write_json(result, file_name + '.raw')
 
                 post_data_to_db(url, file_name[2:] + '.txt', category, str(date.today()), datetime.now().strftime('%H:%M:%S'), 0, result['publishDate'], priority)
