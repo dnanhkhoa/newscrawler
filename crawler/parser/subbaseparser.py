@@ -54,16 +54,16 @@ class SubBaseParser(BaseParser):
                     stop = True
                     for post_url in post_urls:
                         current_post_date = self._get_date_from_post(url=post_url, timeout=timeout)
-                        if from_date <= current_post_date <= to_date:
+                        if current_post_date is not None and from_date <= current_post_date <= to_date:
                             urls.append(post_url)
                 else:  # from_date <= last_post_date:
                     first_post_date = self._get_date_from_post(url=post_urls[0], timeout=timeout)
-                    if first_post_date <= to_date:
+                    if first_post_date is not None and first_post_date <= to_date:
                         urls.extend(post_urls)
                     else:
                         for post_url in post_urls[1:]:
                             current_post_date = self._get_date_from_post(url=post_url, timeout=timeout)
-                            if current_post_date <= to_date:
+                            if current_post_date is not None and current_post_date <= to_date:
                                 urls.append(post_url)
         return urls, stop
 

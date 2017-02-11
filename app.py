@@ -63,33 +63,36 @@ def main():
         if id is None or url is None or category is None or priority is None:
             continue
 
-        try:
+        post_urls = crawler.crawl(url=url)
+        post_urls = list(set(post_urls) - set(urls_in_db))
 
-            post_urls = crawler.crawl(url=url)
-            post_urls = list(set(post_urls) - set(urls_in_db))
+        folder_path = '%s/%s' % (clusters, str(date.today()).replace('-', ''))
+        make_dirs(folder_path)
+        with open('%s/%s.nerpath' % (folder_path, category), 'w') as f:
 
-            with open('%s/%s/%s/paths.txt' % (clusters, str(date.today()).replace('-', ''), category), 'w') as f:
+            max_id = get_id_from_db(category)
+            for post_url in post_urls:
+                result = normalizer.normalize(url=post_url)
 
-                max_id = get_id_from_db(category)
-                for post_url in post_urls:
-                    result = normalizer.normalize(url=post_url)
-                    file_name = '%s/%s/%s/%d' % (clusters, str(date.today()).replace('-', ''), category, max_id)
-                    print(file_name)
-                    write_json(result, file_name + '.txt')
+                source_url = result['sourceUrl']
 
-                    # UNSET 3 VARS
-                    del result['thumbnail']
-                    del result['sourceUrl']
-                    write_json(result, file_name + '.raw')
+                file_name = '%s/%s/%d' % (folder_path, category, max_id)
+                print(file_name)
+                write_json(result, file_name + '.txt')
 
-                    post_data_to_db(url, file_name[2:] + '.txt', category, str(date.today()), datetime.now().strftime('%H:%M:%S'), 0, result['publishDate'], priority)
+                # UNSET VARS
+                del result['thumbnail']
+                del result['sourceUrl']
 
-                    f.write(file_name[2:] + '.txt\r\n')
+                write_json(result, file_name + '.raw')
 
-                    max_id += 1
+                post_data_to_db(source_url, file_name[2:] + '.txt', category, str(date.today()),
+                                datetime.now().strftime('%H:%M:%S'), 0, result['publishDate'], priority)
 
-        except Exception  as e:
-            log(e)
+                f.write(file_name[2:] + '.txt\r\n')
+
+                max_id += 1
+
 
 if __name__ == '__main__':
     main()
