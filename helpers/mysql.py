@@ -8,7 +8,7 @@ from helpers import *
 
 
 class MySQL(object):
-    def __init__(self, user, password, db, host='localhost', port=3306, charset='utf8mb4'):
+    def __init__(self, user, password, db, host='localhost', port=3306, charset='utf8'):
         self.user = user
         self.password = password
         self.db = db
@@ -36,15 +36,24 @@ class MySQL(object):
                 connection.close()
 
     def fetch_one(self, sql, params):
-        pass
+        def do(connection, cursor):
+            cursor.execute(sql, params)
+            return cursor.fetchone()
+
+        return self.query(do)
 
     def fetch_all(self, sql, params):
-        pass
-
-    def get_all(self, table, fields='*'):
         def do(connection, cursor):
-            sql = 'SELECT %s FROM %s'
-            cursor.execute(sql, (fields, table))
+            cursor.execute(sql, params)
             return cursor.fetchall()
 
         return self.query(do)
+
+    def insert(self, table, params):
+        def do(connection, cursor):
+            sql = 'INSERT INTO `%s` (`%s`) VALUES (%s)' % (
+                table, '`, `'.join(params.keys()), ', '.join(['%s'] * len(params)))
+            cursor.execute(sql, tuple(params.values()))
+            connection.commit()
+
+        self.query(do)

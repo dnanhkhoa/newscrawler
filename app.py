@@ -15,7 +15,7 @@ priority_mapping = configs.get('priority_mapping')
 clusters = configs.get('clusters')
 
 mysql = MySQL(user=db.get('user'), password=db.get('password'), db=db.get('db'), host=db.get('host'),
-              port=db.get('port'))
+              port=db.get('port'), charset=db.get('charset'))
 
 
 def get_id_from_db(category):

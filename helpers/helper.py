@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import urllib.request
+from datetime import datetime
 from inspect import getmembers, isclass
 from os.path import splitext
 from urllib.error import HTTPError, URLError
@@ -27,8 +28,8 @@ _LOGGER = logging.getLogger(__name__)
 _BEAUTIFUL_SOUP = BeautifulSoup(features='html5lib')
 
 # Bộ lọc các kí tự đặc biệt
-_SPECIAL_CHARS = '“”–'
-_NORMAL_CHARS = '""-'
+_SPECIAL_CHARS = '“”‘’–\xA0'
+_NORMAL_CHARS = '""\'\'- '
 _SPECIAL_CHARS_NORMALIZE_MAP = dict(zip(_SPECIAL_CHARS, _NORMAL_CHARS))
 _SPECIAL_CHARS_NORMALIZE_REGEX = regex.compile('|'.join(_SPECIAL_CHARS))
 
@@ -43,68 +44,77 @@ def log(msg):
 
 # Hàm đổi các kí tự đặc biệt sang kí tự thông thường
 def normalize_special_chars(string):
+    assert string is not None, 'Tham số string không được là None'
     return _SPECIAL_CHARS_NORMALIZE_REGEX.sub(lambda m: _SPECIAL_CHARS_NORMALIZE_MAP[m.group(0)], string)
 
 
 # Hàm lọc bỏ các kí tự không cần thiết, các kí tự đặc biệt và các khoảng trắng
 def normalize_string(string):
+    assert string is not None, 'Tham số string không được là None'
     string = regex.sub(r'\\+(\S)', r'\g<1>', string)
     return regex.sub(r'\s+', ' ', normalize_special_chars(string)).strip()
 
 
-# Hàm lọc bỏ các kí tự đặc biệt
+# Hàm lọc bỏ các kí tự đặc biệt dùng để tạo alt hoặc title
 def remove_special_chars(string):
+    assert string is not None, 'Tham số string không được là None'
     return normalize_string(string=regex.sub(r'[\W_]+', ' ', string))
 
 
-# Kiểm tra một chuỗi có hợp lệ hay không
+# Kiểm tra một chuỗi có hợp lệ hay không, hỗ trợ custom pattern
 def is_valid_string(string, pattern=r'[\W_]+'):
+    if string is None:
+        return False
     string = regex.sub(pattern, '', string).strip()
     return len(string) > 0
 
 
-# Định dạng ngày hợp lệ
+# Định dạng ngày hợp lệ theo yêu cầu
 def format_datetime(obj):
+    assert isinstance(obj, datetime), 'Tham số obj phải là một datetime object'
     return obj.strftime('%Y-%m-%d %H:%M:%S')
 
 
-# Xóa bỏ các tham số có trong url
+# Xóa bỏ các tham số query có trong url
 def clean_url_query(url):
+    assert url is not None, 'Tham số url không được là None'
     obj = urlparse(url)
     return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path)
 
 
-# Kiểm tra image url hợp lệ
+# Kiểm tra image url hợp lệ bằng cách gửi 1 request lên server và xem phản hồi
 def is_valid_image_url(url):
+    assert url is not None, 'Tham số url không được là None'
     try:
         with urllib.request.urlopen(url) as response:
             return response.getcode() == 200
-    except (HTTPError, URLError):
-        pass
+    except (HTTPError, URLError) as e:
+        log(e)
     return False
 
 
 # Lấy Content-Type của url
 def get_mime_type_from_url(url):
+    assert url is not None, 'Tham số url không được là None'
     try:
         with urllib.request.urlopen(url) as response:
             info = response.info()
             return info.get_content_type()
-    except (HTTPError, URLError):
-        pass
+    except (HTTPError, URLError) as e:
+        log(e)
     return None
 
 
 # Lấy direct link tạm thời từ youtube
 def get_direct_youtube_video(url):
+    assert url is not None, 'Tham số url không được là None'
+
     # Method 1
-    """
-    youtube_id = _YOUTUBE_ID_REGEX.search(url)
-    if youtube_id is None:
-        return None
-    youtube_id = youtube_id.group(1)
-    return 'http://www.youtubeinmp4.com/redirect.php?video=%s' % youtube_id, 'video/mp4'
-    """
+    # youtube_id = _YOUTUBE_ID_REGEX.search(url)
+    # if youtube_id is None:
+    #     return None
+    # youtube_id = youtube_id.group(1)
+    # return 'http://www.youtubeinmp4.com/redirect.php?video=%s' % youtube_id, 'video/mp4'
 
     # Method 2
     try:
@@ -120,6 +130,7 @@ def get_direct_youtube_video(url):
 
 # Tạo thẻ html
 def create_html_tag(tag, is_self_closing=False, attrs=None):
+    assert tag is not None, 'Tham số tag không được là None'
     new_tag = BeautifulSoup('<%s>' % tag, features='xml').find(tag) if is_self_closing else _BEAUTIFUL_SOUP.new_tag(tag)
     if attrs is not None:
         new_tag.attrs = attrs
@@ -128,6 +139,7 @@ def create_html_tag(tag, is_self_closing=False, attrs=None):
 
 # Tạo đối tượng BeautifulSoup
 def get_soup(string, clear_special_chars=False):
+    assert string is not None, 'Tham số string không được là None'
     if clear_special_chars:
         string = regex.sub(r'\s+', ' ', string)
     return BeautifulSoup(string, features='html5lib')
@@ -135,6 +147,7 @@ def get_soup(string, clear_special_chars=False):
 
 # Tạo thẻ video theo format yêu cầu
 def create_video_tag(src, mime_type=None, width=375, height=280, video_tag_name='video', source_tag_name='source'):
+    assert src is not None, 'Tham số src không được là None'
     if mime_type is None:
         mime_type = get_mime_type_from_url(url=src)
         if mime_type is None:
@@ -155,6 +168,7 @@ def create_video_tag(src, mime_type=None, width=375, height=280, video_tag_name=
 
 # Tạo thẻ image theo format yêu cầu
 def create_image_tag(url, alt, image_tag_name='img'):
+    assert url is not None, 'Tham số url không được là None'
     image_tag = create_html_tag(image_tag_name)
     image_tag['src'] = url
     image_tag['alt'] = remove_special_chars(alt)
@@ -163,6 +177,7 @@ def create_image_tag(url, alt, image_tag_name='img'):
 
 # Tạo thẻ caption theo format yêu cầu
 def create_caption_tag(string, caption_tag_name='p', class_name='caption'):
+    assert string is not None, 'Tham số string không được là None'
     caption_tag = create_html_tag(caption_tag_name)
     caption_tag.attrs = {'class': class_name}
     caption_tag.append(normalize_string(string))
@@ -171,15 +186,23 @@ def create_caption_tag(string, caption_tag_name='p', class_name='caption'):
 
 # Xóa các thẻ đóng không cần thiết
 def remove_closing_tags(content, tags):
-    if content is None:
-        return None
+    assert content is not None, 'Tham số content không được là None'
     if not isinstance(tags, list) or len(tags) == 0:
         return content
     return regex.sub(r'<\s*\/\s*(?:%s)\s*>' % '|'.join(tags), '', content)
 
 
+# Xóa các thẻ trong danh sách tags
+def remove_tags(html, tags):
+    assert html is not None, 'Tham số html không được là None'
+    for tag in html.find_all(tags):
+        tag.decompose()
+    return html
+
+
 # Tải nội dung web
-def get_html(url, timeout=15, allow_redirects=False):
+def get_html(url, timeout=15, allow_redirects=False, attempts=3):
+    assert url is not None, 'Tham số url không được là None'
     try:
         response = requests.get(url=url, timeout=timeout, allow_redirects=allow_redirects)
         if response.status_code == requests.codes.ok:
@@ -196,11 +219,13 @@ def get_html(url, timeout=15, allow_redirects=False):
 
 # Trả về đường dẫn tuyệt đối
 def path(*name):
+    assert name is not None, 'Tham số name không được là None'
     return os.path.join(_APP_PATH, *name)
 
 
 # Hàm cho biết đường dẫn cung cấp là tập tin, thư mục hay không tồn tại
 def path_info(name):
+    assert name is not None, 'Tham số name không được là None'
     if len(name) > 0 and os.path.exists(name):
         if os.path.isfile(name):
             return 1
@@ -211,6 +236,7 @@ def path_info(name):
 
 # Hàm tạo thư mục nhiều cấp
 def make_dirs(name):
+    assert name is not None, 'Tham số name không được là None'
     if len(name) > 0 and path_info(name) >= 0:
         os.makedirs(name)
 
@@ -261,6 +287,7 @@ def write_json(obj, file_name):
 
 # Định dạng lại chuỗi json cho dễ nhìn
 def prettify_json(obj):
+    assert obj is not None, 'Tham số obj không được là None'
     return json.dumps(obj=obj, indent=4, ensure_ascii=False)
 
 
@@ -281,6 +308,7 @@ def read_folder(folder_path, has_extension=True, extension_filter=None):
 
 # Hàm khởi tạo các đối tượng Parser từ các files trong folder
 def create_parser_from_files(folder_path, base_class):
+    assert folder_path is not None and base_class is not None, 'Tham số folder_path và base_class không được là None'
     parsers = {}
     files = read_folder(folder_path, has_extension=False, extension_filter=['.py'])
     for file in files:

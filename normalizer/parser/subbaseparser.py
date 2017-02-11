@@ -132,7 +132,7 @@ class SubBaseParser(BaseParser):
         align = tag.get('align')
         if align is not None:
             align = align.lower()
-            if 'center' in align:
+            if 'center' in align or 'middle' in align:
                 classes.append('center')
             elif 'right' in align:
                 classes.append('right')
@@ -141,7 +141,7 @@ class SubBaseParser(BaseParser):
         style = tag.get('style')
         if style is not None:
             style = style.lower()
-            if 'center' in style:
+            if 'center' in style or 'middle' in style:
                 classes.append('center')
             elif 'right' in style:
                 classes.append('right')
