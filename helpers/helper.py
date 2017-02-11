@@ -17,8 +17,8 @@ import pafy
 import regex
 import requests
 from bs4 import BeautifulSoup
+from requests import RequestException
 
-# Đường dẫn tuyệt đối khi mã nguồn được chạy
 _APP_PATH = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
 
 # Ghi log
@@ -203,12 +203,14 @@ def remove_tags(html, tags):
 # Tải nội dung web
 def get_html(url, timeout=15, allow_redirects=False, attempts=3):
     assert url is not None, 'Tham số url không được là None'
-    try:
-        response = requests.get(url=url, timeout=timeout, allow_redirects=allow_redirects)
-        if response.status_code == requests.codes.ok:
-            return response.content.decode('UTF-8')
-    except Exception as e:
-        log(e)
+    while attempts > 0:
+        try:
+            response = requests.get(url=url, timeout=timeout, allow_redirects=allow_redirects)
+            if response.status_code == requests.codes.ok:
+                return response.content.decode('UTF-8')
+        except RequestException as e:
+            log(e)
+        attempts -= 1
     return None
 
 

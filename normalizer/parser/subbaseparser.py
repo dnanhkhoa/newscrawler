@@ -19,6 +19,8 @@ class SubBaseParser(BaseParser):
 
     # Hàm trả về tiêu đề bài viết
     def _get_post_title(self, html):
+        if html is None:
+            return None
         get_title_tag_func = self._vars.get('get_title_tag_func')
         title_tag = html.title if get_title_tag_func is None else get_title_tag_func(html)
         if title_tag is None:
@@ -27,6 +29,8 @@ class SubBaseParser(BaseParser):
 
     # Hàm lấy danh sách các keywords có trong thẻ meta
     def _get_meta_keywords(self, html):
+        if html is None:
+            return None
         meta_tag = html.find('meta', attrs={'name': 'keywords', 'content': True})
         if meta_tag is None:
             return None
@@ -40,6 +44,8 @@ class SubBaseParser(BaseParser):
 
     # Hàm lấy phần mô tả trong thẻ meta
     def _get_meta_description(self, html):
+        if html is None:
+            return None
         meta_tag = html.find('meta', attrs={'name': 'description', 'content': True})
         if meta_tag is None:
             return None
@@ -90,10 +96,12 @@ class SubBaseParser(BaseParser):
 
         return get_datetime_func(normalize_string(time_tag.text))
 
+    # Xử lí các videos có trong bài viết
     @abstractmethod
     def _handle_video(self, html, timeout=15):
         pass
 
+    # Xử lí hình ảnh và caption có trong bài viết
     def _handle_image(self, html, title=None):
         img_tags = html.find_all('img')
         for img_tag in img_tags:
@@ -514,14 +522,11 @@ class SubBaseParser(BaseParser):
     def _get_plain(self, html):
         if html is None:
             return None
-
         lines = []
-
         tags = html.find_all('p')
         for tag in tags:
             if tag.get('class') is None:
                 lines.append(normalize_string(tag.text))
-
         return ' '.join(lines)
 
     # Hàm chính để gọi các hàm con và tạo kết quả

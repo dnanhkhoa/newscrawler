@@ -3,7 +3,6 @@
 
 # Done
 from abc import ABC, abstractmethod
-from datetime import datetime
 from urllib.parse import urljoin
 
 from helpers import *
@@ -24,18 +23,21 @@ class BaseParser(ABC):
 
     # Trả về URL tuyệt đối
     def _get_absolute_url(self, url, domain=None):
+        assert url is not None, 'Tham số url không được là None'
         if domain is None:
             domain = self._full_domain
         return urljoin(domain, url)
 
     # Trả về alias từ url của bài viết
     def _get_alias(self, url):
+        assert url is not None, 'Tham số url không được là None'
         obj = urlparse(url)
         alias = obj.path.strip('/').split('/')[-1]
         return alias
 
     # Trả về image url hợp lệ
     def _get_valid_image_url(self, url, domain=None):
+        assert url is not None, 'Tham số url không được là None'
         image_url = self._get_absolute_url(url=url, domain=domain)
         cleaned_image_url = clean_url_query(url=image_url)
         if is_valid_image_url(cleaned_image_url):
@@ -141,4 +143,4 @@ class BaseParser(ABC):
             log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
             return None
 
-        return self._parse(url=url, html=get_soup(raw_html, clear_special_chars=True), timeout=timeout)
+        return self._parse(url=url, html=get_soup(raw_html), timeout=timeout)

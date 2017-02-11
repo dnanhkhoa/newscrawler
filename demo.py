@@ -37,7 +37,7 @@ def try_normalizer():
 
 
 def main():
-    # try_crawler()
+    try_crawler()
     # try_normalizer()
     return
 
