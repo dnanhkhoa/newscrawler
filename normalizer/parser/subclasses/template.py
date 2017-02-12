@@ -72,6 +72,9 @@ class NameParser(SubBaseParser):
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_thumbnail_url_func'] =
 
+        # Biến vars có thể được sử dụng cho nhiều mục đích khác
+        # self._vars[''] =
+
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ

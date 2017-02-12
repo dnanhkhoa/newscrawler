@@ -13,10 +13,35 @@ from helpers import *
 def try_crawler():
     news_crawler = Crawler()
 
-    urls = ['http://giaoducthoidai.vn/khoa-hoc/',
-            'http://giaoducthoidai.vn/thoi-su/']
-    from_date = '2017-02-10'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
-    to_date = '2017-02-10'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
+    # urls = [
+    #     'http://baochinhphu.vn/Doi-song/302.vgp',
+    #     'http://baochinhphu.vn/Du-lich/448.vgp',
+    #     'http://baochinhphu.vn/Giao-duc/452.vgp',
+    #     'http://baochinhphu.vn/Khoa-hoc-Cong-nghe/8.vgp',
+    #     'http://baochinhphu.vn/Kinh-te/7.vgp',
+    #     'http://baochinhphu.vn/Phap-luat/29.vgp',
+    #     'http://baochinhphu.vn/Quoc-te/6.vgp',
+    #     'http://baochinhphu.vn/The-thao/447.vgp'
+    # ]
+    # urls = [
+    #     "http://baodatviet.vn/chinh-tri-xa-hoi/giao-duc/",
+    #     "http://baodatviet.vn/chinh-tri-xa-hoi/tin-tuc-thoi-su/",
+    #     "http://baodatviet.vn/khoa-hoc/",
+    #     "http://baodatviet.vn/kinh-te/",
+    #     "http://baodatviet.vn/the-gioi/",
+    #     "http://baodatviet.vn/the-thao/"
+    # ]
+
+    urls = [
+        'http://baoquocte.vn/khoa-hoc-cong-nghe',
+        'http://baoquocte.vn/kinh-te',
+        'http://baoquocte.vn/the-gioi',
+        'http://baoquocte.vn/the-thao',
+        'http://baoquocte.vn/xa-hoi/doi-song-suc-khoe',
+        'http://baoquocte.vn/xa-hoi/giao-duc'
+    ]
+    from_date = '2017-02-05'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    to_date = '2017-02-12'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
     for url in urls:
@@ -35,13 +60,13 @@ def try_normalizer():
         'http://giaoducthoidai.vn/khoa-hoc/ho-mang-chua-khong-lo-cui-dau-khuat-phuc-ban-tay-tho-san-2909122-l.html'
     ]
 
-    result = news_normalizer.normalize(url=urls[0], timeout=15)
+    result = news_normalizer.normalize(url=urls[1], timeout=15)
     print(json.dumps(result, indent=4, ensure_ascii=False))
 
 
 def main():
-    # try_crawler()
-    try_normalizer()
+    try_crawler()
+    #try_normalizer()
     return
 
 if __name__ == '__main__':

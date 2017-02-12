@@ -19,7 +19,7 @@ class SubBaseParser(BaseParser):
         if get_time_tag_func is None or get_datetime_func is None:
             return None
 
-        raw_html = get_html(url=url, timeout=timeout)
+        raw_html = self._get_html(url=url, timeout=timeout)
         if raw_html is None:
             log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
             return None
@@ -106,7 +106,7 @@ class SubBaseParser(BaseParser):
 
     # Hàm lấy nội dung trang hiện tại và url đến trang kế tiếp
     def _get_next_page(self, url, timeout=15):
-        raw_html = get_html(url=url, timeout=timeout)
+        raw_html = self._get_html(url=url, timeout=timeout)
         if raw_html is None:
             log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
             return None
@@ -133,7 +133,7 @@ class SubBaseParser(BaseParser):
     def _get_child_category_urls(self, url, timeout=15):
         get_child_category_section_func = self._vars.get('get_child_category_section_func')
         if get_child_category_section_func is not None:
-            raw_html = get_html(url=url, timeout=timeout)
+            raw_html = self._get_html(url=url, timeout=timeout)
             if raw_html is None:
                 log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
                 return None

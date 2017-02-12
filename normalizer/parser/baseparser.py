@@ -2,8 +2,13 @@
 # -*- coding: utf8 -*-
 
 # Done
+import urllib
 from abc import ABC, abstractmethod
+from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
+
+import requests
+from requests import RequestException
 
 from helpers import *
 
@@ -20,6 +25,40 @@ class BaseParser(ABC):
         self._domain_regex = None
         # Biến chứa các hàm lambda hoặc con trỏ hàm giúp kế thùa linh động hơn.
         self._vars = {}
+
+    # Tải nội dung web
+    def _get_html(self, url, timeout=15, attempts=3):
+        assert url is not None, 'Tham số url không được là None'
+        while attempts > 0:
+            try:
+                response = requests.get(url=url, timeout=timeout, allow_redirects=False)
+                if response.status_code == requests.codes.ok:
+                    return response.content.decode('UTF-8')
+            except RequestException as e:
+                log(e)
+            attempts -= 1
+        return None
+
+    # Kiểm tra image url hợp lệ bằng cách gửi 1 request lên server và xem phản hồi
+    def _is_valid_image_url(self, url):
+        assert url is not None, 'Tham số url không được là None'
+        try:
+            with urllib.request.urlopen(url) as response:
+                return response.getcode() == 200
+        except (HTTPError, URLError) as e:
+            log(e)
+        return False
+
+    # Lấy Content-Type của url
+    def _get_mime_type_from_url(self, url):
+        assert url is not None, 'Tham số url không được là None'
+        try:
+            with urllib.request.urlopen(url) as response:
+                info = response.info()
+                return info.get_content_type()
+        except (HTTPError, URLError) as e:
+            log(e)
+        return None
 
     # Trả về URL tuyệt đối
     def _get_absolute_url(self, url, domain=None):
@@ -40,7 +79,7 @@ class BaseParser(ABC):
         assert url is not None, 'Tham số url không được là None'
         image_url = self._get_absolute_url(url=url, domain=domain)
         cleaned_image_url = clean_url_query(url=image_url)
-        if is_valid_image_url(cleaned_image_url):
+        if self._is_valid_image_url(cleaned_image_url):
             image_url = cleaned_image_url
         return image_url
 
@@ -138,7 +177,7 @@ class BaseParser(ABC):
 
     # Hàm phân tích trang và trả về các kết quả yêu cầu
     def parse(self, url, timeout=15):
-        raw_html = get_html(url=url, timeout=timeout)
+        raw_html = self._get_html(url=url, timeout=timeout)
         if raw_html is None:
             log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
             return None

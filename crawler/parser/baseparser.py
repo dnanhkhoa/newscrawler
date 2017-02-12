@@ -5,6 +5,11 @@
 from abc import ABC, abstractmethod
 from urllib.parse import urljoin
 
+import requests
+from requests import RequestException
+
+from helpers import *
+
 
 class BaseParser(ABC):
     def __init__(self):
@@ -16,6 +21,19 @@ class BaseParser(ABC):
         self._domain_regex = None
         # Biến chứa các hàm lambda hoặc con trỏ hàm giúp kế thùa linh động hơn.
         self._vars = {}
+
+    # Tải nội dung web
+    def _get_html(self, url, timeout=15, attempts=3):
+        assert url is not None, 'Tham số url không được là None'
+        while attempts > 0:
+            try:
+                response = requests.get(url=url, timeout=timeout, allow_redirects=False)
+                if response.status_code == requests.codes.ok:
+                    return response.content.decode('UTF-8')
+            except RequestException as e:
+                log(e)
+            attempts -= 1
+        return None
 
     # Trả về URL tuyệt đối
     # Tham số url làm segments hoặc url cần được đổi sang url tuyệt đối

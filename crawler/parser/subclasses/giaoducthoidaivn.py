@@ -29,6 +29,9 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_active_tag_func(html):
             span_tag = html.find('span', id='ctl00_mainContent_ContentList1_pager')
+            if span_tag is None:
+                return None
+
             li_tags = span_tag.find_all('li')
             for li_tag in li_tags:
                 li_tag.unwrap()
@@ -78,6 +81,9 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
             return datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')
 
         self._vars['get_datetime_func'] = get_datetime_func
+
+        # Biến vars có thể được sử dụng cho nhiều mục đích khác
+        # self._vars[''] =
 
     # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
     def _pre_process(self, html):

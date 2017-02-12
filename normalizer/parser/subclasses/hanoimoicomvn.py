@@ -1,23 +1,21 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-
-# Done
 from normalizer.parser import *
 
 
-class GiaoDucThoiDaiVnParser(SubBaseParser):
+class HaNoiMoiComVnParser(SubBaseParser):
     def __init__(self):
         # Bắt buộc phải gọi đầu tiên
         super().__init__()
 
         # Tên trang web sử dụng kiểu Title Case
-        self._source_page = 'Giáo Dục Thời Đại'
+        self._source_page = 'Hà Nội Mới'
 
         # Chứa tên miền không có http://www dùng cho parser tự động nhận dạng
-        self._domain = 'giaoducthoidai.vn'
+        self._domain = 'hanoimoi.com.vn'
 
         # Chứa tên miền đầy đủ và không có / cuối cùng dùng để tìm url tuyệt đối
-        self._full_domain = 'http://giaoducthoidai.vn'
+        self._full_domain = 'http://hanoimoi.com.vn'
 
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
@@ -38,25 +36,11 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
 
         # Tìm thẻ chứa chuỗi thời gian đăng bài
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        def get_time_tag_func(html):
-            div_tag = html.find('div', class_='toolbar')
-            if div_tag is None:
-                return None
-            span_tag = div_tag.find('span', class_='time')
-            if span_tag is None:
-                return None
-            return span_tag
-
-        self._vars['get_time_tag_func'] = get_time_tag_func
+        # self._vars['get_time_tag_func'] =
 
         # Định dạng chuỗi thời gian và trả về đối tượng datetime
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        def get_datetime_func(string):
-            string = string.split(',')[1]
-            parts = string.strip().split(' ')[:-1]
-            return datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')
-
-        self._vars['get_datetime_func'] = get_datetime_func
+        # self._vars['get_datetime_func'] =
 
         # Chỉ định các nhãn có khả năng là caption
         # Gán bằng danh sách ['A', 'B', ..., 'Z']
@@ -70,12 +54,12 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
 
         # Chỉ định thẻ chứa nội dung chính
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_main_content_tag_func'] = lambda x: x.find('div', id='abody')
+        # self._vars['get_main_content_tag_func'] =
 
         # Chỉ định thẻ chứa tên tác giả
         # Khi sử dụng thẻ này thì sẽ tự động không sử dụng tính năng tự động nhận dạng tên tác giả
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_author_tag_func'] = lambda x: x.find('p', class_='author')
+        # self._vars['get_author_tag_func'] =
 
         # Chỉ định các nhãn được phép và không được phép dùng để dự đoán author
         # Các nhãn: author, center, right, bold, italic
@@ -88,25 +72,11 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_thumbnail_url_func'] =
 
-        # Biến vars có thể được sử dụng cho nhiều mục đích khác
-        # self._vars[''] =
-
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
     def _handle_video(self, html, timeout=15):
-        video_tags = html.find_all('div', class_='cms-video')
-        for video_tag in video_tags:
-            video_url = video_tag.get('data-video-src')
-            if video_url is None:
-                video_tag.decompose()  # Xóa bỏ thẻ nếu không thể lấy được URL trực tiếp của video
-            else:
-                video_tag.replace_with(
-                    create_video_tag(src=video_url, mime_type=self._get_mime_type_from_url(url=video_url)))
-        return html
-
-    def _get_tags(self, html):
-        return super()._get_meta_keywords(html)
+        pass
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _pre_process(self, html):

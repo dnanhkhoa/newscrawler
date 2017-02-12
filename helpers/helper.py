@@ -6,18 +6,14 @@ import importlib
 import json
 import logging
 import os
-import urllib.request
 from datetime import datetime
 from inspect import getmembers, isclass
 from os.path import splitext
-from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 
 import pafy
 import regex
-import requests
 from bs4 import BeautifulSoup
-from requests import RequestException
 
 _APP_PATH = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
 
@@ -82,29 +78,6 @@ def clean_url_query(url):
     return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path)
 
 
-# Kiểm tra image url hợp lệ bằng cách gửi 1 request lên server và xem phản hồi
-def is_valid_image_url(url):
-    assert url is not None, 'Tham số url không được là None'
-    try:
-        with urllib.request.urlopen(url) as response:
-            return response.getcode() == 200
-    except (HTTPError, URLError) as e:
-        log(e)
-    return False
-
-
-# Lấy Content-Type của url
-def get_mime_type_from_url(url):
-    assert url is not None, 'Tham số url không được là None'
-    try:
-        with urllib.request.urlopen(url) as response:
-            info = response.info()
-            return info.get_content_type()
-    except (HTTPError, URLError) as e:
-        log(e)
-    return None
-
-
 # Lấy direct link tạm thời từ youtube
 def get_direct_youtube_video(url):
     assert url is not None, 'Tham số url không được là None'
@@ -149,9 +122,7 @@ def get_soup(string, clear_special_chars=False):
 def create_video_tag(src, mime_type=None, width=375, height=280, video_tag_name='video', source_tag_name='source'):
     assert src is not None, 'Tham số src không được là None'
     if mime_type is None:
-        mime_type = get_mime_type_from_url(url=src)
-        if mime_type is None:
-            mime_type = 'video/mp4'
+        mime_type = 'video/mp4'
 
     source_tag = create_html_tag(source_tag_name)
     source_tag['src'] = src
@@ -198,20 +169,6 @@ def remove_tags(html, tags):
     for tag in html.find_all(tags):
         tag.decompose()
     return html
-
-
-# Tải nội dung web
-def get_html(url, timeout=15, allow_redirects=False, attempts=3):
-    assert url is not None, 'Tham số url không được là None'
-    while attempts > 0:
-        try:
-            response = requests.get(url=url, timeout=timeout, allow_redirects=allow_redirects)
-            if response.status_code == requests.codes.ok:
-                return response.content.decode('UTF-8')
-        except RequestException as e:
-            log(e)
-        attempts -= 1
-    return None
 
 
 # *****************************

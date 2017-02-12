@@ -480,7 +480,7 @@ class SubBaseParser(BaseParser):
                             child_classes.extend(classes)
                             if len(child_tag.contents) > 0 and (
                                         is_valid_string(child_tag.text, r'\s+') or child_tag.find(
-                                        ['video', 'img']) is not None):
+                                            ['video', 'img']) is not None):
                                 s.append((child_tag, list(set(child_classes))))
                             else:
                                 child_tag.decompose()
