@@ -168,9 +168,10 @@ class SubBaseParser(BaseParser):
         img_tags = html.find_all('img')
         for img_tag in img_tags:
             image_url = self._get_valid_image_url(img_tag.get('src'))
+
             # Tìm thẻ caption
             next_div_tag = img_tag.find_next('div')
-            if next_div_tag.find_parent('main') is not None:
+            if next_div_tag is not None and next_div_tag.find_parent('main') is not None:
                 # Lấy class của thẻ cha
                 next_div_classes = next_div_tag.get('class')
                 if next_div_classes is None:
@@ -584,45 +585,90 @@ class SubBaseParser(BaseParser):
         if html is None:
             return None
 
-        get_author_tag_func = self._vars.get('get_author_tag_func')
-        if get_author_tag_func is None:
-            return None
-
         main_content_tag = html
         html = html.find_parent('html')
 
-        author_tag = get_author_tag_func(html)
-        if author_tag is None:
+        get_author_tag_func = self._vars.get('get_author_tag_func')
+        if get_author_tag_func is not None:
+            author_tag = get_author_tag_func(html)
+            # Chèn thêm kí tự xuống dòng nếu có thẻ <br/>
+            br_tags = author_tag.find_all('br')
+            for br_tag in br_tags:
+                br_tag.insert_after('\r\n')
+
+            authors = []
+            if author_tag is not None:
+                lines = regex.split(r'(?:\r?\n)+', author_tag.text)
+                for line in lines:
+                    if is_valid_string(line):
+                        authors.append(line)
+            return '<br/>'.join(authors) if len(authors) > 0 else None
+
+        author_classes_pattern = self._vars.get('author_classes_pattern')
+        if author_classes_pattern is None:
             return None
 
-            # Tìm tất cả thẻ div
+        valid_author_classes = []
+        invalid_author_classes = []
 
+        author_classes_patterns = author_classes_pattern.split('|')
+        for pattern in author_classes_patterns:
+            if pattern.startswith('^'):
+                invalid_author_classes.append(pattern[1:])
+            else:
+                valid_author_classes.append(pattern)
 
+        valid_author_classes_regex = regex.compile(r'(?:%s)' % '|'.join(valid_author_classes), regex.IGNORECASE)
+        invalid_author_classes_regex = regex.compile(r'(?:%s)' % '|'.join(invalid_author_classes), regex.IGNORECASE)
 
-            # authors = []
-            # div_tags = html.find_all('div', class_='bold')
-            # div_tags = list(reversed(div_tags))
-            #
-            # size = len(div_tags)
-            # i = 0
-            #
-            # while i < size:
-            #     div_tag = div_tags[i]
-            #
-            #     classes = div_tag.get('class')
-            #     string = div_tag.text
-            #     if not string.endswith('.') and classes is not None and 'bold' in classes:
-            #         if 'right' in classes:
-            #             authors.insert(0, string)
-            #             if i == size - 1:
-            #                 break
-            #
-            #             while div_tag.previous_sibling == div_tags[i + 1]:
-            #                 authors.insert(0, div_tags[i + 1].text)
-            #                 i += 1
-            #             break
-            #     i += 1
-            # return '<br/>'.join(authors)
+        # Tìm tất cả thẻ div ứng viên
+        candidate_div_tags = []
+
+        div_tags = main_content_tag.find_all('div')
+        div_tags = list(reversed(div_tags))
+        for div_tag in div_tags:
+            string = normalize_string(div_tag.text)
+            # Tên tác giả thường không có dấu .!? ở cuối
+            if not is_valid_string(string, r'\s+') or string.endswith('.') \
+                    or string.endswith('!') or string.endswith('?'):
+                continue
+
+            # Lấy class của thẻ cha
+            div_classes = div_tag.get('class')
+            if div_classes is None:
+                div_classes = []
+
+            # Lấy class của các thẻ con bên trong nó
+            child_tags = div_tag.find_all(True)
+            for child_tag in child_tags:
+                child_tag_classes = child_tag.get('class')
+                if child_tag_classes is not None:
+                    div_classes.extend(child_tag_classes)
+
+            classes_string = ' '.join(list(set(div_classes)))
+            if is_valid_string(classes_string, r'\s+'):
+                if len(invalid_author_classes) > 0:
+                    if invalid_author_classes_regex.search(classes_string) is not None:
+                        continue
+                if len(valid_author_classes) > 0:
+                    if valid_author_classes_regex.search(classes_string) is not None:
+                        candidate_div_tags.append(div_tag)
+
+        candidate_div_tags_size = len(candidate_div_tags)
+        if candidate_div_tags_size == 0:
+            return None
+
+        authors = [normalize_string(candidate_div_tags[0])]
+
+        # Dò tìm các ứng viên kề nhau
+        i = 1
+        while i < candidate_div_tags_size:
+            if candidate_div_tags[i].find_next_sibling(True) != candidate_div_tags[i - 1]:
+                break
+            authors.insert(0, normalize_string(candidate_div_tags[i].text))
+            i += 1
+
+        return '<br/>'.join(authors)
 
     # Trả về url của ảnh đầu tiên trong content
     def _get_thumbnail(self, html):

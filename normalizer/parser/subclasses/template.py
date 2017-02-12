@@ -22,34 +22,54 @@ class NameParser(SubBaseParser):
 
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
-        #
+        # Tìm thẻ chứa tiêu đề
+        # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_title_tag_func'] =
 
-        #
+        # Tìm thẻ chứa nội dung tóm tắt
+        # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_summary_tag_func'] =
 
-        #
+        # Tìm thẻ chứa danh sách các thẻ a chứa keyword bên trong
+        # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_tags_tag_func'] =
 
-        #
+        # Tìm thẻ chứa chuỗi thời gian đăng bài
+        # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_time_tag_func'] =
 
-        #
+        # Định dạng chuỗi thời gian và trả về đối tượng datetime
+        # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_datetime_func'] =
 
-        #
+        # Chỉ định các nhãn có khả năng là caption
+        # Gán bằng danh sách ['A', 'B', ..., 'Z']
+        # Mặc định: ['desc', 'pic', 'img', 'box', 'cap', 'photo', 'hinh', 'anh']
         # self._vars['caption_classes'] =
 
-        #
+        # Chỉ định các nhãn có khả năng là author
+        # Gán bằng danh sách ['A', 'B', ..., 'Z']
+        # Mặc định: ['author', 'copyright', 'source', 'nguon', 'tac-gia', 'tacgia']
         # self._vars['author_classes'] =
 
-        #
+        # Chỉ định thẻ chứa nội dung chính
+        # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_main_content_tag_func'] =
 
-        #
+        # Chỉ định thẻ chứa tên tác giả
+        # Khi sử dụng thẻ này thì sẽ tự động không sử dụng tính năng tự động nhận dạng tên tác giả
+        # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_author_tag_func'] =
 
-        #
+        # Chỉ định các nhãn được phép và không được phép dùng để dự đoán author
+        # Các nhãn: author, center, right, bold, italic
+        # Phân cách nhau bởi dấu | và những nhãn nào không được phép thì có tiền tố ^ ở đầu
+        # Ví dụ: 'right|bold|caption|^center|^italic'
+        # self._vars['author_classes_pattern'] =
+
+        # Trả về url chứa hình ảnh thumbnail được lưu ở thẻ bên ngoài nội dung chính
+        # Mặc định sẽ tự động nhận dạng
+        # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_thumbnail_url_func'] =
 
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau

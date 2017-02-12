@@ -35,7 +35,7 @@ def try_normalizer():
         'http://giaoducthoidai.vn/khoa-hoc/ho-mang-chua-khong-lo-cui-dau-khuat-phuc-ban-tay-tho-san-2909122-l.html'
     ]
 
-    result = news_normalizer.normalize(url=urls[4], timeout=15)
+    result = news_normalizer.normalize(url=urls[0], timeout=15)
     print(json.dumps(result, indent=4, ensure_ascii=False))
 
 
