@@ -5,7 +5,7 @@
 from crawler.parser import *
 
 
-class NameParser(SubBaseParser):
+class NhipSongSoVnParser(SubBaseParser):
     def __init__(self):
         # Bắt buộc phải gọi đầu tiên
         super().__init__()

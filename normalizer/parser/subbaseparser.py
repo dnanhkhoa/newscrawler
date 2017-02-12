@@ -601,7 +601,7 @@ class SubBaseParser(BaseParser):
                 lines = regex.split(r'(?:\r?\n)+', author_tag.text)
                 for line in lines:
                     if is_valid_string(line):
-                        authors.append(line)
+                        authors.append(normalize_string(line))
             return '<br/>'.join(authors) if len(authors) > 0 else None
 
         author_classes_pattern = self._vars.get('author_classes_pattern')
