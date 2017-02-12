@@ -666,7 +666,10 @@ class SubBaseParser(BaseParser):
             if candidate_div_tags[i].find_next_sibling(True) != candidate_div_tags[i - 1]:
                 break
             authors.insert(0, normalize_string(candidate_div_tags[i].text))
+            candidate_div_tags[i - 1].decompose()
             i += 1
+
+        candidate_div_tags[i - 1].decompose()
 
         return '<br/>'.join(authors)
 

@@ -64,7 +64,7 @@ class NameParser(SubBaseParser):
         # Chỉ định các nhãn được phép và không được phép dùng để dự đoán author
         # Các nhãn: author, center, right, bold, italic
         # Phân cách nhau bởi dấu | và những nhãn nào không được phép thì có tiền tố ^ ở đầu
-        # Ví dụ: 'right|bold|caption|^center|^italic'
+        # Ví dụ: 'right|bold|author|^center|^italic'
         # self._vars['author_classes_pattern'] =
 
         # Trả về url chứa hình ảnh thumbnail được lưu ở thẻ bên ngoài nội dung chính

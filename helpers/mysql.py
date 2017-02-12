@@ -35,14 +35,14 @@ class MySQL(object):
             if connection is not None:
                 connection.close()
 
-    def fetch_one(self, sql, params):
+    def fetch_one(self, sql, params=None):
         def do(connection, cursor):
             cursor.execute(sql, params)
             return cursor.fetchone()
 
         return self.query(do)
 
-    def fetch_all(self, sql, params):
+    def fetch_all(self, sql, params=None):
         def do(connection, cursor):
             cursor.execute(sql, params)
             return cursor.fetchall()

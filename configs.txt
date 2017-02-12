@@ -9,6 +9,7 @@
   },
   "category_file": "../py_categories.txt",
   "clusters": "../mds_clusters",
+  "ner_path": "../ner_path",
   "category_mapping": {
     "1": "XaHoi",
     "2": "TheGioi",

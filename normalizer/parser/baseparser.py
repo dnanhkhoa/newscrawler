@@ -90,22 +90,37 @@ class BaseParser(ABC):
         if mobile_url is None:
             mobile_url = url
 
+        # return {
+        #     'sourcePage': '' if self._source_page is None else self._source_page,
+        #     'title': '' if title is None else title,
+        #     'alias': '' if alias is None else alias,
+        #     'sourceUrl': '' if url is None else url,
+        #     'sourceUrlMobile': '' if mobile_url is None else mobile_url,
+        #     'author': '' if author is None else author,
+        #     'thumbnail': '' if thumbnail is None else thumbnail,
+        #     'tags': '' if tags is None else tags,
+        #     'description': '' if summary is None else summary,
+        #     'publishDate': '' if publish_date is None else format_datetime(publish_date),
+        #     'metaDescription': '' if meta_description is None else meta_description,
+        #     'metaKeywords': '' if meta_keywords is None else meta_keywords,
+        #     'crawledDate': format_datetime(datetime.now()),
+        #     'content': '' if content is None else content,
+        #     'plainContent': '' if plain is None else plain
+        # }
         return {
-            'sourcePage': '' if self._source_page is None else self._source_page,
-            'title': '' if title is None else title,
-            'alias': '' if alias is None else alias,
-            'sourceUrl': '' if url is None else url,
-            'sourceUrlMobile': '' if mobile_url is None else mobile_url,
-            'author': '' if author is None else author,
-            'thumbnail': '' if thumbnail is None else thumbnail,
-            'tags': '' if tags is None else tags,
-            'description': '' if summary is None else summary,
-            'publishDate': '' if publish_date is None else format_datetime(publish_date),
-            'metaDescription': '' if meta_description is None else meta_description,
-            'metaKeywords': '' if meta_keywords is None else meta_keywords,
-            'crawledDate': format_datetime(datetime.now()),
-            'content': '' if content is None else content,
-            'plainContent': '' if plain is None else plain
+            'SourcePage': '' if self._source_page is None else self._source_page,
+            'Title': '' if title is None else title,
+            'Url': '' if url is None else url,
+            'Author': '' if author is None else author,
+            'Thumbnail': '' if thumbnail is None else thumbnail,
+            'Tag': '' if tags is None else tags,
+            'ShortIntro': '' if summary is None else summary,
+            'PublishDate': '' if publish_date is None else format_datetime(publish_date),
+            'MetaDescription': '' if meta_description is None else meta_description,
+            'MetaKeywords': '' if meta_keywords is None else meta_keywords,
+            'CrawledDate': format_datetime(datetime.now()),
+            'Content': '' if content is None else content,
+            'Plain_Content': '' if plain is None else plain
         }
 
     # Trả về mobile url của bài viết

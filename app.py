@@ -16,6 +16,10 @@ db = configs.get('database')
 category_mapping = configs.get('category_mapping')
 priority_mapping = configs.get('priority_mapping')
 clusters = configs.get('clusters')
+ner_path = configs.get('ner_path')
+
+crawler = Crawler()
+normalizer = Normalizer()
 
 # Mở kết nối đến CSDL
 mysql = MySQL(user=db.get('user'), password=db.get('password'), db=db.get('db'), host=db.get('host'),
@@ -23,80 +27,113 @@ mysql = MySQL(user=db.get('user'), password=db.get('password'), db=db.get('db'),
 
 
 def get_id_from_db(category):
-    def do(connection, cursor):
-        sql = 'SELECT COUNT(ID) AS `ID` FROM `article` WHERE Date = %s and Category = %s'
-        cursor.execute(sql, (str(date.today()), category))
-        return cursor.fetchone()
-
-    id = mysql.query(do)
-    return None if id is None else id.get('ID')
+    count = mysql.fetch_one(sql='SELECT COUNT(ID) AS `CNT` FROM `article` WHERE Date = %s and Category = %s',
+                            params=(str(date.today()), category))
+    return None if count is None else count.get('CNT')
 
 
 def get_urls_from_db():
-    def do(connection, cursor):
-        sql = 'SELECT URL FROM `article`'
-        cursor.execute(sql)
-        return cursor.fetchall()
-
-    urls = mysql.query(do)
-    return [url.get('URL') for url in urls]
+    try:
+        urls = mysql.fetch_all(sql='SELECT `URL` FROM `article`', params=None)
+        return [url.get('URL') for url in urls]
+    except Exception as e:
+        log(e)
+    return None
 
 
 def post_data_to_db(url, file_path, category, post_date, post_time, status, publish_date, priority):
-    def do(connection, cursor):
-        sql = 'INSERT INTO `article` (`URL`, `Path`, `Category`, `Date`, `Time`, `Status`, `PublishDate`, `ID_Attachment`, `Priority`)' \
-              ' VALUES (%s, %s, %s, %s, %s, %s, %s, 0, %s)'
-        cursor.execute(sql, (url, file_path, category, post_date, post_time, status, publish_date, priority))
-        connection.commit()
+    params = {
+        'URL': url,
+        'Path': file_path,
+        'Category': category,
+        'Date': post_date,
+        'Time': post_time,
+        'Status': status,
+        'PublishDate': publish_date,
+        'ID_Attachment': 0,
+        'Priority': priority
+    }
+    mysql.insert('article', params=params)
 
-    mysql.query(do)
+
+# Hàm ghi file raw hỗ trợ UTF-8
+def write_raw(obj, file_name):
+    file_name = path(file_name)
+    make_dirs(os.path.dirname(file_name))
+    with open(file_name, 'wb') as f:
+        try:
+            r = [
+                obj['SourcePage'],
+                obj['Title'],
+                obj['Tag'],
+                'ShortIntro',
+                obj["ShortIntro"],
+                'Content',
+                obj["Plain_Content"]
+            ]
+            f.write(('\n'.join(r) + '\n').encode('UTF-8'))
+        except Exception as e:
+            log(e)
 
 
 def main():
-    crawler = Crawler()
-    normalizer = Normalizer()
+    try:
+        cluster_path = '%s/%s' % (clusters, str(date.today()).replace('-', ''))
+        make_dirs(cluster_path)
+        make_dirs(ner_path)
 
-    lines = read_lines(configs.get('category_file'))
-    urls_in_db = get_urls_from_db()
+        lines = read_lines(configs.get('category_file'))
+        urls_in_db = get_urls_from_db()
+        if urls_in_db is None:
+            return None
 
-    for line in lines:
-        id, url = line.split(' ')
-        category = category_mapping.get(id)
-        priority = priority_mapping.get(url)
+        for line in lines:
+            _id, url = line.split(' ')
+            category = category_mapping.get(_id)
+            priority = priority_mapping.get(url)
+            if _id is None or url is None or category is None or priority is None:
+                continue
 
-        if id is None or url is None or category is None or priority is None:
-            continue
+            try:
+                post_urls = crawler.crawl(url=url)
+                if post_urls is None or len(post_urls) == 0:
+                    continue
 
-        post_urls = crawler.crawl(url=url)
-        post_urls = list(set(post_urls) - set(urls_in_db))
+                post_urls = list(set(post_urls) - set(urls_in_db))
 
-        folder_path = '%s/%s' % (clusters, str(date.today()).replace('-', ''))
-        make_dirs(folder_path)
-        with open('%s/%s.nerpath' % (folder_path, category), 'w') as f:
+                max_id = get_id_from_db(category) + 1
 
-            max_id = get_id_from_db(category)
-            for post_url in post_urls:
-                result = normalizer.normalize(url=post_url)
+                with open(path('%s/%s.nerpath' % (ner_path, category)), 'w') as f:
+                    for post_url in post_urls:
+                        try:
+                            result = normalizer.normalize(url=post_url)
 
-                source_url = result['sourceUrl']
+                            source_url = result['Url']
+                            publish_date = result['PublishDate']
 
-                file_name = '%s/%s/%d' % (folder_path, category, max_id)
-                print(file_name)
-                write_json(result, file_name + '.txt')
+                            file_name = '%s/%s/%d' % (cluster_path, category, max_id)
 
-                # UNSET VARS
-                del result['thumbnail']
-                del result['sourceUrl']
+                            write_json(result, file_name + '.txt')
+                            write_raw(result, file_name + '.raw')
 
-                write_json(result, file_name + '.raw')
+                            post_data_to_db(source_url, file_name[2:] + '.txt', category, str(date.today()),
+                                            datetime.now().strftime('%H:%M:%S'), 0, publish_date, priority)
 
-                post_data_to_db(source_url, file_name[2:] + '.txt', category, str(date.today()),
-                                datetime.now().strftime('%H:%M:%S'), 0, result['publishDate'], priority)
+                            f.write(os.path.dirname(os.path.dirname(path())) + file_name[2:] + '.raw.tok\n')
 
-                f.write(file_name[2:] + '.txt\r\n')
+                            max_id += 1
+                        except Exception as e:
+                            log(e)
+                            continue
 
-                max_id += 1
+            except Exception as e:
+                log(e)
+                continue
+    except Exception as e:
+        log(e)
 
 
 if __name__ == '__main__':
+    print('Running')
     main()
+    print('Done')
