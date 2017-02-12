@@ -23,6 +23,7 @@ def try_crawler():
     #     'http://baochinhphu.vn/Quoc-te/6.vgp',
     #     'http://baochinhphu.vn/The-thao/447.vgp'
     # ]
+
     # urls = [
     #     "http://baodatviet.vn/chinh-tri-xa-hoi/giao-duc/",
     #     "http://baodatviet.vn/chinh-tri-xa-hoi/tin-tuc-thoi-su/",
@@ -32,14 +33,46 @@ def try_crawler():
     #     "http://baodatviet.vn/the-thao/"
     # ]
 
+    # urls = [
+    #     'http://baoquocte.vn/khoa-hoc-cong-nghe',
+    #     'http://baoquocte.vn/kinh-te',
+    #     'http://baoquocte.vn/the-gioi',
+    #     'http://baoquocte.vn/the-thao',
+    #     'http://baoquocte.vn/xa-hoi/doi-song-suc-khoe',
+    #     'http://baoquocte.vn/xa-hoi/giao-duc'
+    # ]
+
+    # urls = [
+    #     'http://www.nss.vn/c2-san-pham.htm',
+    #     'http://www.nss.vn/c21-kinh-doanh.htm',
+    #     'http://www.nss.vn/c116-ngan-hang-so.htm',
+    #     'http://www.nss.vn/c100-bao-mat.htm',
+    #     'http://www.nss.vn/c18-song-online.htm',
+    #     'http://www.nss.vn/c27-game.htm',
+    #     'http://www.nss.vn/c115-cong-nghe-xanh.htm'
+    # ]
+
+    # urls = [
+    #     'http://ione.vnexpress.net/tin-tuc/lam-dep',
+    #     'http://ione.vnexpress.net/tin-tuc/phim',
+    #     'http://ione.vnexpress.net/tin-tuc/sao',
+    #     'http://ione.vnexpress.net/tin-tuc/thoi-trang'
+    # ]
+
     urls = [
-        'http://baoquocte.vn/khoa-hoc-cong-nghe',
-        'http://baoquocte.vn/kinh-te',
-        'http://baoquocte.vn/the-gioi',
-        'http://baoquocte.vn/the-thao',
-        'http://baoquocte.vn/xa-hoi/doi-song-suc-khoe',
-        'http://baoquocte.vn/xa-hoi/giao-duc'
+        'http://hanoimoi.com.vn/Danh-muc-tin/100/Khoa-hoc',
+        'http://hanoimoi.com.vn/Danh-muc-tin/163/Xa-hoi',
+        'http://hanoimoi.com.vn/Danh-muc-tin/164/Giao-duc',
+        'http://hanoimoi.com.vn/Danh-muc-tin/166/Du-lich',
+        'http://hanoimoi.com.vn/Danh-muc-tin/170/The-thao',
+        'http://hanoimoi.com.vn/Danh-muc-tin/175/Phap-luat',
+        'http://hanoimoi.com.vn/Danh-muc-tin/189/The-gioi',
+        'http://hanoimoi.com.vn/Danh-muc-tin/190/Kinh-te',
+        'http://hanoimoi.com.vn/Danh-muc-tin/191/Thoi-trang',
+        'http://hanoimoi.com.vn/Danh-muc-tin/601/Oto-xemay',
+        'http://hanoimoi.com.vn/Danh-muc-tin/741/Hau-truong'
     ]
+
     from_date = '2017-02-05'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
     to_date = '2017-02-12'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa

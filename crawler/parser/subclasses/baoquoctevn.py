@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
+# Done
 from crawler.parser import *
 
 
@@ -27,7 +28,7 @@ class BaoQuocTeVnParser(SubBaseParser):
         # Tìm thẻ cho biết trang nào đang active và dùng nó để dò địa chỉ trang kế
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_active_tag_func(html):
-            div_tag = html.find('div', class_='grNextPage __MB_ARTICLE_PAGING')
+            div_tag = html.find('div', class_='grNextPage')
             if div_tag is None:
                 return None
 

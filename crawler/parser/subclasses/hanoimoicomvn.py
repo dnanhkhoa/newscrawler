@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
+# Done
 from crawler.parser import *
 
 
@@ -63,7 +64,7 @@ class HaNoiMoiComVnParser(SubBaseParser):
                 a_tag = post.find('a', attrs={'href': True})
                 if a_tag is not None:
                     urls.append(a_tag.get('href'))
-            print(urls)
+
             return urls
 
         self._vars['get_post_urls_func'] = get_post_urls_func
@@ -72,16 +73,15 @@ class HaNoiMoiComVnParser(SubBaseParser):
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_time_tag_func(html):
-            div_tag = html.find('div', class_='moder')
-            if div_tag is None:
+            div_tags = html.find_all('div', class_='refer')
+            if len(div_tags) == 0:
                 return None
-            div_tag = div_tag.find('div', class_='refer')
-            if div_tag is None:
-                return None
-            a_tag = div_tag.find('a', class_='cap')
+
+            a_tag = div_tags[-1].find('a', class_='cap')
             if a_tag is not None:
                 a_tag.decompose()
-            return div_tag
+
+            return div_tags[-1]
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 
@@ -92,7 +92,6 @@ class HaNoiMoiComVnParser(SubBaseParser):
             date_matcher = regex.search(r'(\d{2}\/\d{2}\/\d{4})', string, regex.IGNORECASE)
             if time_matcher is None or date_matcher is None:
                 return None
-            print(datetime.strptime('%s %s' % (date_matcher.group(1), time_matcher.group(1)), '%d/%m/%Y %H:%M'))
             return datetime.strptime('%s %s' % (date_matcher.group(1), time_matcher.group(1)), '%d/%m/%Y %H:%M')
 
         self._vars['get_datetime_func'] = get_datetime_func
@@ -100,3 +99,15 @@ class HaNoiMoiComVnParser(SubBaseParser):
         # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
         # def _pre_process(self, html):
         #     return super()._pre_process(html)
+
+    def _get_html(self, url, timeout=15, attempts=3):
+        assert url is not None, 'Tham số url không được là None'
+        while attempts > 0:
+            try:
+                response = requests.get(url=url, timeout=timeout, allow_redirects=True)
+                if response.status_code == requests.codes.ok:
+                    return response.content.decode('UTF-8')
+            except RequestException as e:
+                log(e)
+            attempts -= 1
+        return None
