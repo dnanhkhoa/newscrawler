@@ -658,7 +658,7 @@ class SubBaseParser(BaseParser):
         if candidate_div_tags_size == 0:
             return None
 
-        authors = [normalize_string(candidate_div_tags[0])]
+        authors = [normalize_string(candidate_div_tags[0].text)]
 
         # Dò tìm các ứng viên kề nhau
         i = 1

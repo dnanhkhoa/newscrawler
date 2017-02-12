@@ -79,7 +79,7 @@ class NameParser(SubBaseParser):
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
     def _handle_video(self, html, timeout=15):
-        pass
+        return html
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _pre_process(self, html):

@@ -8,12 +8,16 @@ from normalizer import *
 from crawler import *
 from helpers import *
 
+# Load cấu hình
 configs = read_json('configs.txt')
+
+# Dùng để code nhanh
 db = configs.get('database')
 category_mapping = configs.get('category_mapping')
 priority_mapping = configs.get('priority_mapping')
 clusters = configs.get('clusters')
 
+# Mở kết nối đến CSDL
 mysql = MySQL(user=db.get('user'), password=db.get('password'), db=db.get('db'), host=db.get('host'),
               port=db.get('port'), charset=db.get('charset'))
 

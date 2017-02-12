@@ -42,15 +42,15 @@ def try_crawler():
     #     'http://baoquocte.vn/xa-hoi/giao-duc'
     # ]
 
-    urls = [
-        'http://www.nss.vn/c2-san-pham.htm',
-        'http://www.nss.vn/c21-kinh-doanh.htm',
-        'http://www.nss.vn/c116-ngan-hang-so.htm',
-        'http://www.nss.vn/c100-bao-mat.htm',
-        'http://www.nss.vn/c18-song-online.htm',
-        'http://www.nss.vn/c27-game.htm',
-        'http://www.nss.vn/c115-cong-nghe-xanh.htm'
-    ]
+    # urls = [
+    #     'http://www.nss.vn/c2-san-pham.htm',
+    #     'http://www.nss.vn/c21-kinh-doanh.htm',
+    #     'http://www.nss.vn/c116-ngan-hang-so.htm',
+    #     'http://www.nss.vn/c100-bao-mat.htm',
+    #     'http://www.nss.vn/c18-song-online.htm',
+    #     'http://www.nss.vn/c27-game.htm',
+    #     'http://www.nss.vn/c115-cong-nghe-xanh.htm'
+    # ]
 
     # urls = [
     #     'http://ione.vnexpress.net/tin-tuc/lam-dep',
@@ -103,12 +103,21 @@ def try_normalizer():
     #     'http://giaoducthoidai.vn/khoa-hoc/ho-mang-chua-khong-lo-cui-dau-khuat-phuc-ban-tay-tho-san-2909122-l.html'
     # ]
 
-    urls = [
-        ]
+    # urls = [
+    #     'http://baochinhphu.vn/Hoat-dong-cua-lanh-dao-Dang-Nha-nuoc/Thu-tuong-Bac-Ninh-can-huong-toi-la-mot-trong-nhung-thanh-pho-sang-tao-nhat/298516.vgp',
+    #     'http://baochinhphu.vn/The-thao/Van-dong-vien-huan-luyen-vien-xuat-sac-duoc-huong-che-do-cao/298419.vgp',
+    #     'http://baochinhphu.vn/Cac-bai-phat-bieu-cua-Thu-tuong/Chinh-phu-kien-tao-va-hanh-dong-dong-luc-moi-cho-phat-trien/295394.vgp',
+    #     'http://baochinhphu.vn/Van-hoa/Yen-Tu-ngay-Hoi-xuan/298478.vgp',
+    #     'http://baochinhphu.vn/APEC-2017/APEC-phai-khang-dinh-vai-tro-dien-dan-kinh-te-hang-dau/293647.vgp'
+    # ]
 
-    for url in urls:
-        result = news_normalizer.normalize(url=url, timeout=15)
-        print(json.dumps(result, indent=4, ensure_ascii=False))
+    urls = [
+
+    ]
+
+    #for url in urls:
+    result = news_normalizer.normalize(url=urls[4], timeout=15)
+    print(json.dumps(result, indent=4, ensure_ascii=False))
 
 
 def main():
