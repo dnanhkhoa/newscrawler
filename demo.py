@@ -29,16 +29,19 @@ def try_normalizer():
 
     urls = [
         'http://giaoducthoidai.vn/khoa-hoc/laban-key-am-tham-vuon-len-ung-dung-mien-phi-so-1-tren-ios-2903278-l.html',
-        'http://giaoducthoidai.vn/khoa-hoc/sinh-vat-giong-nguoi-tuyet-trong-rung-ukraine-2903321-l.html'
+        'http://giaoducthoidai.vn/khoa-hoc/sinh-vat-giong-nguoi-tuyet-trong-rung-ukraine-2903321-l.html',
+        'http://giaoducthoidai.vn/giao-duc/ra-mat-quy-hoa-sen-co-vu-tinh-than-dh-khong-vi-loi-nhuan-2909850-v.html',
+        'http://giaoducthoidai.vn/thoi-su/nghin-nguoi-muot-mo-hoi-doi-nang-cau-an-chua-ba-thien-hau-2908215-l.html',
+        'http://giaoducthoidai.vn/khoa-hoc/ho-mang-chua-khong-lo-cui-dau-khuat-phuc-ban-tay-tho-san-2909122-l.html'
     ]
 
-    result = news_normalizer.normalize(url=urls[0], timeout=15)
+    result = news_normalizer.normalize(url=urls[4], timeout=15)
     print(json.dumps(result, indent=4, ensure_ascii=False))
 
 
 def main():
-    try_crawler()
-    # try_normalizer()
+    # try_crawler()
+    try_normalizer()
     return
 
 if __name__ == '__main__':

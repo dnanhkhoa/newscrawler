@@ -14,7 +14,7 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         # Thay đổi các hàm trong vars để thay đổi các tham số của hàm cha
 
         # Title
-        self._vars['get_title_tag_func'] = lambda x: x.find('h1', class_='cms-title')
+        # self._vars['get_title_tag_func'] = lambda x: x.find('h1', class_='cms-title')
 
         # Publish date
         def get_time_tag_func(html):
@@ -51,10 +51,6 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)
 
-    def _get_summary(self, html):
-        return super()._get_meta_description(html)
-
     def _get_author(self, html):
         author = html.find('p', class_='author')
         return None if author is None else author.text
-

@@ -25,6 +25,33 @@ class NameParser(SubBaseParser):
         #
         # self._vars['get_title_tag_func'] =
 
+        #
+        # self._vars['get_summary_tag_func'] =
+
+        #
+        # self._vars['get_tags_tag_func'] =
+
+        #
+        # self._vars['get_time_tag_func'] =
+
+        #
+        # self._vars['get_datetime_func'] =
+
+        #
+        # self._vars['caption_classes'] =
+
+        #
+        # self._vars['author_classes'] =
+
+        #
+        # self._vars['get_main_content_tag_func'] =
+
+        #
+        # self._vars['get_author_tag_func'] =
+
+        #
+        # self._vars['get_thumbnail_url_func'] =
+
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ

@@ -51,19 +51,31 @@ class SubBaseParser(BaseParser):
                     post_urls = list(map(lambda x: (self._get_absolute_url(url=x[0], domain=url), x[1]), post_urls))
 
                     last_post_date = post_urls[-1][1]
+                    if last_post_date is None:
+                        last_post_date = self._get_date_from_post(url=post_urls[-1][0], timeout=timeout)
+
                     if from_date > last_post_date:
                         stop = True
                         for post_url in post_urls:
                             current_post_date = post_url[1]
+                            if current_post_date is None:
+                                current_post_date = self._get_date_from_post(url=post_url[0], timeout=timeout)
+
                             if current_post_date is not None and from_date <= current_post_date <= to_date:
                                 urls.append(post_url[0])
                     else:  # from_date <= last_post_date:
                         first_post_date = post_urls[0][1]
+                        if first_post_date is None:
+                            first_post_date = self._get_date_from_post(url=post_urls[0][0], timeout=timeout)
+
                         if first_post_date is not None and first_post_date <= to_date:
                             urls.extend(list(map(lambda x: x[0], post_urls)))
                         else:
                             for post_url in post_urls[1:]:
                                 current_post_date = post_url[1]
+                                if current_post_date is None:
+                                    current_post_date = self._get_date_from_post(url=post_url[0], timeout=timeout)
+
                                 if current_post_date is not None and current_post_date <= to_date:
                                     urls.append(post_url[0])
                 else:
@@ -94,16 +106,16 @@ class SubBaseParser(BaseParser):
 
     # Hàm lấy nội dung trang hiện tại và url đến trang kế tiếp
     def _get_next_page(self, url, timeout=15):
-        get_active_tag_func = self._vars.get('get_active_tag_func')
-        if get_active_tag_func is None:
-            return None
-
         raw_html = get_html(url=url, timeout=timeout)
         if raw_html is None:
             log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
             return None
 
         html = get_soup(raw_html)
+
+        get_active_tag_func = self._vars.get('get_active_tag_func')
+        if get_active_tag_func is None:
+            return html, None
 
         active_tag = get_active_tag_func(html)
         if active_tag is None:

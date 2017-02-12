@@ -228,6 +228,7 @@ def path(*name):
 # Hàm cho biết đường dẫn cung cấp là tập tin, thư mục hay không tồn tại
 def path_info(name):
     assert name is not None, 'Tham số name không được là None'
+    name = path(name)
     if len(name) > 0 and os.path.exists(name):
         if os.path.isfile(name):
             return 1
@@ -239,12 +240,14 @@ def path_info(name):
 # Hàm tạo thư mục nhiều cấp
 def make_dirs(name):
     assert name is not None, 'Tham số name không được là None'
+    name = path(name)
     if len(name) > 0 and path_info(name) >= 0:
         os.makedirs(name)
 
 
 # Hàm đọc file theo dòng hỗ trợ UTF-8
 def read_lines(file_name):
+    file_name = path(file_name)
     assert path_info(file_name) == 1, 'File do not exist!'
     lines = []
     with open(file_name, 'rb') as f:
@@ -258,6 +261,7 @@ def read_lines(file_name):
 
 # Hàm ghi file theo dòng hỗ trợ UTF-8
 def write_lines(lines, file_name, end_line='\n'):
+    file_name = path(file_name)
     make_dirs(os.path.dirname(file_name))
     with open(file_name, 'wb') as f:
         try:
@@ -269,6 +273,7 @@ def write_lines(lines, file_name, end_line='\n'):
 
 # Hàm đọc file json hỗ trợ UTF-8
 def read_json(file_name):
+    file_name = path(file_name)
     assert path_info(file_name) == 1, 'File do not exist!'
     with open(file_name, 'rb') as f:
         try:
@@ -279,6 +284,7 @@ def read_json(file_name):
 
 # Hàm ghi file json hỗ trợ UTF-8
 def write_json(obj, file_name):
+    file_name = path(file_name)
     make_dirs(os.path.dirname(file_name))
     with open(file_name, 'wb') as f:
         try:
@@ -295,6 +301,7 @@ def prettify_json(obj):
 
 # Hàm trả về danh sách các files có trong thư mục
 def read_folder(folder_path, has_extension=True, extension_filter=None):
+    folder_path = path(folder_path)
     assert path_info(folder_path) == -1, 'Folder do not exist!'
     files = []
     try:
@@ -310,8 +317,10 @@ def read_folder(folder_path, has_extension=True, extension_filter=None):
 
 # Hàm khởi tạo các đối tượng Parser từ các files trong folder
 def create_parser_from_files(folder_path, base_class):
-    assert folder_path is not None and base_class is not None, 'Tham số folder_path và base_class không được là None'
+    assert path is not None and base_class is not None, 'Tham số folder_path và base_class không được là None'
+
     parsers = {}
+
     files = read_folder(folder_path, has_extension=False, extension_filter=['.py'])
     for file in files:
         module = importlib.import_module('%s.%s' % ('.'.join(folder_path.split('/')), file))

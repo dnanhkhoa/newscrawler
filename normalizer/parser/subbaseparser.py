@@ -17,20 +17,65 @@ class SubBaseParser(BaseParser):
     def _get_mobile_url(self, html, url):
         return url
 
+    # Nếu trang có thẻ meta này thì nên dùng vì nó thường chính xác
+    def _get_og_title(self, html):
+        if html is None:
+            return None
+
+        meta_tag = html.find('meta', attrs={'property': 'og:title', 'content': True})
+        if meta_tag is None:
+            return None
+
+        content = meta_tag.get('content')
+        return normalize_string(content) if is_valid_string(content) else None
+
+    # Nếu trang có thẻ meta này thì nên dùng vì nó thường chính xác
+    def _get_og_description(self, html):
+        if html is None:
+            return None
+
+        meta_tag = html.find('meta', attrs={'property': 'og:description', 'content': True})
+        if meta_tag is None:
+            return None
+
+        content = meta_tag.get('content')
+        return normalize_string(content) if is_valid_string(content) else None
+
+    # Nếu trang có thẻ meta này thì nên dùng vì nó thường chính xác
+    def _get_og_image(self, html):
+        if html is None:
+            return None
+
+        meta_tag = html.find('meta', attrs={'property': 'og:image', 'content': True})
+        if meta_tag is None:
+            return None
+
+        return meta_tag.get('content')
+
     # Hàm trả về tiêu đề bài viết
     def _get_post_title(self, html):
         if html is None:
             return None
+
         get_title_tag_func = self._vars.get('get_title_tag_func')
-        title_tag = html.title if get_title_tag_func is None else get_title_tag_func(html)
+        if get_title_tag_func is None:
+            title = self._get_og_title(html=html)
+            if title is None:
+                return None
+
+            return normalize_string(title) if is_valid_string(title) else None
+
+        title_tag = get_title_tag_func(html)
         if title_tag is None:
             return None
+
         return normalize_string(title_tag.text) if is_valid_string(title_tag.text) else None
 
     # Hàm lấy danh sách các keywords có trong thẻ meta
     def _get_meta_keywords(self, html):
         if html is None:
             return None
+
         meta_tag = html.find('meta', attrs={'name': 'keywords', 'content': True})
         if meta_tag is None:
             return None
@@ -46,6 +91,7 @@ class SubBaseParser(BaseParser):
     def _get_meta_description(self, html):
         if html is None:
             return None
+
         meta_tag = html.find('meta', attrs={'name': 'description', 'content': True})
         if meta_tag is None:
             return None
@@ -55,9 +101,16 @@ class SubBaseParser(BaseParser):
 
     # Hàm lấy phần mô tả chính
     def _get_summary(self, html):
+        if html is None:
+            return None
+
         get_summary_tag_func = self._vars.get('get_summary_tag_func')
         if get_summary_tag_func is None:
-            return None
+            content = self._get_og_description(html=html)
+            if content is None:
+                return None
+
+            return normalize_string(content) if is_valid_string(content) else None
 
         summary_tag = get_summary_tag_func(html)
         if summary_tag is None:
@@ -68,6 +121,9 @@ class SubBaseParser(BaseParser):
 
     # Hàm lấy danh sách keywords
     def _get_tags(self, html):
+        if html is None:
+            return None
+
         get_tags_tag_func = self._vars.get('get_tags_tag_func')
         if get_tags_tag_func is None:
             return None
@@ -85,6 +141,9 @@ class SubBaseParser(BaseParser):
 
     # Hàm lấy ngày của bài đăng
     def _get_publish_date(self, html):
+        if html is None:
+            return None
+
         get_time_tag_func = self._vars.get('get_time_tag_func')
         get_datetime_func = self._vars.get('get_datetime_func')
         if get_time_tag_func is None or get_datetime_func is None:
@@ -103,15 +162,35 @@ class SubBaseParser(BaseParser):
 
     # Xử lí hình ảnh và caption có trong bài viết
     def _handle_image(self, html, title=None):
+        if html is None:
+            return None
+
         img_tags = html.find_all('img')
         for img_tag in img_tags:
-            img_tag['src'] = self._get_valid_image_url(img_tag.get('src'))
-            next_tag = img_tag.find_next(True)
-            if next_tag.name == 'div':
-                classes = next_tag.get('class')
-                if classes is not None and ('center' in classes or 'image' in classes):
-                    caption_tag = create_caption_tag(next_tag.text)
-                    next_tag.replace_with(caption_tag)
+            image_url = self._get_valid_image_url(img_tag.get('src'))
+            # Tìm thẻ caption
+            next_div_tag = img_tag.find_next('div')
+            if next_div_tag.find_parent('main') is not None:
+                # Lấy class của thẻ cha
+                next_div_classes = next_div_tag.get('class')
+                if next_div_classes is None:
+                    next_div_classes = []
+
+                # Lấy class của các thẻ con bên trong nó
+                child_tags = next_div_tag.find_all(True)
+                for child_tag in child_tags:
+                    child_tag_classes = child_tag.get('class')
+                    if child_tag_classes is not None:
+                        next_div_classes.extend(child_tag_classes)
+
+                if regex.search(r'(?:caption|center)', ' '.join(list(set(next_div_classes))), regex.IGNORECASE):
+                    caption_tag = create_caption_tag(next_div_tag.text)
+                    next_div_tag.replace_with(caption_tag)
+
+            new_img_tag = create_image_tag(url=image_url, alt=title)
+            img_tag.insert_before(new_img_tag)
+            img_tag.decompose()
+
         return html
 
     # Mỗi đầu báo có thể kế thừa hàm này để xử lí 1 số trường hợp riêng bị như xóa ads,...
@@ -119,19 +198,35 @@ class SubBaseParser(BaseParser):
         return html
 
     def _get_special_tag_classes(self, tag):
+        if tag is None:
+            return []
+
         classes = tag.get('class')
         if classes is None:
             classes = []
         else:
-            predict_caption_tag = self._vars.get('predict_caption_tag')
-            predict_author_tag = self._vars.get('predict_author_tag')
+            caption_classes = self._vars.get('caption_classes')
+            if caption_classes is None:
+                caption_classes = []
+
+            author_classes = self._vars.get('author_classes')
+            if author_classes is None:
+                author_classes = []
+
+            caption_classes.extend(['desc', 'pic', 'img', 'box', 'cap', 'photo', 'hinh', 'anh'])
+            author_classes.extend(['author', 'copyright', 'source', 'nguon', 'tac-gia', 'tacgia'])
+
+            caption_classes_regex = regex.compile(r'(?:%s)' % '|'.join(caption_classes), regex.IGNORECASE)
+            author_classes_regex = regex.compile(r'(?:%s)' % '|'.join(author_classes), regex.IGNORECASE)
 
             cls = []
 
-            if predict_caption_tag is not None and predict_caption_tag(classes):
+            # Dự đoán nhãn Caption
+            if caption_classes_regex.search(' '.join(classes)) is not None:
                 cls.append('caption')
 
-            if predict_author_tag is not None and predict_author_tag(classes):
+            # Dự đoán nhãn Author
+            if author_classes_regex.search(' '.join(classes)) is not None:
                 cls.append('author')
 
             classes.extend(cls)
@@ -350,6 +445,7 @@ class SubBaseParser(BaseParser):
                         span_tags = SubBaseParser._combine_span_tags(span_tag=child_tag,
                                                                      block_classes=temp_tag.attrs.get('class'))
 
+                        # Nếu gặp thẻ <br> thì tách ra làm 2 div bởi vì khi nhìn trên browser nó cũng là 2 dòng
                         contents = list(span_tags.children)
                         for child in contents:
                             if child.name == 'br':
@@ -410,6 +506,9 @@ class SubBaseParser(BaseParser):
         return bounding_tag
 
     def _normalize_content(self, html, title=None, timeout=15):
+        if html is None:
+            return None
+
         get_main_content_tag_func = self._vars.get('get_main_content_tag_func')
         if get_main_content_tag_func is None:
             return None
@@ -418,87 +517,132 @@ class SubBaseParser(BaseParser):
         if main_content_tag is None:
             return None
 
-        # Xóa thẻ script
-        script_tags = main_content_tag.find_all('script')
-        for script_tag in script_tags:
-            script_tag.decompose()
-
-        # Xóa rác
-        main_content_tag = self._pre_process(html=main_content_tag)
+        main_content_tag.attrs = {}
 
         # Xử lí thẻ video
         main_content_tag = self._handle_video(html=main_content_tag, timeout=timeout)
 
-        # Chuẩn hóa
+        # Xóa các thẻ không quan trọng
+        main_content_tag = remove_tags(html=main_content_tag,
+                                       tags=['noscript', 'script', 'canvas', 'embed', 'object', 'param', 'area', 'map',
+                                             'track', 'iframe'])
+
+        # Xóa rác
+        main_content_tag = self._pre_process(html=main_content_tag)
+
+        # Đổi tên thẻ bao bên ngoài thành main để dễ kiểm soát
         main_content_tag.name = 'main'
 
         # Chuẩn hóa thẻ
         tags = main_content_tag.find_all(
             ['div', 'p', 'table', 'td', 'caption', 'figcaption', 'center', 'strong', 'b', 'em', 'i'])
+
         for tag in tags:
             classes = self._get_special_tag_classes(tag=tag)
             tag.name = 'div' if tag.name in ['div', 'p', 'table', 'td', 'caption', 'figcaption', 'center'] else 'span'
             tag.attrs = {'class': classes} if len(classes) > 0 else {}
 
         attrs = {
-            'video': ['width', 'height'],
+            'video': ['width', 'height', 'controls'],
             'source': ['src', 'type'],  # Controls
             'img': ['src', 'alt'],
             'div': ['class'],
             'span': ['class']
         }
 
-        main_content_tag = bleach.clean(main_content_tag, tags=['main', 'div', 'br', 'video', 'source', 'img', 'span'],
+        filtered_content = bleach.clean(main_content_tag, tags=['main', 'div', 'br', 'video', 'source', 'img', 'span'],
                                         attributes=attrs, strip=True, strip_comments=True)
 
-        main_content_tag = get_soup(main_content_tag, clear_special_chars=True).main
+        filtered_content_tag = get_soup(filtered_content, clear_special_chars=True).main.extract()
+
+        # Xóa bỏ nội dung cũ
+        main_content_tag.clear()
+
+        # Thêm dữ liệu đã được lọc vào
+        main_content_tag.append(filtered_content_tag)
+
+        # Bỏ thẻ main bao quanh bên ngoài
+        filtered_content_tag.unwrap()
+
         main_content_tag.name = 'div'
 
         main_content_tag = self._combine_div_tags(parent_tag=main_content_tag)
 
+        main_content_tag.name = 'main'
+
         # Xử lí thẻ image
         main_content_tag = self._handle_image(html=main_content_tag, title=title)
 
-        main_content_tag.name = 'main'
-        main_content_tag.attrs = {}
+        # Phục hồi lại thuộc tính controls của video
+        video_tags = main_content_tag.find_all('video')
+        for video_tag in video_tags:
+            video_tag['controls'] = None
 
         return main_content_tag
 
     def _get_author(self, html):
-        authors = []
-        div_tags = html.find_all('div', class_='bold')
-        div_tags = list(reversed(div_tags))
+        if html is None:
+            return None
 
-        size = len(div_tags)
-        i = 0
+        get_author_tag_func = self._vars.get('get_author_tag_func')
+        if get_author_tag_func is None:
+            return None
 
-        while i < size:
-            div_tag = div_tags[i]
+        main_content_tag = html
+        html = html.find_parent('html')
 
-            classes = div_tag.get('class')
-            string = div_tag.text
-            if not string.endswith('.') and classes is not None and 'bold' in classes:
-                if 'right' in classes:
-                    authors.insert(0, string)
-                    if i == size - 1:
-                        break
+        author_tag = get_author_tag_func(html)
+        if author_tag is None:
+            return None
 
-                    while div_tag.previous_sibling == div_tags[i + 1]:
-                        authors.insert(0, div_tags[i + 1].text)
-                        i += 1
-                    break
-            i += 1
-        return '<br/>'.join(authors)
+            # Tìm tất cả thẻ div
+
+
+
+            # authors = []
+            # div_tags = html.find_all('div', class_='bold')
+            # div_tags = list(reversed(div_tags))
+            #
+            # size = len(div_tags)
+            # i = 0
+            #
+            # while i < size:
+            #     div_tag = div_tags[i]
+            #
+            #     classes = div_tag.get('class')
+            #     string = div_tag.text
+            #     if not string.endswith('.') and classes is not None and 'bold' in classes:
+            #         if 'right' in classes:
+            #             authors.insert(0, string)
+            #             if i == size - 1:
+            #                 break
+            #
+            #             while div_tag.previous_sibling == div_tags[i + 1]:
+            #                 authors.insert(0, div_tags[i + 1].text)
+            #                 i += 1
+            #             break
+            #     i += 1
+            # return '<br/>'.join(authors)
 
     # Trả về url của ảnh đầu tiên trong content
     def _get_thumbnail(self, html):
         if html is None:
             return None
-        img_tag = html.find('img', attrs={'src': True})
-        if img_tag is None:
-            return None
-        return img_tag.get('src')
 
+        main_content_tag = html
+        html = html.find_parent('html')
+
+        get_thumbnail_url_func = self._vars.get('get_thumbnail_url_func')
+        thumbnail_url = self._get_og_image(html=html) if get_thumbnail_url_func is None \
+            else get_thumbnail_url_func(html)
+
+        if thumbnail_url is None:
+            img_tag = main_content_tag.find('img', attrs={'src': True})
+            return None if img_tag is None else img_tag.get('src')
+
+        return self._get_valid_image_url(thumbnail_url)
+
+    # Hàm trả về nội dung theo format yêu cầu
     def _get_content(self, html):
         if html is None:
             return None
@@ -508,15 +652,19 @@ class SubBaseParser(BaseParser):
         for tag in tags:
             tag.unwrap()
 
-        # Đổi thẻ block sang <p></p> và chuẩn hóa nội dung
+        # Đổi các thẻ div khác sang <p></p> và chuẩn hóa nội dung
         tags = html.find_all('div')
         for tag in tags:
             tag.name = 'p'
             tag.attrs = {}
-            tag.string = normalize_string(tag.text)
+            string = normalize_string(tag.text)
+            if is_valid_string(string=string):
+                tag.string = string
+            else:
+                tag.decompose()
 
         content = html.decode(formatter=None)
-        return regex.sub(r'<main>|<\/main>', '', remove_closing_tags(content=content, tags=['source']))
+        return regex.sub(r'\s*<\s*\/?\s*main\s*>\s*', '', remove_closing_tags(content=content, tags=['source']))
 
     # Hàm trả về nội dung đã lọc thẻ html
     def _get_plain(self, html):
@@ -542,7 +690,7 @@ class SubBaseParser(BaseParser):
         summary = self._get_summary(html=html)
 
         normalized_content = self._normalize_content(html=html, title=remove_special_chars(post_title), timeout=timeout)
-        author = self._get_author(html=html)
+        author = self._get_author(html=normalized_content)
         thumbnail = self._get_thumbnail(html=normalized_content)
         content = self._get_content(html=normalized_content)
         plain = self._get_plain(html=normalized_content)
