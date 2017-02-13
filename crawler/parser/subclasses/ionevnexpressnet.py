@@ -32,8 +32,7 @@ class IOneVnExpressNetParser(SubBaseParser):
             if div_tag is None:
                 return None
 
-            a_tag = div_tag.find('a', class_='active')
-            return None if a_tag is None else a_tag
+            return div_tag.find('a', class_='active')
 
         self._vars['get_active_tag_func'] = get_active_tag_func
 
@@ -87,8 +86,7 @@ class IOneVnExpressNetParser(SubBaseParser):
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_time_tag_func(html):
-            div_tag = html.find('div', class_='block_timer')
-            return None if div_tag is None else div_tag
+            return html.find('div', class_='block_timer')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 

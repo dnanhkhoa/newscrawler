@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
+
+# Done
 from normalizer.parser import *
 
 
@@ -37,8 +39,7 @@ class BaoQuocTeVnParser(SubBaseParser):
         # Tìm thẻ chứa chuỗi thời gian đăng bài
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_time_tag_func(html):
-            div_tag = html.find('div', class_='dateUp')
-            return None if div_tag is None else div_tag
+            return html.find('div', class_='dateUp')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 
@@ -109,6 +110,10 @@ class BaoQuocTeVnParser(SubBaseParser):
         for tag in tags:
             tag.decompose()
         return super()._pre_process(html)
+
+    # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
+    # def _post_process(self, html):
+    #     return html
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)

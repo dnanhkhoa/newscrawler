@@ -34,13 +34,12 @@ class BaoChinhPhuVnParser(SubBaseParser):
 
         # Tìm thẻ chứa danh sách các thẻ a chứa keyword bên trong
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_tags_tag_func'] =
+        self._vars['get_tags_tag_func'] = lambda x: x.find('span', 'word')
 
         # Tìm thẻ chứa chuỗi thời gian đăng bài
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_time_tag_func(html):
-            p_tag = html.find('p', class_='meta')
-            return None if p_tag is None else p_tag
+            return html.find('p', class_='meta')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 
@@ -106,10 +105,15 @@ class BaoChinhPhuVnParser(SubBaseParser):
         if tag is not None:
             tag.decompose()
 
+        tag = html.find('p', class_='keywords')
+        if tag is not None:
+            tag.decompose()
+
         return super()._pre_process(html)
 
-    def _get_tags(self, html):
-        return super()._get_meta_keywords(html)
+    # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
+    # def _post_process(self, html):
+    #     return html
 
     def _get_html(self, url, timeout=15, attempts=3):
         assert url is not None, 'Tham số url không được là None'

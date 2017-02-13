@@ -32,8 +32,7 @@ class NhipSongSoVnParser(SubBaseParser):
             if span_tag is None:
                 return None
 
-            a_tag = span_tag.find('a', class_='active')
-            return None if a_tag is None else a_tag
+            return span_tag.find('a', class_='active')
 
         self._vars['get_active_tag_func'] = get_active_tag_func
 

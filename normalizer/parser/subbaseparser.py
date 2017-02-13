@@ -184,7 +184,7 @@ class SubBaseParser(BaseParser):
                     if child_tag_classes is not None:
                         next_div_classes.extend(child_tag_classes)
 
-                if regex.search(r'(?:caption|center)', ' '.join(list(set(next_div_classes))), regex.IGNORECASE):
+                if regex.search(r'(?:caption|center|italic)', ' '.join(list(set(next_div_classes))), regex.IGNORECASE):
                     caption_tag = create_caption_tag(next_div_tag.text)
                     next_div_tag.replace_with(caption_tag)
 
@@ -196,6 +196,10 @@ class SubBaseParser(BaseParser):
 
     # Mỗi đầu báo có thể kế thừa hàm này để xử lí 1 số trường hợp riêng bị như xóa ads,...
     def _pre_process(self, html):
+        return html
+
+    # Mỗi đầu báo có thể kế thừa hàm này để xử lí 1 số trường hợp riêng bị như xóa ads,...
+    def _post_process(self, html):
         return html
 
     def _get_special_tag_classes(self, tag):
@@ -214,7 +218,7 @@ class SubBaseParser(BaseParser):
             if author_classes is None:
                 author_classes = []
 
-            caption_classes.extend(['desc', 'pic', 'img', 'box', 'cap', 'photo', 'hinh', 'anh'])
+            caption_classes.extend(['desc', 'pic', 'img', 'box', 'cap', 'photo', 'hinh', 'anh', 'def'])
             author_classes.extend(['author', 'copyright', 'source', 'nguon', 'tac-gia', 'tacgia'])
 
             caption_classes_regex = regex.compile(r'(?:%s)' % '|'.join(caption_classes), regex.IGNORECASE)
@@ -249,6 +253,8 @@ class SubBaseParser(BaseParser):
                 classes.append('center')
             elif 'right' in style:
                 classes.append('right')
+            elif 'bold' in style:
+                classes.append('bold')
 
         # Kiểm tra tên thẻ
         if tag.name in ['table', 'td', 'caption', 'figcaption']:
@@ -578,6 +584,8 @@ class SubBaseParser(BaseParser):
         video_tags = main_content_tag.find_all('video')
         for video_tag in video_tags:
             video_tag['controls'] = None
+
+        main_content_tag = self._post_process(html=main_content_tag)
 
         return main_content_tag
 

@@ -45,8 +45,7 @@ class NhipSongSoVnParser(SubBaseParser):
             p_tag = div_tag.find('p', class_='name')
             if p_tag is None:
                 return None
-            p_tag = p_tag.find_next_sibling('p')
-            return None if p_tag is None else p_tag
+            return p_tag.find_next_sibling('p')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 
@@ -106,6 +105,10 @@ class NhipSongSoVnParser(SubBaseParser):
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _pre_process(self, html):
     #     return super()._pre_process(html)
+
+    # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
+    # def _post_process(self, html):
+    #     return html
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)

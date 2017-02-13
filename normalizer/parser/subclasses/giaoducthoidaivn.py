@@ -42,10 +42,7 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
             div_tag = html.find('div', class_='toolbar')
             if div_tag is None:
                 return None
-            span_tag = div_tag.find('span', class_='time')
-            if span_tag is None:
-                return None
-            return span_tag
+            return div_tag.find('span', class_='time')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 
@@ -104,6 +101,14 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
                 video_tag.replace_with(
                     create_video_tag(src=video_url, mime_type=self._get_mime_type_from_url(url=video_url)))
         return html
+
+    # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
+    # def _pre_process(self, html):
+    #     return super()._pre_process(html)
+
+    # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
+    # def _post_process(self, html):
+    #     return html
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)

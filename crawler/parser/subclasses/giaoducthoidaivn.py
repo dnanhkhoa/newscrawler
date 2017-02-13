@@ -38,7 +38,7 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
             span_tag.ul.unwrap()
 
             a_tag = span_tag.find(lambda x: x.name == 'a' and len(x.attrs) == 0)
-            return None if a_tag is None else a_tag
+            return a_tag
 
         self._vars['get_active_tag_func'] = get_active_tag_func
 
@@ -66,10 +66,7 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
             div_tag = html.find('div', class_='toolbar')
             if div_tag is None:
                 return None
-            span_tag = div_tag.find('span', class_='time')
-            if span_tag is None:
-                return None
-            return span_tag
+            return div_tag.find('span', class_='time')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 

@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
+# Done
 from crawler.parser import *
 
 
@@ -31,12 +32,16 @@ class NongNghiepVnParser(SubBaseParser):
         # Trả về danh sách các urls của các bài viết có trong trang
         # Nếu có thể lấy được thời gian trực tiếp luôn thì mỗi phần tử trong danh sách phải là (url, time)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_post_urls_func'] =
+        def get_post_urls_func(html):
+            return html
+
+        self._vars['get_post_urls_func'] = get_post_urls_func
 
         # Sử dụng trong trường hợp không thể lấy được thời gian trực tiếp trên trang
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_time_tag_func'] =
+
         # Hàm này sẽ chuyển chuỗi thời gian có được ở hàm trên về đối tượng datetime (phụ thuộc time format mỗi trang)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_datetime_func'] =
@@ -49,19 +54,52 @@ class NongNghiepVnParser(SubBaseParser):
     #     return super()._pre_process(html)
 
     def _get_next_page(self, url, timeout=15):
-        raw_html = self._get_html(url=url, timeout=timeout)
-        if raw_html is None:
-            log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
-            return None
+        source = []
+        page_id = 0
 
+        if isinstance(url, tuple):
+            category_id, page_id = url
+        else:
+            raw_html = self._get_html(url=url, timeout=timeout)
+            if raw_html is None:
+                log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
+                return None
 
+            category_id_regex = regex.compile(r"var catid = '([^']+)'", regex.IGNORECASE)
+            matcher = category_id_regex.search(raw_html)
+            if matcher is None:
+                return None
 
-        #data = self._get_posts(category_id=9, page_id=0)
+            category_id = matcher.group(1)
 
-        return None
+            html = get_soup(raw_html)
+            div_tag = html.find('div', class_='p-news-modtop')
+            if div_tag is not None:
+                a_tag = div_tag.find('a', attrs={'href': True})
+                time_tag = div_tag.find('p', class_='fon3')
+                if a_tag is not None and time_tag is not None:
+                    time = time_tag.text.strip()
+                    parts = time.split(' ')[:-1]
+                    source.append((a_tag.get('href'), datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')))
 
-    def _get_urls_from_page(self, url, html, from_date=None, to_date=None, timeout=15):
-        pass
+        data = self._get_posts(category_id=category_id, page_id=page_id)
+        data = json.loads(data, encoding='UTF-8')
+        data = data.get('d')
+        if data is not None or len(data.strip()) > 0:
+            html = get_soup(data).body
+            item_tags = html.find_all('div', class_='item')
+            for item_tag in item_tags:
+                a_tag = item_tag.find('a', attrs={'href': True})
+                time_tag = item_tag.find('p', class_='fon3')
+                if a_tag is not None and time_tag is not None:
+                    time = time_tag.text.strip()
+                    parts = time.split(' ')[:-1]
+                    source.append((a_tag.get('href'), datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')))
+
+        return source, (category_id, page_id + 1)
+
+    def _get_absolute_url(self, url, domain=None):
+        return url
 
     def _get_posts(self, category_id, page_id, timeout=15):
         headers = {

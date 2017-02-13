@@ -40,8 +40,7 @@ class HaNoiMoiComVnParser(SubBaseParser):
             for li_tag in li_tags:
                 li_tag.unwrap()
 
-            b_tag = div_tag.find('b')
-            return None if b_tag is None else b_tag
+            return div_tag.find('b')
 
         self._vars['get_active_tag_func'] = get_active_tag_func
 

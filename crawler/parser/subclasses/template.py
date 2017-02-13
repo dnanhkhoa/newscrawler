@@ -37,6 +37,7 @@ class NameParser(SubBaseParser):
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_time_tag_func'] =
+
         # Hàm này sẽ chuyển chuỗi thời gian có được ở hàm trên về đối tượng datetime (phụ thuộc time format mỗi trang)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_datetime_func'] =

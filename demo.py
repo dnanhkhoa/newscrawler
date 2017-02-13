@@ -73,23 +73,23 @@ def try_crawler():
     #     'http://hanoimoi.com.vn/Danh-muc-tin/741/Hau-truong'
     # ]
 
-    # urls = [
-    #     'http://nongnghiep.vn/giai-tri-27-15.html',
-    #     'http://nongnghiep.vn/giao-duc-28-15.html',
-    #     'http://nongnghiep.vn/kinh-te-3-15.html',
-    #     'http://nongnghiep.vn/phap-luat-15-15.html',
-    #     'http://nongnghiep.vn/the-gioi-8-15.html',
-    #     'http://nongnghiep.vn/the-thao-29-15.html',
-    #     'http://nongnghiep.vn/van-hoa-26-15.html'
-    # ]
+    urls = [
+        'http://nongnghiep.vn/giai-tri-27-15.html',
+        'http://nongnghiep.vn/giao-duc-28-15.html',
+        'http://nongnghiep.vn/kinh-te-3-15.html',
+        'http://nongnghiep.vn/phap-luat-15-15.html',
+        'http://nongnghiep.vn/the-gioi-8-15.html',
+        'http://nongnghiep.vn/the-thao-29-15.html',
+        'http://nongnghiep.vn/van-hoa-26-15.html'
+    ]
 
-    from_date = '2017-02-05'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    from_date = '2017-01-05'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
     to_date = '2017-02-12'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
     for url in urls:
         result = news_crawler.crawl(url=url, from_date=from_date, to_date=to_date, timeout=timeout)
-        print(result)
+        print(len(result), result)
 
 
 def try_normalizer():
@@ -129,14 +129,40 @@ def try_normalizer():
     #     'http://baoquocte.vn/ve-dep-cuon-hut-cua-de-nhat-phu-nhan-my-43888.html'
     # ]
 
+    # urls = [
+    #     'http://hanoimoi.com.vn/Tin-tuc/Chinh-tri/862286/chu-tich-nuoc-du-le-khanh-thanh-den-tho-vua-mai-hac-de',
+    #     'http://hanoimoi.com.vn/Tin-tuc/Gioi-tre/862203/thanh-nien-thu-do-san-sang-nhap-ngu',
+    #     'http://hanoimoi.com.vn/Tin-tuc/Ngoai-hang-Anh/862291/cuu-danh-thu-ha-lan-qua-doi-o-tuoi-73',
+    #     'http://hanoimoi.com.vn/Tin-tuc/Cong-nghe/862276/the-he-chip-intel-core-thu-8-se-khong-thuc-su-vuot-troi',
+    #     'http://hanoimoi.com.vn/Media/Du-lich/862131/cafe-sua-da-viet-nam-lot-danh-sach-nhung-coc-cafe-ngon-nhat-the-gioi',
+    #     'http://hanoimoi.com.vn/Media/Chinh-tri/862233/thuong-truc-thanh-uy-ha-noi-gap-mat-cac-hoi-vien-clb-thang-long'
+    # ]
+
+    # urls = [
+    #     'http://ione.vnexpress.net/tin-tuc/nhip-song/nhung-kiet-tac-rong-co-the-khien-rong-hai-phong-chao-thua-3528937.html',
+    #     'http://ione.vnexpress.net/tin-tuc/sao/viet-nam/co-gai-nguoi-han-hat-hit-big-bang-tai-giong-hat-viet-gay-phan-khich-3540185.html',
+    #     'http://ione.vnexpress.net/tin-tuc/lam-dep/dang-dep/mau-noi-y-xu-han-mat-ngay-tho-body-boc-lua-3540144.html',
+    #     'http://ione.vnexpress.net/photo/thoi-trang/con-gai-donald-trump-sanh-dieu-so-voi-20-nam-truoc-3539813.html',
+    #     'http://ione.vnexpress.net/tin-tuc/sao/chau-a/tzuyu-kiem-duoc-36-ty-dong-sau-hon-mot-nam-debut-3512802.html',
+    #     'http://ione.vnexpress.net/tin-tuc/sao/us-uk/video-hot-nhat-the-gioi-2016-adele-hat-tren-xe-3511046.html',
+    #     'http://ione.vnexpress.net/tin-tuc/lam-dep/co-gai-makeup-xinh-dep-bang-do-an-trong-tu-lanh-3509827.html',
+    #     'http://ione.vnexpress.net/tin-tuc/thoi-trang/bo-anh-mac-vay-to-son-loe-loet-cua-mau-nam-next-top-gay-tranh-cai-3539779.html'
+    # ]
+
+    # urls = [
+    #     'http://nongnghiep.vn/tung-doan-xe-noi-dai-truoc-cong-lam-thao-post186584.html',
+    #     'http://nongnghiep.vn/nu-sinh-tphcm-se-mac-ao-dai-it-nhat-2-buoi-tuan-post186679.html',
+    #     'http://nongnghiep.vn/tao-dieu-kien-thuan-loi-cung-ung-dich-vu-giao-duc-dao-tao-post186386.html'
+    # ]
+
     # for url in urls:
-    result = news_normalizer.normalize(url=urls[5], timeout=15)
+    result = news_normalizer.normalize(url=urls[2], timeout=15)
     print(json.dumps(result, indent=4, ensure_ascii=False))
 
 
 def main():
     # try_crawler()
-    try_normalizer()
+    # try_normalizer()
     return
 
 

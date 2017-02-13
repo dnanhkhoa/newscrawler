@@ -39,8 +39,7 @@ class BaoDatVietVnParser(SubBaseParser):
         # Tìm thẻ chứa chuỗi thời gian đăng bài
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_time_tag_func(html):
-            p_tag = html.find('p', class_='time')
-            return None if p_tag is None else p_tag
+            return html.find('p', class_='time')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 
@@ -128,6 +127,10 @@ class BaoDatVietVnParser(SubBaseParser):
                     current_tag.decompose()
             tag.decompose()
         return super()._pre_process(html)
+
+    # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
+    # def _post_process(self, html):
+    #     return html
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)

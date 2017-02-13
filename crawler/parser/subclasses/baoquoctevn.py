@@ -80,8 +80,7 @@ class BaoQuocTeVnParser(SubBaseParser):
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_time_tag_func(html):
-            div_tag = html.find('div', class_='dateUp')
-            return None if div_tag is None else div_tag
+            return html.find('div', class_='dateUp')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 
@@ -95,6 +94,6 @@ class BaoQuocTeVnParser(SubBaseParser):
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
         # self._vars[''] =
 
-    # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
-    # def _pre_process(self, html):
-    #     return super()._pre_process(html)
+        # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
+        # def _pre_process(self, html):
+        #     return super()._pre_process(html)

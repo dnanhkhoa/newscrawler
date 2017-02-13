@@ -33,7 +33,7 @@ class BaoDatVietVnParser(SubBaseParser):
                 return None
 
             a_tag = div_tag.find('a', class_='active')
-            return None if a_tag is None else a_tag
+            return a_tag
 
         self._vars['get_active_tag_func'] = get_active_tag_func
 
@@ -69,8 +69,7 @@ class BaoDatVietVnParser(SubBaseParser):
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_time_tag_func(html):
-            p_tag = html.find('p', class_='time')
-            return None if p_tag is None else p_tag
+            return html.find('p', class_='time')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 
