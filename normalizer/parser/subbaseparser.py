@@ -599,13 +599,15 @@ class SubBaseParser(BaseParser):
         get_author_tag_func = self._vars.get('get_author_tag_func')
         if get_author_tag_func is not None:
             author_tag = get_author_tag_func(html)
-            # Chèn thêm kí tự xuống dòng nếu có thẻ <br/>
-            br_tags = author_tag.find_all('br')
-            for br_tag in br_tags:
-                br_tag.insert_after('\r\n')
-
             authors = []
             if author_tag is not None:
+                # Chèn thêm kí tự xuống dòng nếu có thẻ <br/>
+
+                # Xem xét có nên thêm thẻ div và p vào không?
+                br_tags = author_tag.find_all('br')
+                for br_tag in br_tags:
+                    br_tag.insert_after('\r\n')
+
                 lines = regex.split(r'(?:\r?\n)+', author_tag.text)
                 for line in lines:
                     if is_valid_string(line):

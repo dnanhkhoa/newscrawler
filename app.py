@@ -119,7 +119,7 @@ def main():
                             post_data_to_db(source_url, file_name[2:] + '.txt', category, str(date.today()),
                                             datetime.now().strftime('%H:%M:%S'), 0, publish_date, priority)
 
-                            f.write(os.path.dirname(os.path.dirname(path())) + file_name[2:] + '.raw.tok\n')
+                            f.write(os.path.dirname(path()) + file_name[2:] + '.raw.tok\n')
 
                             max_id += 1
                         except Exception as e:
