@@ -119,19 +119,20 @@ def get_soup(string, clear_special_chars=False):
 
 
 # Tạo thẻ video theo format yêu cầu
-def create_video_tag(src, mime_type=None, width=375, height=280, video_tag_name='video', source_tag_name='source'):
+def create_video_tag(src, thumbnail=None, mime_type=None, width=375, height=280, video_tag_name='video',
+                     source_tag_name='source'):
     assert src is not None, 'Tham số src không được là None'
-    if mime_type is None:
-        mime_type = 'video/mp4'
 
     source_tag = create_html_tag(source_tag_name)
     source_tag['src'] = src
-    source_tag['type'] = mime_type
+    source_tag['type'] = 'video/mp4' if mime_type is None else mime_type
 
     video_tag = create_html_tag(video_tag_name)
     video_tag['width'] = width
     video_tag['height'] = height
     video_tag['controls'] = None
+    video_tag['onclick'] = 'this.play()'
+    video_tag['poster'] = '' if thumbnail is None else thumbnail
     video_tag.append(source_tag)
 
     return video_tag

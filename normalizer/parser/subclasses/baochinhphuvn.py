@@ -22,6 +22,9 @@ class BaoChinhPhuVnParser(SubBaseParser):
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
+        # URL ảnh mặc định dùng làm thumbnail cho video khi chưa play
+        # self._default_video_thumbnail_url =
+
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
         # Tìm thẻ chứa tiêu đề
@@ -83,13 +86,14 @@ class BaoChinhPhuVnParser(SubBaseParser):
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
         self._vars['html_cookies'] = {}
 
+        self._post_id_regex = regex.compile(r'\/(\d+).vgp', regex.IGNORECASE)
         self._cookie_regex = regex.compile(r'<body><script>document\.cookie="([^=]+)=([^"]+)"', regex.IGNORECASE)
 
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
-    def _handle_video(self, html, timeout=15):
-        return html
+    # def _handle_video(self, html, timeout=15):
+    #     return html
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     def _pre_process(self, html):
@@ -114,6 +118,12 @@ class BaoChinhPhuVnParser(SubBaseParser):
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _post_process(self, html):
     #     return html
+
+    def _get_mobile_url(self, html, url):
+        matcher = self._post_id_regex.search(url)
+        if matcher is not None:
+            return 'http://mnews.chinhphu.vn/Story.aspx?did=' + matcher.group(1)
+        return super()._get_mobile_url(html, url)
 
     def _get_html(self, url, timeout=15, attempts=3):
         assert url is not None, 'Tham số url không được là None'

@@ -1,6 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-from abc import abstractmethod
 
 import bleach
 from bs4 import NavigableString
@@ -12,6 +11,8 @@ from normalizer.parser import BaseParser
 class SubBaseParser(BaseParser):
     def __init__(self):
         super().__init__()
+        # URL ảnh mặc định dùng làm thumbnail cho video khi chưa play
+        self._default_video_thumbnail_url = None
 
     # Hàm trả về mobile url nếu có
     def _get_mobile_url(self, html, url):
@@ -156,9 +157,8 @@ class SubBaseParser(BaseParser):
         return get_datetime_func(normalize_string(time_tag.text))
 
     # Xử lí các videos có trong bài viết
-    @abstractmethod
     def _handle_video(self, html, timeout=15):
-        pass
+        return html
 
     # Xử lí hình ảnh và caption có trong bài viết
     def _handle_image(self, html, title=None):
@@ -219,7 +219,8 @@ class SubBaseParser(BaseParser):
                 author_classes = []
 
             caption_classes.extend(['desc', 'pic', 'img', 'box', 'cap', 'photo', 'hinh', 'anh', 'def'])
-            author_classes.extend(['author', 'copyright', 'source', 'nguon', 'tac-gia', 'tacgia'])
+            author_classes.extend(
+                ['author', 'copyright', 'source', 'nguon', 'tac-gia', 'tacgia', 'ban-quyen', 'banquyen'])
 
             caption_classes_regex = regex.compile(r'(?:%s)' % '|'.join(caption_classes), regex.IGNORECASE)
             author_classes_regex = regex.compile(r'(?:%s)' % '|'.join(author_classes), regex.IGNORECASE)
@@ -404,9 +405,11 @@ class SubBaseParser(BaseParser):
             previous_sibling = all(
                 isinstance(sibling, NavigableString) and not is_valid_string(sibling, r'\s+') for sibling in
                 child_tags[0].previous_siblings)
+
             next_sibling = all(
                 isinstance(sibling, NavigableString) and not is_valid_string(sibling, r'\s+') for sibling in
                 child_tags[0].next_siblings)
+
             if previous_sibling and next_sibling:
                 div_classes = div_tag.get('class')
                 if div_classes is None:
@@ -551,7 +554,7 @@ class SubBaseParser(BaseParser):
 
         attrs = {
             'video': ['width', 'height', 'controls'],
-            'source': ['src', 'type'],  # Controls
+            'source': ['src', 'type'],
             'img': ['src', 'alt'],
             'div': ['class'],
             'span': ['class']
@@ -595,6 +598,9 @@ class SubBaseParser(BaseParser):
 
         main_content_tag = html
         html = html.find_parent('html')
+
+        if html is None:
+            return None
 
         get_author_tag_func = self._vars.get('get_author_tag_func')
         if get_author_tag_func is not None:
@@ -690,6 +696,8 @@ class SubBaseParser(BaseParser):
 
         main_content_tag = html
         html = html.find_parent('html')
+        if html is None:
+            return None
 
         get_thumbnail_url_func = self._vars.get('get_thumbnail_url_func')
         thumbnail_url = self._get_og_image(html=html) if get_thumbnail_url_func is None \
@@ -716,9 +724,9 @@ class SubBaseParser(BaseParser):
         for tag in tags:
             tag.name = 'p'
             tag.attrs = {}
-            string = normalize_string(tag.text)
-            if is_valid_string(string=string):
-                tag.string = string
+            normalized_string = normalize_string(tag.text)
+            if is_valid_string(string=normalized_string):
+                tag.string = normalized_string
             else:
                 tag.decompose()
 
@@ -729,11 +737,15 @@ class SubBaseParser(BaseParser):
     def _get_plain(self, html):
         if html is None:
             return None
+
         lines = []
         tags = html.find_all('p')
         for tag in tags:
             if tag.get('class') is None:
-                lines.append(normalize_string(tag.text))
+                normalized_string = normalize_string(tag.text)
+                if len(normalized_string) > 0 and normalized_string[-1] not in ',.;!?:-':
+                    normalized_string += '.'
+                lines.append(normalized_string)
         return ' '.join(lines)
 
     # Hàm chính để gọi các hàm con và tạo kết quả
@@ -754,7 +766,9 @@ class SubBaseParser(BaseParser):
         content = self._get_content(html=normalized_content)
         plain = self._get_plain(html=normalized_content)
 
-        return self._build_json(url=url, mobile_url=mobile_url, title=post_title, alias=alias,
-                                meta_keywords=meta_keywords, meta_description=meta_description,
-                                publish_date=publish_date, author=author, tags=tags, thumbnail=thumbnail,
-                                summary=summary, content=content, plain=plain)
+        json_result = self._build_json(url=url, mobile_url=mobile_url, title=post_title, alias=alias,
+                                       meta_keywords=meta_keywords, meta_description=meta_description,
+                                       publish_date=publish_date, author=author, tags=tags, thumbnail=thumbnail,
+                                       summary=summary, content=content, plain=plain)
+
+        return Result(content=json_result)

@@ -32,10 +32,7 @@ class NongNghiepVnParser(SubBaseParser):
         # Trả về danh sách các urls của các bài viết có trong trang
         # Nếu có thể lấy được thời gian trực tiếp luôn thì mỗi phần tử trong danh sách phải là (url, time)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        def get_post_urls_func(html):
-            return html
-
-        self._vars['get_post_urls_func'] = get_post_urls_func
+        self._vars['get_post_urls_func'] = lambda x: x
 
         # Sử dụng trong trường hợp không thể lấy được thời gian trực tiếp trên trang
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
@@ -83,6 +80,9 @@ class NongNghiepVnParser(SubBaseParser):
                     source.append((a_tag.get('href'), datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')))
 
         data = self._get_posts(category_id=category_id, page_id=page_id)
+        if data is None:
+            return None
+
         data = json.loads(data, encoding='UTF-8')
         data = data.get('d')
         if data is not None or len(data.strip()) > 0:

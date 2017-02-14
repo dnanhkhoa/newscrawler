@@ -22,6 +22,9 @@ class BaoDatVietVnParser(SubBaseParser):
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
+        # URL ảnh mặc định dùng làm thumbnail cho video khi chưa play
+        # self._default_video_thumbnail_url =
+
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
         # Tìm thẻ chứa tiêu đề

@@ -71,7 +71,7 @@ def write_raw(obj, file_name):
                 'Content',
                 obj["Plain_Content"]
             ]
-            f.write(('\n'.join(r) + '\n').encode('UTF-8'))
+            f.write(('\r\n'.join(r) + '\r\n').encode('UTF-8'))
         except Exception as e:
             log(e)
 
@@ -119,7 +119,7 @@ def main():
                             post_data_to_db(source_url, file_name[2:] + '.txt', category, str(date.today()),
                                             datetime.now().strftime('%H:%M:%S'), 0, publish_date, priority)
 
-                            f.write(os.path.dirname(path()) + file_name[2:] + '.raw.tok\n')
+                            f.write(os.path.dirname(path()) + file_name[2:] + '.raw.tok\r\n')
 
                             max_id += 1
                         except Exception as e:

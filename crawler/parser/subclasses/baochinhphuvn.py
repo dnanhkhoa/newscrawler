@@ -31,9 +31,7 @@ class BaoChinhPhuVnParser(SubBaseParser):
             span_tag = html.find('span', id='ctl00_leftContent_ctl01_pager')
             if span_tag is None:
                 return None
-
-            a_tag = span_tag.find('a', class_='current')
-            return a_tag
+            return span_tag.find('a', class_='current')
 
         self._vars['get_active_tag_func'] = get_active_tag_func
 

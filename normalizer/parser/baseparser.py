@@ -111,6 +111,7 @@ class BaseParser(ABC):
             'SourcePage': '' if self._source_page is None else self._source_page,
             'Title': '' if title is None else title,
             'Url': '' if url is None else url,
+            'SourceUrlMobile': '' if mobile_url is None else mobile_url,
             'Author': '' if author is None else author,
             'Thumbnail': '' if thumbnail is None else thumbnail,
             'Tag': '' if tags is None else tags,
@@ -195,6 +196,6 @@ class BaseParser(ABC):
         raw_html = self._get_html(url=url, timeout=timeout)
         if raw_html is None:
             log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
-            return None
+            return Result(status_code=Result.Codes.URLError)
 
         return self._parse(url=url, html=get_soup(raw_html), timeout=timeout)

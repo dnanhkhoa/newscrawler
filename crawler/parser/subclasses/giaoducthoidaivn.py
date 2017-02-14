@@ -37,8 +37,7 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
                 li_tag.unwrap()
             span_tag.ul.unwrap()
 
-            a_tag = span_tag.find(lambda x: x.name == 'a' and len(x.attrs) == 0)
-            return a_tag
+            return span_tag.find(lambda x: x.name == 'a' and len(x.attrs) == 0)
 
         self._vars['get_active_tag_func'] = get_active_tag_func
 

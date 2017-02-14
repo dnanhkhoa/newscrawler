@@ -33,6 +33,6 @@ class Crawler(object):
 
         if domain is None:
             log('Tên miền %s chưa được hỗ trợ.' % domain)
-            return None
+            return Result(status_code=Result.Codes.Unsupported)
 
         return self._parser[domain].parse(url=url, from_date=from_date, to_date=to_date, timeout=timeout)

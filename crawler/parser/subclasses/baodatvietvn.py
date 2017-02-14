@@ -31,9 +31,7 @@ class BaoDatVietVnParser(SubBaseParser):
             div_tag = html.find('div', id='pagination')
             if div_tag is None:
                 return None
-
-            a_tag = div_tag.find('a', class_='active')
-            return a_tag
+            return div_tag.find('a', class_='active')
 
         self._vars['get_active_tag_func'] = get_active_tag_func
 
@@ -84,6 +82,6 @@ class BaoDatVietVnParser(SubBaseParser):
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
         # self._vars[''] =
 
-    # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
-    # def _pre_process(self, html):
-    #     return super()._pre_process(html)
+        # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
+        # def _pre_process(self, html):
+        #     return super()._pre_process(html)
