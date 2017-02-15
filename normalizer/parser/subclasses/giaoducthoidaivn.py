@@ -91,7 +91,7 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
-    def _handle_video(self, html, timeout=15):
+    def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
         video_tags = html.find_all('div', class_='cms-video')
         for video_tag in video_tags:
             video_url = video_tag.get('data-video-src')
@@ -110,9 +110,12 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
     # def _post_process(self, html):
     #     return html
 
+    def _get_mobile_url(self, url):
+        return url.replace('giaoducthoidai.vn', 'm.giaoducthoidai.vn')
+
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)
 
-    # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-    # def _pre_process(self, html):
-    #     return super()._pre_process(html)
+        # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
+        # def _pre_process(self, html):
+        #     return super()._pre_process(html)

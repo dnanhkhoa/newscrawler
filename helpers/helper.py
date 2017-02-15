@@ -38,6 +38,11 @@ def log(msg):
     _LOGGER.exception(msg=msg)
 
 
+# Hàm in dữ liệu ra màn hình để DEBUG
+def debug(msg):
+    print(msg)
+
+
 # Hàm đổi các kí tự đặc biệt sang kí tự thông thường
 def normalize_special_chars(string):
     assert string is not None, 'Tham số string không được là None'
@@ -92,8 +97,11 @@ def get_direct_youtube_video(url):
     # Method 2
     try:
         video = pafy.new(url=url)
+        thumbnail_url = video.bigthumb
+        if len(thumbnail_url) == 0:
+            thumbnail_url = video.thumb
         stream = video.getbest(preftype='mp4')
-        return stream.url, 'video/mp4'
+        return stream.url, thumbnail_url, 'video/mp4'
     except Exception as e:
         log(e)
     return None

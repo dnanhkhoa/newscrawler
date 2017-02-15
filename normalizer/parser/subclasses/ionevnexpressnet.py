@@ -93,7 +93,7 @@ class IOneVnExpressNetParser(SubBaseParser):
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
-    def _handle_video(self, html, timeout=15):
+    def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
         video_regex = regex.compile(r"var videoSource = '([^']+)'", regex.IGNORECASE)
         video_tags = html.find_all('div', attrs={'data-component-type': 'video', 'data-component-value': True})
         for video_tag in video_tags:

@@ -18,7 +18,7 @@ class Result(object):
         self._content = content
 
     def is_ok(self):
-        return self._status_code == Result.OK
+        return self._status_code == Result.Codes.OK
 
     def get_status_code(self):
         return self._status_code

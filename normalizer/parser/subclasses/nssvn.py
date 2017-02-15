@@ -99,7 +99,7 @@ class NhipSongSoVnParser(SubBaseParser):
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
-    def _handle_video(self, html, timeout=15):
+    def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
         return html
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
@@ -109,6 +109,9 @@ class NhipSongSoVnParser(SubBaseParser):
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _post_process(self, html):
     #     return html
+
+    def _get_mobile_url(self, url):
+        return url.replace('nss.vn', 'mobile.nss.vn')
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)

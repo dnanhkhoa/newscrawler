@@ -25,16 +25,20 @@ class BaseParser(ABC):
         self._domain_regex = None
         # Biến chứa các hàm lambda hoặc con trỏ hàm giúp kế thùa linh động hơn.
         self._vars = {}
+        # Biến vars có thể được sử dụng cho nhiều mục đích khác
+        self._vars['requests_cookies'] = {}
 
     # Tải nội dung web
     def _get_html(self, url, timeout=15, attempts=3):
         assert url is not None, 'Tham số url không được là None'
         while attempts > 0:
             try:
-                response = requests.get(url=url, timeout=timeout, allow_redirects=False)
+                response = requests.get(url=url, timeout=timeout, cookies=self._vars['requests_cookies'],
+                                        allow_redirects=False)
                 if response.status_code == requests.codes.ok:
                     return response.content.decode('UTF-8')
             except RequestException as e:
+                debug(url)
                 log(e)
             attempts -= 1
         return None
@@ -46,6 +50,7 @@ class BaseParser(ABC):
             with urllib.request.urlopen(url) as response:
                 return response.getcode() == 200
         except (HTTPError, URLError) as e:
+            debug(url)
             log(e)
         return False
 
@@ -57,6 +62,7 @@ class BaseParser(ABC):
                 info = response.info()
                 return info.get_content_type()
         except (HTTPError, URLError) as e:
+            debug(url)
             log(e)
         return None
 
@@ -126,7 +132,7 @@ class BaseParser(ABC):
 
     # Trả về mobile url của bài viết
     @abstractmethod
-    def _get_mobile_url(self, html, url):
+    def _get_mobile_url(self, url):
         pass
 
     # Trả về tiêu đề của bài viết

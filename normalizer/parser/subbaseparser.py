@@ -15,7 +15,7 @@ class SubBaseParser(BaseParser):
         self._default_video_thumbnail_url = None
 
     # Hàm trả về mobile url nếu có
-    def _get_mobile_url(self, html, url):
+    def _get_mobile_url(self, url):
         return url
 
     # Nếu trang có thẻ meta này thì nên dùng vì nó thường chính xác
@@ -157,7 +157,7 @@ class SubBaseParser(BaseParser):
         return get_datetime_func(normalize_string(time_tag.text))
 
     # Xử lí các videos có trong bài viết
-    def _handle_video(self, html, timeout=15):
+    def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
         return html
 
     # Xử lí hình ảnh và caption có trong bài viết
@@ -184,8 +184,13 @@ class SubBaseParser(BaseParser):
                     if child_tag_classes is not None:
                         next_div_classes.extend(child_tag_classes)
 
-                if regex.search(r'(?:caption|center|italic)', ' '.join(list(set(next_div_classes))), regex.IGNORECASE):
-                    caption_tag = create_caption_tag(next_div_tag.text)
+                caption_string = next_div_tag.text
+
+                if regex.search(r'(?:caption|center|italic)', ' '.join(list(set(next_div_classes))),
+                                regex.IGNORECASE) is not None or regex.search(r'(?:(?:ảnh|nguồn)[^:]*:)',
+                                                                              caption_string,
+                                                                              regex.IGNORECASE) is not None:
+                    caption_tag = create_caption_tag(caption_string)
                     next_div_tag.replace_with(caption_tag)
 
             new_img_tag = create_image_tag(url=image_url, alt=title)
@@ -530,7 +535,8 @@ class SubBaseParser(BaseParser):
         main_content_tag.attrs = {}
 
         # Xử lí thẻ video
-        main_content_tag = self._handle_video(html=main_content_tag, timeout=timeout)
+        main_content_tag = self._handle_video(html=main_content_tag,
+                                              default_thumbnail_url=self._default_video_thumbnail_url, timeout=timeout)
 
         # Xóa các thẻ không quan trọng
         main_content_tag = remove_tags(html=main_content_tag,
@@ -553,7 +559,7 @@ class SubBaseParser(BaseParser):
             tag.attrs = {'class': classes} if len(classes) > 0 else {}
 
         attrs = {
-            'video': ['width', 'height', 'controls'],
+            'video': ['width', 'height', 'controls', 'onclick', 'poster'],
             'source': ['src', 'type'],
             'img': ['src', 'alt'],
             'div': ['class'],
@@ -703,7 +709,7 @@ class SubBaseParser(BaseParser):
         thumbnail_url = self._get_og_image(html=html) if get_thumbnail_url_func is None \
             else get_thumbnail_url_func(html)
 
-        if thumbnail_url is None:
+        if thumbnail_url is None or not self._is_valid_image_url(url=thumbnail_url):
             img_tag = main_content_tag.find('img', attrs={'src': True})
             return None if img_tag is None else img_tag.get('src')
 
@@ -751,7 +757,7 @@ class SubBaseParser(BaseParser):
     # Hàm chính để gọi các hàm con và tạo kết quả
     def _parse(self, url, html, timeout=15):
         alias = self._get_alias(url=url)
-        mobile_url = self._get_mobile_url(html=html, url=url)
+        mobile_url = self._get_mobile_url(url=url)
         post_title = self._get_post_title(html=html)
         meta_keywords = self._get_meta_keywords(html=html)
         meta_description = self._get_meta_description(html=html)

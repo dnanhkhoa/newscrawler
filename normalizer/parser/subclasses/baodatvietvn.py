@@ -22,9 +22,6 @@ class BaoDatVietVnParser(SubBaseParser):
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
-        # URL ảnh mặc định dùng làm thumbnail cho video khi chưa play
-        # self._default_video_thumbnail_url =
-
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
         # Tìm thẻ chứa tiêu đề
@@ -90,7 +87,7 @@ class BaoDatVietVnParser(SubBaseParser):
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
-    def _handle_video(self, html, timeout=15):
+    def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
         video_regex = regex.compile(r"ShowVideo\([^,]+,'([^']+)'", regex.IGNORECASE)
         script_tags = html.find_all('script')
         for script_tag in script_tags:
@@ -134,6 +131,9 @@ class BaoDatVietVnParser(SubBaseParser):
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _post_process(self, html):
     #     return html
+
+    def _get_mobile_url(self, url):
+        return url.replace('baodatviet.vn', 'm.baodatviet.vn')
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)

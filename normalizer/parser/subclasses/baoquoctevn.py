@@ -86,7 +86,7 @@ class BaoQuocTeVnParser(SubBaseParser):
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
-    def _handle_video(self, html, timeout=15):
+    def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
         video_regex = regex.compile(r'file: "([^"]+)"', regex.IGNORECASE)
         p_tags = html.find_all('p', class_='___widget_video_article')
         for p_tag in p_tags:
