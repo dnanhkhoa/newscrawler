@@ -11,6 +11,8 @@ from normalizer.parser import BaseParser
 class SubBaseParser(BaseParser):
     def __init__(self):
         super().__init__()
+        # Rút trích video id trong link nhúng từ youtube
+        self._youtube_id_regex = regex.compile(r'embed\/([\w-]{11})', regex.IGNORECASE)
         # URL ảnh mặc định dùng làm thumbnail cho video khi chưa play
         self._default_video_thumbnail_url = None
 
@@ -158,6 +160,25 @@ class SubBaseParser(BaseParser):
 
     # Xử lí các videos có trong bài viết
     def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
+        # Xử lí tự động link youtube được nhúng vào
+        video_tags = html.find_all(
+            lambda x: x.name == 'iframe' and x.get('src') is not None and '.youtu' in x.get('src'))
+
+        for video_tag in video_tags:
+            video_url = video_tag.get('src')
+
+            matcher = self._youtube_id_regex.search(video_url)
+            if matcher is not None:
+                video_url = matcher.group(1)
+
+            obj = get_direct_youtube_video(url=video_url)
+            if obj is None:
+                video_tag.decompose()
+            else:
+                video_url, video_thumbnail_url, mime_type = obj
+                new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url, mime_type=mime_type)
+                video_tag.replace_with(new_video_tag)
+
         return html
 
     # Xử lí hình ảnh và caption có trong bài viết

@@ -73,23 +73,44 @@ def try_crawler():
     #     'http://hanoimoi.com.vn/Danh-muc-tin/741/Hau-truong'
     # ]
 
-    urls = [
-        'http://nongnghiep.vn/giai-tri-27-15.html',
-        'http://nongnghiep.vn/giao-duc-28-15.html',
-        'http://nongnghiep.vn/kinh-te-3-15.html',
-        'http://nongnghiep.vn/phap-luat-15-15.html',
-        'http://nongnghiep.vn/the-gioi-8-15.html',
-        'http://nongnghiep.vn/the-thao-29-15.html',
-        'http://nongnghiep.vn/van-hoa-26-15.html'
-    ]
+    # urls = [
+    #     'http://nongnghiep.vn/giai-tri-27-15.html',
+    #     'http://nongnghiep.vn/giao-duc-28-15.html',
+    #     'http://nongnghiep.vn/kinh-te-3-15.html',
+    #     'http://nongnghiep.vn/phap-luat-15-15.html',
+    #     'http://nongnghiep.vn/the-gioi-8-15.html',
+    #     'http://nongnghiep.vn/the-thao-29-15.html',
+    #     'http://nongnghiep.vn/van-hoa-26-15.html'
+    # ]
 
-    from_date = '2017-01-05'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
-    to_date = '2017-02-12'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
+    # urls = [
+    #     'http://giaoducthoidai.vn/kinh-te-xa-hoi/',
+    #     'http://giaoducthoidai.vn/phap-luat/',
+    #     'http://giaoducthoidai.vn/the-gioi/',
+    #     'http://giaoducthoidai.vn/kinh-te-xa-hoi/',
+    #     'http://giaoducthoidai.vn/giao-duc/',
+    #     'http://giaoducthoidai.vn/the-gioi-sao/',
+    #     'http://giaoducthoidai.vn/khoa-hoc/',
+    #     'http://giaoducthoidai.vn/lam-dep/'
+    # ]
+
+    # urls = [
+    #     'http://infogame.vn/thong-tin.html',
+    #     'http://infogame.vn/chuyen-dong-game.html',
+    #     'http://infogame.vn/cong-dong.html',
+    #     'http://infogame.vn/anh-video.html'
+    # ]
+
+    from_date = '2017-02-05'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    to_date = '2017-02-15'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
     for url in urls:
         result = news_crawler.crawl(url=url, from_date=from_date, to_date=to_date, timeout=timeout)
-        print(len(result), result)
+        if not result.is_ok():
+            continue
+        content = result.get_content()
+        print(len(content), content)
 
 
 def try_normalizer():
@@ -112,14 +133,14 @@ def try_normalizer():
     #     'http://baochinhphu.vn/APEC-2017/APEC-phai-khang-dinh-vai-tro-dien-dan-kinh-te-hang-dau/293647.vgp'
     # ]
 
-    urls = [
-        'http://baodatviet.vn/the-gioi/quan-he-quoc-te/ai-chi-tien-ban-cho-hacker-nga-pha-hoai-nha-nuoc-nga-3328984/',
-        'http://baodatviet.vn/the-gioi/tin-tuc-24h/bao-nhat-bien-dong-nhan-su-cap-cao-trung-quoc-3328980/',
-        'http://baodatviet.vn/kinh-te/dai-gia/the-gioi-choang-voi-du-thuyen-9900-ty-3328994/',
-        'http://baodatviet.vn/kinh-te/tai-chinh/dong-nhan-dan-te-yeu-den-luc-trung-quoc-phai-so-3328852/',
-        'http://baodatviet.vn/quoc-phong/vu-khi/my-chi-nguyen-nhan-khien-nga-chua-the-trang-bi-t-50-3328904/',
-        'http://baodatviet.vn/anh-nong/minuteman-3-nam-ngoai-kha-nang-danh-chan-cua-nga-3328897/'
-    ]
+    # urls = [
+    #     'http://baodatviet.vn/the-gioi/quan-he-quoc-te/ai-chi-tien-ban-cho-hacker-nga-pha-hoai-nha-nuoc-nga-3328984/',
+    #     'http://baodatviet.vn/the-gioi/tin-tuc-24h/bao-nhat-bien-dong-nhan-su-cap-cao-trung-quoc-3328980/',
+    #     'http://baodatviet.vn/kinh-te/dai-gia/the-gioi-choang-voi-du-thuyen-9900-ty-3328994/',
+    #     'http://baodatviet.vn/kinh-te/tai-chinh/dong-nhan-dan-te-yeu-den-luc-trung-quoc-phai-so-3328852/',
+    #     'http://baodatviet.vn/quoc-phong/vu-khi/my-chi-nguyen-nhan-khien-nga-chua-the-trang-bi-t-50-3328904/',
+    #     'http://baodatviet.vn/anh-nong/minuteman-3-nam-ngoai-kha-nang-danh-chan-cua-nga-3328897/'
+    # ]
 
     # urls = [
     #     'http://baoquocte.vn/dang-co-hien-tuong-tham-nhung-ve-tam-linh-44131.html',
@@ -130,14 +151,15 @@ def try_normalizer():
     #     'http://baoquocte.vn/ve-dep-cuon-hut-cua-de-nhat-phu-nhan-my-43888.html'
     # ]
 
-    # urls = [
-    #     'http://hanoimoi.com.vn/Tin-tuc/Chinh-tri/862286/chu-tich-nuoc-du-le-khanh-thanh-den-tho-vua-mai-hac-de',
-    #     'http://hanoimoi.com.vn/Tin-tuc/Gioi-tre/862203/thanh-nien-thu-do-san-sang-nhap-ngu',
-    #     'http://hanoimoi.com.vn/Tin-tuc/Ngoai-hang-Anh/862291/cuu-danh-thu-ha-lan-qua-doi-o-tuoi-73',
-    #     'http://hanoimoi.com.vn/Tin-tuc/Cong-nghe/862276/the-he-chip-intel-core-thu-8-se-khong-thuc-su-vuot-troi',
-    #     'http://hanoimoi.com.vn/Media/Du-lich/862131/cafe-sua-da-viet-nam-lot-danh-sach-nhung-coc-cafe-ngon-nhat-the-gioi',
-    #     'http://hanoimoi.com.vn/Media/Chinh-tri/862233/thuong-truc-thanh-uy-ha-noi-gap-mat-cac-hoi-vien-clb-thang-long'
-    # ]
+    urls = [
+        'http://hanoimoi.com.vn/Media/Chuyen-la/845406/video-co-gai-bi-tum-toc-keo-le-ma-khong-ai-cuu-gay-chu-y-tuan-qua',
+        'http://hanoimoi.com.vn/Tin-tuc/Chinh-tri/862286/chu-tich-nuoc-du-le-khanh-thanh-den-tho-vua-mai-hac-de',
+        'http://hanoimoi.com.vn/Tin-tuc/Gioi-tre/862203/thanh-nien-thu-do-san-sang-nhap-ngu',
+        'http://hanoimoi.com.vn/Tin-tuc/Ngoai-hang-Anh/862291/cuu-danh-thu-ha-lan-qua-doi-o-tuoi-73',
+        'http://hanoimoi.com.vn/Tin-tuc/Cong-nghe/862276/the-he-chip-intel-core-thu-8-se-khong-thuc-su-vuot-troi',
+        'http://hanoimoi.com.vn/Media/Du-lich/862131/cafe-sua-da-viet-nam-lot-danh-sach-nhung-coc-cafe-ngon-nhat-the-gioi',
+        'http://hanoimoi.com.vn/Media/Chinh-tri/862233/thuong-truc-thanh-uy-ha-noi-gap-mat-cac-hoi-vien-clb-thang-long'
+    ]
 
     # urls = [
     #     'http://ione.vnexpress.net/tin-tuc/nhip-song/nhung-kiet-tac-rong-co-the-khien-rong-hai-phong-chao-thua-3528937.html',
@@ -151,19 +173,33 @@ def try_normalizer():
     # ]
 
     # urls = [
+    #     'http://nongnghiep.vn/video-trung-quoc-xay-cau-phao-dai-hon-1000-m-trong-27-phut-post183533.html',
+    #     'http://nongnghiep.vn/video-nguoi-dan-ong-bi-dan-ho-vo-den-chet-trong-vuon-thu-trung-quoc-post186004.html',
+    #     'http://nongnghiep.vn/video-nu-cau-tac-bi-deo-cho-chet-vao-co-post177680.html',
+    #     'http://nongnghiep.vn/video-kim-jong-nam-bi-sat-hai-nhu-the-nao-post187146.html',
     #     'http://nongnghiep.vn/tung-doan-xe-noi-dai-truoc-cong-lam-thao-post186584.html',
     #     'http://nongnghiep.vn/nu-sinh-tphcm-se-mac-ao-dai-it-nhat-2-buoi-tuan-post186679.html',
     #     'http://nongnghiep.vn/tao-dieu-kien-thuan-loi-cung-ung-dich-vu-giao-duc-dao-tao-post186386.html'
     # ]
 
-    #for url in urls:
-    result = news_normalizer.normalize(url='http://hanoimoi.com.vn/Tin-tuc/Xa-hoi/862499/tin-nong-ngay-15-2-chay-nha-40-bat-dan-mot-cu-ba-tu-vong', timeout=15)
-    print(json.dumps(result.get_content(), indent=4, ensure_ascii=False))
+    # urls = [
+    #     'http://www.nss.vn/ca2-n35240-video-dung-oc-sen-de-ve-sinh-iphone-7.htm',
+    #     'http://www.nss.vn/ca2-n35998-video-lg-g6-chiec-smartphone-hoan-hao.htm',
+    #     'http://www.nss.vn/ca21-n36363-doanh-so-smartphone-toan-cau-nam-2016-dat-gan-15-ti-chiec.htm',
+    #     'http://www.nss.vn/ca100-n36365-hang-trieu-tai-khoan-twitter-duoc-dang-ky-tai-viet-nam-bi-rao-ban.htm',
+    #     'http://www.nss.vn/ca113-n36350-khach-du-lich-se-duoc-trai-nghiem-taxi-drone-o-dubai.htm',
+    #     'http://www.nss.vn/ca27-n36361-niantic-da-chuan-bi-tung-ra-mot-ban-cap-nhat-moi-cho-tua-game-pokemon-go.htm',
+    #     'http://www.nss.vn/ca27-n36298-google-danh-tang-mini-game-valentine-cho-te-te.htm'
+    # ]
+
+    for url in urls:
+        result = news_normalizer.normalize(url=url, timeout=15)
+        print(json.dumps(result.get_content(), indent=4, ensure_ascii=False))
 
 
 def main():
-    try_crawler()
-    # try_normalizer()
+    # try_crawler()
+    try_normalizer()
     return
 
 

@@ -47,7 +47,7 @@ class BaseParser(ABC):
     def _is_valid_image_url(self, url):
         assert url is not None, 'Tham số url không được là None'
         try:
-            with urllib.request.urlopen(url) as response:
+            with urllib.request.urlopen(url_encode(url)) as response:
                 return response.getcode() == 200
         except (HTTPError, URLError) as e:
             debug(url)
@@ -58,7 +58,7 @@ class BaseParser(ABC):
     def _get_mime_type_from_url(self, url):
         assert url is not None, 'Tham số url không được là None'
         try:
-            with urllib.request.urlopen(url) as response:
+            with urllib.request.urlopen(url_encode(url)) as response:
                 info = response.info()
                 return info.get_content_type()
         except (HTTPError, URLError) as e:

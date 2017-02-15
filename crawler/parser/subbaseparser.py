@@ -117,7 +117,7 @@ class SubBaseParser(BaseParser):
         if get_next_url_func is None:
             return html, None
 
-        next_url = get_next_url_func(html)
+        next_url = get_next_url_func(html, url)
 
         return html, None if next_url is None else self._get_absolute_url(url=next_url, domain=url)
 
@@ -144,7 +144,7 @@ class SubBaseParser(BaseParser):
                         urls.append(self._get_absolute_url(url=a_tag.get('href'), domain=url))
                     return urls
 
-        return [url]
+        return url
 
     def parse(self, url, from_date=None, to_date=None, timeout=15):
         urls = []
@@ -168,6 +168,9 @@ class SubBaseParser(BaseParser):
         child_category_urls = self._get_child_category_urls(url=url, timeout=timeout)
         if child_category_urls is None:
             return urls
+
+        if not isinstance(child_category_urls, list):
+            child_category_urls = [child_category_urls]
 
         # Lọc bỏ link trùng
         child_category_urls = list(set(child_category_urls))

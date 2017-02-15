@@ -22,6 +22,9 @@ class BaoQuocTeVnParser(SubBaseParser):
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
+        self._video_regex = regex.compile(r'file: "([^"]+)"', regex.IGNORECASE)
+        self._video_thumbnail_regex = regex.compile(r'image: "([^"]+)"', regex.IGNORECASE)
+
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
         # Tìm thẻ chứa tiêu đề
@@ -87,19 +90,30 @@ class BaoQuocTeVnParser(SubBaseParser):
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
     def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
-        video_regex = regex.compile(r'file: "([^"]+)"', regex.IGNORECASE)
         p_tags = html.find_all('p', class_='___widget_video_article')
         for p_tag in p_tags:
+            video_thumbnail_url = default_thumbnail_url
+
             video_id = p_tag.get('item-id')
             source = self._get_html(url='http://baoquocte.vn/apiservice@/article_player&play_now=yes&i=%s' % video_id,
                                     timeout=timeout)
-            matcher = video_regex.search(source)
+
+            thumbnail_matcher = self._video_thumbnail_regex.search(source)
+            if thumbnail_matcher is not None:
+                thumbnail_url = thumbnail_matcher.group(1)
+                if self._is_valid_image_url(url=thumbnail_url):
+                    video_thumbnail_url = thumbnail_url
+
+            matcher = self._video_regex.search(source)
             if matcher is not None:
                 video_url = matcher.group(1)
-                video_tag = create_video_tag(src=video_url, mime_type=self._get_mime_type_from_url(url=video_url))
-                p_tag.insert_before(video_tag)
+                new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
+                                                 mime_type=self._get_mime_type_from_url(url=video_url))
+                p_tag.insert_before(new_video_tag)
+
             p_tag.decompose()
-        return html
+
+        return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     def _pre_process(self, html):
@@ -117,7 +131,3 @@ class BaoQuocTeVnParser(SubBaseParser):
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)
-
-        # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-        # def _pre_process(self, html):
-        #     return super()._pre_process(html)

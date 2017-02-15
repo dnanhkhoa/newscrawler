@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
-# Done
+#
 from normalizer.parser import *
 
 
@@ -85,7 +85,7 @@ class NhipSongSoVnParser(SubBaseParser):
         # Chỉ định các nhãn được phép và không được phép dùng để dự đoán author
         # Các nhãn: author, center, right, bold, italic
         # Phân cách nhau bởi dấu | và những nhãn nào không được phép thì có tiền tố ^ ở đầu
-        # Ví dụ: 'right|bold|caption|^center|^italic'
+        # Ví dụ: 'right|bold|author|^center|^italic'
         # self._vars['author_classes_pattern'] =
 
         # Trả về url chứa hình ảnh thumbnail được lưu ở thẻ bên ngoài nội dung chính
@@ -99,8 +99,8 @@ class NhipSongSoVnParser(SubBaseParser):
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
-    def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
-        return html
+    # def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
+    #     return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _pre_process(self, html):
@@ -111,7 +111,7 @@ class NhipSongSoVnParser(SubBaseParser):
     #     return html
 
     def _get_mobile_url(self, url):
-        return url.replace('nss.vn', 'mobile.nss.vn')
+        return url.replace('www.nss.vn', 'mobile.nss.vn')
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)

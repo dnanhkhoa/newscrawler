@@ -9,7 +9,7 @@ import os
 from datetime import datetime
 from inspect import getmembers, isclass
 from os.path import splitext
-from urllib.parse import urlparse
+from urllib.parse import urlparse, quote
 
 import pafy
 import regex
@@ -83,6 +83,12 @@ def clean_url_query(url):
     return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path)
 
 
+# Hàm chuẩn hóa url (thường dùng nếu URL chứa kí tự Unicode)
+def url_encode(url):
+    assert url is not None, 'Tham số url không được là None'
+    return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
+
+
 # Lấy direct link tạm thời từ youtube
 def get_direct_youtube_video(url):
     assert url is not None, 'Tham số url không được là None'
@@ -103,6 +109,7 @@ def get_direct_youtube_video(url):
         stream = video.getbest(preftype='mp4')
         return stream.url, thumbnail_url, 'video/mp4'
     except Exception as e:
+        debug(url)
         log(e)
     return None
 

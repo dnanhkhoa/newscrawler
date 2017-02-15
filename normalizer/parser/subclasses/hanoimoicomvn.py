@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
-# Done
+
 from normalizer.parser import *
 
 
@@ -21,6 +21,9 @@ class HaNoiMoiComVnParser(SubBaseParser):
 
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
+
+        self._video_regex = regex.compile(r"file: '([^']+)'", regex.IGNORECASE)
+        self._video_thumbnail_regex = regex.compile(r'image: "([^"]+)"', regex.IGNORECASE)
 
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
@@ -105,26 +108,47 @@ class HaNoiMoiComVnParser(SubBaseParser):
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_thumbnail_url_func'] =
 
+        # Biến vars có thể được sử dụng cho nhiều mục đích khác
+        # self._vars[''] =
+
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
     def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
-        video_regex = regex.compile(r"file: '([^']+)'", regex.IGNORECASE)
         html_tag = html.find_parent('html')
         if html_tag is not None:
             script_tags = html_tag.find_all('script')
             for script_tag in script_tags:
-                matcher = video_regex.search(script_tag.text)
+                video_thumbnail_url = default_thumbnail_url
+
+                script_content = script_tag.text
+
+                thumbnail_matcher = self._video_thumbnail_regex.search(script_content)
+                if thumbnail_matcher is not None:
+                    thumbnail_url = thumbnail_matcher.group(1)
+                    if self._is_valid_image_url(url=self._get_absolute_url(url=thumbnail_url)):
+                        video_thumbnail_url = thumbnail_url
+
+                matcher = self._video_regex.search(script_content)
                 if matcher is not None:
                     video_url = matcher.group(1)
                     if 'youtu' in video_url:
-                        video_url, mine_type = get_direct_youtube_video(video_url)
+                        obj = get_direct_youtube_video(video_url)
+                        if obj is None:
+                            script_tag.decompose()
+                            continue
+
+                        video_url, video_thumbnail_url, mime_type = obj
                     else:
                         mine_type = self._get_mime_type_from_url(url=video_url)
-                    video_tag = create_video_tag(src=video_url, mime_type=mine_type)
-                    html.insert(0, video_tag)
+
+                    new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
+                                                     mime_type=mime_type)
+                    html.insert(0, new_video_tag)
+
                 script_tag.decompose()
-        return html
+
+        return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     def _pre_process(self, html):
@@ -154,10 +178,12 @@ class HaNoiMoiComVnParser(SubBaseParser):
         assert url is not None, 'Tham số url không được là None'
         while attempts > 0:
             try:
-                response = requests.get(url=url, timeout=timeout, allow_redirects=True)
+                response = requests.get(url=url, timeout=timeout, cookies=self._vars.get('requests_cookies'),
+                                        allow_redirects=True)
                 if response.status_code == requests.codes.ok:
                     return response.content.decode('UTF-8')
             except RequestException as e:
+                debug(url)
                 log(e)
             attempts -= 1
         return None

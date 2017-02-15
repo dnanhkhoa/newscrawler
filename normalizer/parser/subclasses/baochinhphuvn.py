@@ -22,6 +22,9 @@ class BaoChinhPhuVnParser(SubBaseParser):
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
+        self._post_id_regex = regex.compile(r'\/(\d+).vgp', regex.IGNORECASE)
+        self._cookie_regex = regex.compile(r'<body><script>document\.cookie="([^=]+)=([^"]+)"', regex.IGNORECASE)
+
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
         # Tìm thẻ chứa tiêu đề
@@ -83,14 +86,11 @@ class BaoChinhPhuVnParser(SubBaseParser):
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
         # self._vars[''] =
 
-        self._post_id_regex = regex.compile(r'\/(\d+).vgp', regex.IGNORECASE)
-        self._cookie_regex = regex.compile(r'<body><script>document\.cookie="([^=]+)=([^"]+)"', regex.IGNORECASE)
-
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
-    # def _handle_video(self, html, timeout=15):
-    #     return html
+    # def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
+    #     return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     def _pre_process(self, html):
@@ -126,18 +126,18 @@ class BaoChinhPhuVnParser(SubBaseParser):
         assert url is not None, 'Tham số url không được là None'
         while attempts > 0:
             try:
-                response = requests.get(url=url, timeout=timeout, cookies=self._vars['requests_cookies'],
+                response = requests.get(url=url, timeout=timeout, cookies=self._vars.get('requests_cookies'),
                                         allow_redirects=False)
                 if response.status_code == requests.codes.ok:
                     data = response.content.decode('UTF-8')
                     matcher = self._cookie_regex.search(data)
-                    if matcher is not None:
-                        cookie_name = matcher.group(1)
-                        cookie_value = matcher.group(2)
-                        self._vars['requests_cookies'][cookie_name] = cookie_value
-                        continue
-                    return data
+                    if matcher is None:
+                        return data
+                    cookie_name = matcher.group(1)
+                    cookie_value = matcher.group(2)
+                    self._vars['requests_cookies'][cookie_name] = cookie_value
             except RequestException as e:
+                debug(url)
                 log(e)
             attempts -= 1
         return None

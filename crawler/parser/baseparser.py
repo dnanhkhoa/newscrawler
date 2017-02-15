@@ -34,6 +34,7 @@ class BaseParser(ABC):
                 if response.status_code == requests.codes.ok:
                     return response.content.decode('UTF-8')
             except RequestException as e:
+                debug(url)
                 log(e)
             attempts -= 1
         return None

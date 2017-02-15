@@ -22,6 +22,10 @@ class NongNghiepVnParser(SubBaseParser):
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
+        self._video_regex = regex.compile(r'urlfile=([^&]+)&', regex.IGNORECASE)
+        self._main_video_regex = regex.compile(r"file: '([^']+)'", regex.IGNORECASE)
+        self._video_thumbnail_regex = regex.compile(r"image: '([^']+)'", regex.IGNORECASE)
+
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
         # Tìm thẻ chứa tiêu đề
@@ -95,7 +99,42 @@ class NongNghiepVnParser(SubBaseParser):
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
     def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
-        return html
+        div_tag = html.find_parent('div', class_='p-news-detail')
+        if div_tag is not None:
+            div_tag = div_tag.find('div', class_='fixmod')
+            if div_tag is not None:
+                div_tag = div_tag.find('div', class_='image')
+                if div_tag is not None:
+                    video_thumbnail_url = default_thumbnail_url
+
+                    script_content = div_tag.text
+
+                    thumbnail_matcher = self._video_thumbnail_regex.search(script_content)
+                    if thumbnail_matcher is not None:
+                        thumbnail_url = thumbnail_matcher.group(1)
+                        if self._is_valid_image_url(url=thumbnail_url):
+                            video_thumbnail_url = thumbnail_url
+
+                    video_matcher = self._main_video_regex.search(script_content)
+                    if video_matcher is not None:
+                        video_url = video_matcher.group(1)
+                        new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
+                                                         mime_type=self._get_mime_type_from_url(url=video_url))
+                        html.insert(0, new_video_tag)
+
+        video_tags = html.find_all('iframe', attrs={'class': 'iframebnncontentsmp4', 'src': True})
+        for video_tag in video_tags:
+            video_matcher = self._video_regex.search(video_tag.get('src'))
+            if video_matcher is None:
+                video_tag.decompose()
+            else:
+                video_url = 'http://image.nongnghiep.vn/upload%s' % video_matcher.group(1)
+                new_video_tag = create_video_tag(src=video_url, thumbnail=default_thumbnail_url,
+                                                 mime_type=self._get_mime_type_from_url(url=video_url))
+
+                video_tag.replace_with(new_video_tag)
+
+        return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _pre_process(self, html):

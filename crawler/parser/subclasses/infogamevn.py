@@ -5,22 +5,24 @@
 from crawler.parser import *
 
 
-class IOneVnExpressNetParser(SubBaseParser):
+class InfoGameVnParser(SubBaseParser):
     def __init__(self):
         # Bắt buộc phải gọi đầu tiên
         super().__init__()
 
         # Chứa tên miền không có http://www dùng cho parser tự động nhận dạng
-        self._domain = 'ione.vnexpress.net'
+        self._domain = 'infogame.vn'
 
         # Chứa tên miền đầy đủ và không có / cuối cùng dùng để tìm url tuyệt đối
-        self._full_domain = 'http://ione.vnexpress.net'
+        self._full_domain = 'http://infogame.vn'
 
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
         # self._vars[''] =
+
+        self._datetime_regex = regex.compile(r'(\d{2}\/\d{2}\/\d{4} \d{2}:\d{2})', regex.IGNORECASE)
 
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
@@ -32,8 +34,8 @@ class IOneVnExpressNetParser(SubBaseParser):
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # Lưu ý hàm gồm 2 tham số (html, url)
         def get_next_url_func(html, url):
-            a_tag = html.find('a', attrs={'class': 'pa_next', 'href': True})
-            return None if a_tag is None else a_tag.get('href')
+            a_tags = html.find_all('a', attrs={'class': 'nextBtn', 'href': True})
+            return a_tags[-1].get('href') if len(a_tags) > 0 else None
 
         self._vars['get_next_url_func'] = get_next_url_func
 
@@ -43,61 +45,39 @@ class IOneVnExpressNetParser(SubBaseParser):
         def get_post_urls_func(html):
             urls = []
 
-            div_tag = html.find('div', id='box_news_top')
-            if div_tag is not None:
-                # Thumbnail posts
-                post_tag = div_tag.find('div', class_='block_news_big')
-                if post_tag is not None:
-                    a_tag = post_tag.find('a', attrs={'href': True})
-                    if a_tag is not None:
-                        urls.append(a_tag.get('href'))
-
-                # Other posts
-                div_tag = div_tag.find('div', class_='box_sub_hot_news')
-                if div_tag is not None and div_tag.ul is not None:
-                    posts = div_tag.ul.find_all('li', recursive=False)
-                    for post in posts:
-                        a_tag = post.find('a', attrs={'href': True})
-                        if a_tag is not None:
-                            urls.append(a_tag.get('href'))
-
             # Child posts
-            ul_tag = html.find('ul', id='news_home')
-            if ul_tag is None:
-                return urls
+            div_tag = html.find('div', class_='danhsachtin')
+            if div_tag is None:
+                return None
 
-            posts = ul_tag.find_all('li', recursive=False)
+            posts = div_tag.find_all('div', class_='tin1', recursive=False)
             for post in posts:
                 a_tag = post.find('a', attrs={'href': True})
-                if a_tag is not None:
-                    urls.append(a_tag.get('href'))
-
-            # Bỏ những link video
-            filtered_urls = []
-            for url in urls:
-                if '/video/' in url:
+                div_tag = post.find('div', class_='thongtin')
+                if div_tag is None:
                     continue
-                filtered_urls.append(url)
 
-            return filtered_urls
+                p_tags = div_tag.find_all('p', recursive=False)
+                if a_tag is not None and len(p_tags) > 0:
+                    time_string = p_tags[-1].text
+                    matcher = self._datetime_regex.search(time_string)
+                    if matcher is None:
+                        continue
+
+                    urls.append((a_tag.get('href'), datetime.strptime(matcher.group(1), '%d/%m/%Y %H:%M')))
+
+            return urls
 
         self._vars['get_post_urls_func'] = get_post_urls_func
 
         # Sử dụng trong trường hợp không thể lấy được thời gian trực tiếp trên trang
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        def get_time_tag_func(html):
-            return html.find('div', class_='block_timer')
-
-        self._vars['get_time_tag_func'] = get_time_tag_func
+        # self._vars['get_time_tag_func'] =
 
         # Hàm này sẽ chuyển chuỗi thời gian có được ở hàm trên về đối tượng datetime (phụ thuộc time format mỗi trang)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        def get_datetime_func(string):
-            time = string.strip().replace('00:', '12:')
-            return datetime.strptime(time, '%I:%M %p | %d/%m/%Y')
-
-        self._vars['get_datetime_func'] = get_datetime_func
+        # self._vars['get_datetime_func'] =
 
         # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
         # def _pre_process(self, html):

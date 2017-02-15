@@ -77,7 +77,7 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         # Chỉ định các nhãn được phép và không được phép dùng để dự đoán author
         # Các nhãn: author, center, right, bold, italic
         # Phân cách nhau bởi dấu | và những nhãn nào không được phép thì có tiền tố ^ ở đầu
-        # Ví dụ: 'right|bold|caption|^center|^italic'
+        # Ví dụ: 'right|bold|author|^center|^italic'
         # self._vars['author_classes_pattern'] =
 
         # Trả về url chứa hình ảnh thumbnail được lưu ở thẻ bên ngoài nội dung chính
@@ -99,8 +99,10 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
                 video_tag.decompose()  # Xóa bỏ thẻ nếu không thể lấy được URL trực tiếp của video
             else:
                 video_tag.replace_with(
-                    create_video_tag(src=video_url, mime_type=self._get_mime_type_from_url(url=video_url)))
-        return html
+                    create_video_tag(src=video_url, thumbnail=default_thumbnail_url,
+                                     mime_type=self._get_mime_type_from_url(url=video_url)))
+
+        return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _pre_process(self, html):
@@ -115,7 +117,3 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)
-
-        # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-        # def _pre_process(self, html):
-        #     return super()._pre_process(html)

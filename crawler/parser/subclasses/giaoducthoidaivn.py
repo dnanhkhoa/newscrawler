@@ -19,27 +19,23 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
+        # Biến vars có thể được sử dụng cho nhiều mục đích khác
+        # self._vars[''] =
+
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
         # Tìm danh sách các chuyên mục con trong chuyên mục cha dùng cho trường hợp duyệt đệ qui
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_child_category_section_func'] =
 
-        # Tìm thẻ cho biết trang nào đang active và dùng nó để dò địa chỉ trang kế
+        # Tìm URL của trang kế
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        def get_active_tag_func(html):
-            span_tag = html.find('span', id='ctl00_mainContent_ContentList1_pager')
-            if span_tag is None:
-                return None
+        # Lưu ý hàm gồm 2 tham số (html, url)
+        def get_next_url_func(html, url):
+            a_tag = html.find('a', attrs={'id': 'ctl00_mainContent_ContentList1_pager_nextControl', 'href': True})
+            return None if a_tag is None else a_tag.get('href')
 
-            li_tags = span_tag.find_all('li')
-            for li_tag in li_tags:
-                li_tag.unwrap()
-            span_tag.ul.unwrap()
-
-            return span_tag.find(lambda x: x.name == 'a' and len(x.attrs) == 0)
-
-        self._vars['get_active_tag_func'] = get_active_tag_func
+        self._vars['get_next_url_func'] = get_next_url_func
 
         # Trả về danh sách các urls của các bài viết có trong trang
         # Nếu có thể lấy được thời gian trực tiếp luôn thì mỗi phần tử trong danh sách phải là (url, time)
@@ -77,9 +73,6 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
             return datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')
 
         self._vars['get_datetime_func'] = get_datetime_func
-
-        # Biến vars có thể được sử dụng cho nhiều mục đích khác
-        # self._vars[''] =
 
     # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
     def _pre_process(self, html):
