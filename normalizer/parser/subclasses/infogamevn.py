@@ -3,22 +3,24 @@
 from normalizer.parser import *
 
 
-class NameParser(SubBaseParser):
+class InfoGameVnParser(SubBaseParser):
     def __init__(self):
         # Bắt buộc phải gọi đầu tiên
         super().__init__()
 
         # Tên trang web sử dụng kiểu Title Case
-        # self._source_page =
+        self._source_page = 'InfoGame'
 
         # Chứa tên miền không có http://www dùng cho parser tự động nhận dạng
-        # self._domain =
+        self._domain = 'infogame.vn'
 
         # Chứa tên miền đầy đủ và không có / cuối cùng dùng để tìm url tuyệt đối
-        # self._full_domain =
+        self._full_domain = 'http://infogame.vn'
 
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
+
+        self._datetime_regex = regex.compile(r'(\d{2}\/\d{2}\/\d{4} \d{2}:\d{2})', regex.IGNORECASE)
 
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
@@ -36,11 +38,17 @@ class NameParser(SubBaseParser):
 
         # Tìm thẻ chứa chuỗi thời gian đăng bài
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_time_tag_func'] =
+        self._vars['get_time_tag_func'] = lambda x: x.find('p', class_='tacgia')
 
         # Định dạng chuỗi thời gian và trả về đối tượng datetime
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_datetime_func'] =
+        def get_datetime_func(string):
+            matcher = self._datetime_regex.search(string)
+            if matcher is None:
+                return None
+            return datetime.strptime(matcher.group(1), '%d/%m/%Y %H:%M')
+
+        self._vars['get_datetime_func'] = get_datetime_func
 
         # Chỉ định các nhãn có khả năng là caption
         # Gán bằng danh sách ['A', 'B', ..., 'Z']
@@ -54,7 +62,7 @@ class NameParser(SubBaseParser):
 
         # Chỉ định thẻ chứa nội dung chính
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_main_content_tag_func'] =
+        self._vars['get_main_content_tag_func'] = lambda x: x.find('div', class_='noidungchitiet')
 
         # Chỉ định thẻ chứa tên tác giả
         # Khi sử dụng thẻ này thì sẽ tự động không sử dụng tính năng tự động nhận dạng tên tác giả
@@ -65,7 +73,12 @@ class NameParser(SubBaseParser):
         # Các nhãn: author, center, right, bold, italic
         # Phân cách nhau bởi dấu | và những nhãn nào không được phép thì có tiền tố ^ ở đầu
         # Ví dụ: 'right|bold|author|^center|^italic'
-        # self._vars['author_classes_pattern'] =
+        self._vars['author_classes_pattern'] = '^right|^center|^italic|bold|author'
+
+        # Chỉ định tự động xóa tất cả các chuỗi bên dưới tác giả
+        # Thích hợp khi bài viết chèn nhiều quảng cảo, links bên dưới mà không có id để xóa
+        # Gán bằng True / False
+        self._vars['clear_all_below_author'] = True
 
         # Trả về url chứa hình ảnh thumbnail được lưu ở thẻ bên ngoài nội dung chính
         # Mặc định sẽ tự động nhận dạng
@@ -82,9 +95,45 @@ class NameParser(SubBaseParser):
     #     return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-    # def _pre_process(self, html):
-    #     return super()._pre_process(html)
+    def _pre_process(self, html):
+        tags = html.find_all('h2')
+        for tag in tags:
+            tag.decompose()
+
+        tag = html.find('div', class_='thongtingame')
+        if tag is not None:
+            tag.decompose()
+
+        tags = html.find_all('a', class_='text_link')
+        for tag in tags:
+            tag.decompose()
+
+        return super()._pre_process(html)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-    # def _post_process(self, html):
-    #     return html
+    def _post_process(self, html):
+        tags = html.find_all('div', recursive=False)
+        for tag in tags:
+            content = normalize_string(tag.text)
+            if content.startswith('>>'):
+                tag.decompose()
+
+        return html
+
+    def _get_meta_keywords(self, html):
+        if html is None:
+            return None
+
+        meta_tag = html.find('meta', attrs={'name': 'news_keywords', 'content': True})
+        if meta_tag is None:
+            return None
+
+        keywords = meta_tag.get('content').split(',')
+        normalized_keywords = []
+        for keyword in keywords:
+            if is_valid_string(keyword):
+                normalized_keywords.append(normalize_string(keyword))
+        return ', '.join(normalized_keywords)
+
+    def _get_tags(self, html):
+        return self._get_meta_keywords(html)

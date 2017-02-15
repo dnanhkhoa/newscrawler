@@ -87,6 +87,11 @@ class NongNghiepVnParser(SubBaseParser):
         # Ví dụ: 'right|bold|author|^center|^italic'
         # self._vars['author_classes_pattern'] =
 
+        # Chỉ định tự động xóa tất cả các chuỗi bên dưới tác giả
+        # Thích hợp khi bài viết chèn nhiều quảng cảo, links bên dưới mà không có id để xóa
+        # Gán bằng True / False
+        # self._vars['clear_all_below_author'] = True
+
         # Trả về url chứa hình ảnh thumbnail được lưu ở thẻ bên ngoài nội dung chính
         # Mặc định sẽ tự động nhận dạng
         # Gán bằng con trỏ hàm hoặc biểu thức lambda

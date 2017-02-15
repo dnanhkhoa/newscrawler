@@ -133,9 +133,27 @@ def get_soup(string, clear_special_chars=False):
     return BeautifulSoup(string, features='html5lib')
 
 
+# Tạo thẻ video cho youtube iframe
+def create_youtube_video_tag(src, width, height):
+    assert src is not None, 'Tham số src không được là None'
+
+    iframe_tag = create_html_tag('iframe')
+    iframe_tag['src'] = src
+    iframe_tag['width'] = width
+    iframe_tag['height'] = height
+    iframe_tag['frameborder'] = '0'
+    iframe_tag['allowfullscreen'] = None
+
+    wrapped_tag = create_html_tag('p')
+    wrapped_tag['class'] = 'video-container'
+    wrapped_tag.append(iframe_tag)
+
+    return wrapped_tag
+
+
 # Tạo thẻ video theo format yêu cầu
 def create_video_tag(src, thumbnail=None, mime_type=None, width=375, height=280, video_tag_name='video',
-                     source_tag_name='source'):
+                     source_tag_name='source', is_youtube=False):
     assert src is not None, 'Tham số src không được là None'
 
     source_tag = create_html_tag(source_tag_name)
@@ -148,6 +166,10 @@ def create_video_tag(src, thumbnail=None, mime_type=None, width=375, height=280,
     video_tag['controls'] = None
     video_tag['onclick'] = 'this.play()'
     video_tag['poster'] = '' if thumbnail is None else thumbnail
+
+    if is_youtube:
+        video_tag['youtube'] = None
+
     video_tag.append(source_tag)
 
     return video_tag

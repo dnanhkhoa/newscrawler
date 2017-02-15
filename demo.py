@@ -152,6 +152,7 @@ def try_normalizer():
     # ]
 
     urls = [
+        'http://hanoimoi.com.vn/Tin-tuc/Gia-dinh/850218/video-mach-ban-lam-vuon-rau-sach-trong-can-bep-nho',
         'http://hanoimoi.com.vn/Media/Chuyen-la/845406/video-co-gai-bi-tum-toc-keo-le-ma-khong-ai-cuu-gay-chu-y-tuan-qua',
         'http://hanoimoi.com.vn/Tin-tuc/Chinh-tri/862286/chu-tich-nuoc-du-le-khanh-thanh-den-tho-vua-mai-hac-de',
         'http://hanoimoi.com.vn/Tin-tuc/Gioi-tre/862203/thanh-nien-thu-do-san-sang-nhap-ngu',
@@ -160,16 +161,16 @@ def try_normalizer():
         'http://hanoimoi.com.vn/Media/Du-lich/862131/cafe-sua-da-viet-nam-lot-danh-sach-nhung-coc-cafe-ngon-nhat-the-gioi',
         'http://hanoimoi.com.vn/Media/Chinh-tri/862233/thuong-truc-thanh-uy-ha-noi-gap-mat-cac-hoi-vien-clb-thang-long'
     ]
-
+    #
     # urls = [
+    #     'http://ione.vnexpress.net/tin-tuc/sao/us-uk/video-hot-nhat-the-gioi-2016-adele-hat-tren-xe-3511046.html',
+    #     'http://ione.vnexpress.net/tin-tuc/thoi-trang/bo-anh-mac-vay-to-son-loe-loet-cua-mau-nam-next-top-gay-tranh-cai-3539779.html'
+    #     'http://ione.vnexpress.net/tin-tuc/lam-dep/co-gai-makeup-xinh-dep-bang-do-an-trong-tu-lanh-3509827.html',
     #     'http://ione.vnexpress.net/tin-tuc/nhip-song/nhung-kiet-tac-rong-co-the-khien-rong-hai-phong-chao-thua-3528937.html',
     #     'http://ione.vnexpress.net/tin-tuc/sao/viet-nam/co-gai-nguoi-han-hat-hit-big-bang-tai-giong-hat-viet-gay-phan-khich-3540185.html',
     #     'http://ione.vnexpress.net/tin-tuc/lam-dep/dang-dep/mau-noi-y-xu-han-mat-ngay-tho-body-boc-lua-3540144.html',
     #     'http://ione.vnexpress.net/photo/thoi-trang/con-gai-donald-trump-sanh-dieu-so-voi-20-nam-truoc-3539813.html',
     #     'http://ione.vnexpress.net/tin-tuc/sao/chau-a/tzuyu-kiem-duoc-36-ty-dong-sau-hon-mot-nam-debut-3512802.html',
-    #     'http://ione.vnexpress.net/tin-tuc/sao/us-uk/video-hot-nhat-the-gioi-2016-adele-hat-tren-xe-3511046.html',
-    #     'http://ione.vnexpress.net/tin-tuc/lam-dep/co-gai-makeup-xinh-dep-bang-do-an-trong-tu-lanh-3509827.html',
-    #     'http://ione.vnexpress.net/tin-tuc/thoi-trang/bo-anh-mac-vay-to-son-loe-loet-cua-mau-nam-next-top-gay-tranh-cai-3539779.html'
     # ]
 
     # urls = [
@@ -190,6 +191,16 @@ def try_normalizer():
     #     'http://www.nss.vn/ca113-n36350-khach-du-lich-se-duoc-trai-nghiem-taxi-drone-o-dubai.htm',
     #     'http://www.nss.vn/ca27-n36361-niantic-da-chuan-bi-tung-ra-mot-ban-cap-nhat-moi-cho-tua-game-pokemon-go.htm',
     #     'http://www.nss.vn/ca27-n36298-google-danh-tang-mini-game-valentine-cho-te-te.htm'
+    # ]
+
+    # urls = [
+    #     'http://infogame.vn/game-online/kho-do-voi-clip-so-sanh-gai-xinh-gai-xau-cua-vtc-game-14779.html',
+    #     'http://infogame.vn/cong-nghe/facebook-cho-dang-bai-news-feed-nhung-an-tren-timeline-41533.html',
+    #     'http://infogame.vn/game-mobile/hac-dieu-va-nhung-dai-gia-mot-thoi-trong-vo-lam-truyen-ky-36372.html',
+    #     'http://infogame.vn/video/top-nhung-pha-tau-thoat-kinh-dien-tai-cktg-2016-40900.html',
+    #     'http://infogame.vn/game-mobile/vtc-game-xac-nhan-phat-hanh-thien-tu-3d-game-quoc-chien-moi-cua-snail-games-42776.html',
+    #     'http://infogame.vn/game-mobile/soi-do-khung-cua-nhan-vat-dang-manh-nhat-vo-lam-truyen-ky-mobile-42342.html',
+    #     'http://infogame.vn/cong-nghe/video-clip-tren-tay-sung-thuc-te-ao-made-in-vietnam-16130.html'
     # ]
 
     for url in urls:

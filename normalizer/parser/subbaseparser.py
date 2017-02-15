@@ -11,8 +11,6 @@ from normalizer.parser import BaseParser
 class SubBaseParser(BaseParser):
     def __init__(self):
         super().__init__()
-        # Rút trích video id trong link nhúng từ youtube
-        self._youtube_id_regex = regex.compile(r'embed\/([\w-]{11})', regex.IGNORECASE)
         # URL ảnh mặc định dùng làm thumbnail cho video khi chưa play
         self._default_video_thumbnail_url = None
 
@@ -161,23 +159,19 @@ class SubBaseParser(BaseParser):
     # Xử lí các videos có trong bài viết
     def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
         # Xử lí tự động link youtube được nhúng vào
-        video_tags = html.find_all(
-            lambda x: x.name == 'iframe' and x.get('src') is not None and '.youtu' in x.get('src'))
-
+        video_tags = html.find_all('iframe', attrs={'src': True, 'height': True})
         for video_tag in video_tags:
             video_url = video_tag.get('src')
+            if '.youtu' not in video_url:
+                continue
 
-            matcher = self._youtube_id_regex.search(video_url)
-            if matcher is not None:
-                video_url = matcher.group(1)
+            width = video_tag.get('width')
+            if width is None:
+                width = '100%'
 
-            obj = get_direct_youtube_video(url=video_url)
-            if obj is None:
-                video_tag.decompose()
-            else:
-                video_url, video_thumbnail_url, mime_type = obj
-                new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url, mime_type=mime_type)
-                video_tag.replace_with(new_video_tag)
+            video_tag.replace_with(
+                create_video_tag(src=video_url, width=width, height=video_tag.get('height'),
+                                 is_youtube=True))
 
         return html
 
@@ -580,7 +574,7 @@ class SubBaseParser(BaseParser):
             tag.attrs = {'class': classes} if len(classes) > 0 else {}
 
         attrs = {
-            'video': ['width', 'height', 'controls', 'onclick', 'poster'],
+            'video': ['width', 'height', 'controls', 'onclick', 'poster', 'youtube'],
             'source': ['src', 'type'],
             'img': ['src', 'alt'],
             'div': ['class'],
@@ -609,6 +603,17 @@ class SubBaseParser(BaseParser):
 
         # Xử lí thẻ image
         main_content_tag = self._handle_image(html=main_content_tag, title=title)
+
+        # Phục hồi video của youtube
+        video_tags = main_content_tag.find_all('video', attrs={'youtube': True})
+        for video_tag in video_tags:
+            source_tag = video_tag.find('source', attrs={'src': True})
+            if source_tag is None:
+                video_tag.decompose()
+            else:
+                new_video_tag = create_youtube_video_tag(src=source_tag.get('src'), width=video_tag.get('width'),
+                                                         height=video_tag.get('height'))
+                video_tag.replace_with(new_video_tag)
 
         # Phục hồi lại thuộc tính controls của video
         video_tags = main_content_tag.find_all('video')
@@ -702,6 +707,14 @@ class SubBaseParser(BaseParser):
             return None
 
         authors = [normalize_string(candidate_div_tags[0].text)]
+
+        clear_all_below_author = self._vars.get('clear_all_below_author')
+        if clear_all_below_author is not None and clear_all_below_author:
+            next_div_tag = candidate_div_tags[0].find_next_sibling(True)
+            while next_div_tag is not None:
+                current_div_tag = next_div_tag
+                next_div_tag = next_div_tag.find_next_sibling(True)
+                current_div_tag.decompose()
 
         # Dò tìm các ứng viên kề nhau
         i = 1

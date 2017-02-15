@@ -78,6 +78,11 @@ class BaoQuocTeVnParser(SubBaseParser):
         # Ví dụ: 'right|bold|author|^center|^italic'
         self._vars['author_classes_pattern'] = 'right|bold|author'
 
+        # Chỉ định tự động xóa tất cả các chuỗi bên dưới tác giả
+        # Thích hợp khi bài viết chèn nhiều quảng cảo, links bên dưới mà không có id để xóa
+        # Gán bằng True / False
+        # self._vars['clear_all_below_author'] = True
+
         # Trả về url chứa hình ảnh thumbnail được lưu ở thẻ bên ngoài nội dung chính
         # Mặc định sẽ tự động nhận dạng
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
@@ -98,18 +103,19 @@ class BaoQuocTeVnParser(SubBaseParser):
             source = self._get_html(url='http://baoquocte.vn/apiservice@/article_player&play_now=yes&i=%s' % video_id,
                                     timeout=timeout)
 
-            thumbnail_matcher = self._video_thumbnail_regex.search(source)
-            if thumbnail_matcher is not None:
-                thumbnail_url = thumbnail_matcher.group(1)
-                if self._is_valid_image_url(url=thumbnail_url):
-                    video_thumbnail_url = thumbnail_url
+            if source is not None:
+                thumbnail_matcher = self._video_thumbnail_regex.search(source)
+                if thumbnail_matcher is not None:
+                    thumbnail_url = thumbnail_matcher.group(1)
+                    if self._is_valid_image_url(url=thumbnail_url):
+                        video_thumbnail_url = thumbnail_url
 
-            matcher = self._video_regex.search(source)
-            if matcher is not None:
-                video_url = matcher.group(1)
-                new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
-                                                 mime_type=self._get_mime_type_from_url(url=video_url))
-                p_tag.insert_before(new_video_tag)
+                matcher = self._video_regex.search(source)
+                if matcher is not None:
+                    video_url = matcher.group(1)
+                    new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
+                                                     mime_type=self._get_mime_type_from_url(url=video_url))
+                    p_tag.insert_before(new_video_tag)
 
             p_tag.decompose()
 

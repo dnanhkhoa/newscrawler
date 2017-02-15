@@ -103,6 +103,11 @@ class HaNoiMoiComVnParser(SubBaseParser):
         # Ví dụ: 'right|bold|author|^center|^italic'
         self._vars['author_classes_pattern'] = 'author'
 
+        # Chỉ định tự động xóa tất cả các chuỗi bên dưới tác giả
+        # Thích hợp khi bài viết chèn nhiều quảng cảo, links bên dưới mà không có id để xóa
+        # Gán bằng True / False
+        # self._vars['clear_all_below_author'] = True
+
         # Trả về url chứa hình ảnh thumbnail được lưu ở thẻ bên ngoài nội dung chính
         # Mặc định sẽ tự động nhận dạng
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
@@ -132,18 +137,10 @@ class HaNoiMoiComVnParser(SubBaseParser):
                 matcher = self._video_regex.search(script_content)
                 if matcher is not None:
                     video_url = matcher.group(1)
-                    if 'youtu' in video_url:
-                        obj = get_direct_youtube_video(video_url)
-                        if obj is None:
-                            script_tag.decompose()
-                            continue
-
-                        video_url, video_thumbnail_url, mime_type = obj
-                    else:
-                        mine_type = self._get_mime_type_from_url(url=video_url)
-
-                    new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
-                                                     mime_type=mime_type)
+                    new_video_tag = create_video_tag(src=video_url,
+                                                     thumbnail=self._get_absolute_url(url=video_thumbnail_url,
+                                                                                      domain=self._full_domain),
+                                                     mime_type=self._get_mime_type_from_url(url=video_url))
                     html.insert(0, new_video_tag)
 
                 script_tag.decompose()

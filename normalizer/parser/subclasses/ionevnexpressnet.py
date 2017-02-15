@@ -1,7 +1,5 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
-
-# Done
 from normalizer.parser import *
 
 
@@ -21,6 +19,10 @@ class IOneVnExpressNetParser(SubBaseParser):
 
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
+
+        self._video_regex = regex.compile(r"var videoSource = '([^']+)'", regex.IGNORECASE)
+        self._video_thumbnail_regex = regex.compile(r'<meta\s*content\s*=\s*"([^"]+)"\s*itemprop\s*=\s*"thumbnailUrl"',
+                                                    regex.IGNORECASE)
 
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
@@ -82,6 +84,11 @@ class IOneVnExpressNetParser(SubBaseParser):
         # Ví dụ: 'right|bold|author|^center|^italic'
         self._vars['author_classes_pattern'] = 'right|bold|author'
 
+        # Chỉ định tự động xóa tất cả các chuỗi bên dưới tác giả
+        # Thích hợp khi bài viết chèn nhiều quảng cảo, links bên dưới mà không có id để xóa
+        # Gán bằng True / False
+        # self._vars['clear_all_below_author'] = True
+
         # Trả về url chứa hình ảnh thumbnail được lưu ở thẻ bên ngoài nội dung chính
         # Mặc định sẽ tự động nhận dạng
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
@@ -94,18 +101,28 @@ class IOneVnExpressNetParser(SubBaseParser):
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
     # Nếu cần tìm link trực tiếp của video trên youtube thì trong helper có hàm hỗ trợ
     def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
-        video_regex = regex.compile(r"var videoSource = '([^']+)'", regex.IGNORECASE)
         video_tags = html.find_all('div', attrs={'data-component-type': 'video', 'data-component-value': True})
         for video_tag in video_tags:
             video_id = video_tag.get('data-component-value')
             source = self._get_html('http://video.vnexpress.net/parser.html?t=2&id=%s' % video_id, timeout=timeout)
-            matcher = video_regex.search(source)
-            if matcher is not None:
-                video_url = matcher.group(1)
-                new_video_tag = create_video_tag(src=video_url, mime_type=self._get_mime_type_from_url(url=video_url))
-                video_tag.insert_before(new_video_tag)
-                video_tag.decompose()
-        return html
+            if source is not None:
+                video_thumbnail_url = default_thumbnail_url
+                thumbnail_matcher = self._video_thumbnail_regex.search(source)
+                if thumbnail_matcher is not None:
+                    thumbnail_url = thumbnail_matcher.group(1)
+                    if self._is_valid_image_url(url=thumbnail_url):
+                        video_thumbnail_url = thumbnail_url
+
+                matcher = self._video_regex.search(source)
+                if matcher is not None:
+                    video_url = matcher.group(1)
+                    new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
+                                                     mime_type=self._get_mime_type_from_url(url=video_url))
+                    video_tag.insert_before(new_video_tag)
+
+            video_tag.decompose()
+
+        return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     def _pre_process(self, html):
@@ -130,7 +147,3 @@ class IOneVnExpressNetParser(SubBaseParser):
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)
-
-        # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-        # def _pre_process(self, html):
-        #     return super()._pre_process(html)
