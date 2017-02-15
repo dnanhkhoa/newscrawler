@@ -113,20 +113,13 @@ class SubBaseParser(BaseParser):
 
         html = get_soup(raw_html)
 
-        get_active_tag_func = self._vars.get('get_active_tag_func')
-        if get_active_tag_func is None:
+        get_next_url_func = self._vars.get('get_next_url_func')
+        if get_next_url_func is None:
             return html, None
 
-        active_tag = get_active_tag_func(html)
-        if active_tag is None:
-            return None
+        next_url = get_next_url_func(html)
 
-        # Lấy thẻ a anh em kế bên nhằm tìm link đến trang kế
-        next_page = active_tag.find_next_sibling('a')
-        # Có 1 số trường hợp dùng link tương đối cần chuyển sang tuyệt đối
-        next_url = None if next_page is None else self._get_absolute_url(url=next_page.get('href'), domain=url)
-
-        return html, next_url
+        return html, None if next_url is None else self._get_absolute_url(url=next_url, domain=url)
 
     # Hàm trả về danh sách các urls chuyên mục con bên trong url của chuyên mục chính
     # Nếu không override get_child_category_section_func thì mặc định sẽ không duyệt chuyên mục con

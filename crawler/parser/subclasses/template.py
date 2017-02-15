@@ -24,9 +24,9 @@ class NameParser(SubBaseParser):
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         # self._vars['get_child_category_section_func'] =
 
-        # Tìm thẻ cho biết trang nào đang active và dùng nó để dò địa chỉ trang kế
+        # Tìm URLs của trang kế
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_active_tag_func'] =
+        # self._vars['get_next_url_func'] =
 
         # Trả về danh sách các urls của các bài viết có trong trang
         # Nếu có thể lấy được thời gian trực tiếp luôn thì mỗi phần tử trong danh sách phải là (url, time)
