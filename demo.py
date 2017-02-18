@@ -42,15 +42,17 @@ def try_crawler():
     #     'http://baoquocte.vn/xa-hoi/giao-duc'
     # ]
 
-    # urls = [
-    #     'http://www.nss.vn/c2-san-pham.htm',
-    #     'http://www.nss.vn/c21-kinh-doanh.htm',
-    #     'http://www.nss.vn/c116-ngan-hang-so.htm',
-    #     'http://www.nss.vn/c100-bao-mat.htm',
-    #     'http://www.nss.vn/c18-song-online.htm',
-    #     'http://www.nss.vn/c27-game.htm',
-    #     'http://www.nss.vn/c115-cong-nghe-xanh.htm'
-    # ]
+    urls = [
+        'http://www.nss.vn/c66-su-kien.htm',
+        'http://www.nss.vn/c2-san-pham.htm',
+        'http://www.nss.vn/c21-kinh-doanh.htm',
+        'http://www.nss.vn/c116-ngan-hang-so.htm',
+        'http://www.nss.vn/c100-bao-mat.htm',
+        'http://www.nss.vn/c18-song-online.htm',
+        'http://www.nss.vn/c27-game.htm',
+        'http://www.nss.vn/c115-cong-nghe-xanh.htm',
+        'http://www.nss.vn/c6-nhan-luc.htm',
+    ]
 
     # urls = [
     #     'http://ione.vnexpress.net/tin-tuc/lam-dep',
@@ -101,8 +103,8 @@ def try_crawler():
     #     'http://infogame.vn/anh-video.html'
     # ]
 
-    from_date = '2017-02-05'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
-    to_date = '2017-02-15'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
+    from_date = '2017-02-17'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    to_date = '2017-02-17'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
     for url in urls:
@@ -124,14 +126,14 @@ def try_normalizer():
     #     'http://giaoducthoidai.vn/khoa-hoc/ho-mang-chua-khong-lo-cui-dau-khuat-phuc-ban-tay-tho-san-2909122-l.html'
     # ]
 
-    # urls = [
-    #     'http://baochinhphu.vn/Chuyen-hoi-nhap/Tom-xuat-vao-Han-Quoc-phai-chi-dinh-kiem-dich-tu-14/298649.vgp',
-    #     'http://baochinhphu.vn/Hoat-dong-cua-lanh-dao-Dang-Nha-nuoc/Thu-tuong-Bac-Ninh-can-huong-toi-la-mot-trong-nhung-thanh-pho-sang-tao-nhat/298516.vgp',
-    #     'http://baochinhphu.vn/The-thao/Van-dong-vien-huan-luyen-vien-xuat-sac-duoc-huong-che-do-cao/298419.vgp',
-    #     'http://baochinhphu.vn/Cac-bai-phat-bieu-cua-Thu-tuong/Chinh-phu-kien-tao-va-hanh-dong-dong-luc-moi-cho-phat-trien/295394.vgp',
-    #     'http://baochinhphu.vn/Van-hoa/Yen-Tu-ngay-Hoi-xuan/298478.vgp',
-    #     'http://baochinhphu.vn/APEC-2017/APEC-phai-khang-dinh-vai-tro-dien-dan-kinh-te-hang-dau/293647.vgp'
-    # ]
+    urls = [
+        'http://baochinhphu.vn/Chuyen-hoi-nhap/Tom-xuat-vao-Han-Quoc-phai-chi-dinh-kiem-dich-tu-14/298649.vgp',
+        'http://baochinhphu.vn/Hoat-dong-cua-lanh-dao-Dang-Nha-nuoc/Thu-tuong-Bac-Ninh-can-huong-toi-la-mot-trong-nhung-thanh-pho-sang-tao-nhat/298516.vgp',
+        'http://baochinhphu.vn/The-thao/Van-dong-vien-huan-luyen-vien-xuat-sac-duoc-huong-che-do-cao/298419.vgp',
+        'http://baochinhphu.vn/Cac-bai-phat-bieu-cua-Thu-tuong/Chinh-phu-kien-tao-va-hanh-dong-dong-luc-moi-cho-phat-trien/295394.vgp',
+        'http://baochinhphu.vn/Van-hoa/Yen-Tu-ngay-Hoi-xuan/298478.vgp',
+        'http://baochinhphu.vn/APEC-2017/APEC-phai-khang-dinh-vai-tro-dien-dan-kinh-te-hang-dau/293647.vgp'
+    ]
 
     # urls = [
     #     'http://baodatviet.vn/the-gioi/quan-he-quoc-te/ai-chi-tien-ban-cho-hacker-nga-pha-hoai-nha-nuoc-nga-3328984/',
@@ -151,16 +153,16 @@ def try_normalizer():
     #     'http://baoquocte.vn/ve-dep-cuon-hut-cua-de-nhat-phu-nhan-my-43888.html'
     # ]
 
-    urls = [
-        'http://hanoimoi.com.vn/Tin-tuc/Gia-dinh/850218/video-mach-ban-lam-vuon-rau-sach-trong-can-bep-nho',
-        'http://hanoimoi.com.vn/Media/Chuyen-la/845406/video-co-gai-bi-tum-toc-keo-le-ma-khong-ai-cuu-gay-chu-y-tuan-qua',
-        'http://hanoimoi.com.vn/Tin-tuc/Chinh-tri/862286/chu-tich-nuoc-du-le-khanh-thanh-den-tho-vua-mai-hac-de',
-        'http://hanoimoi.com.vn/Tin-tuc/Gioi-tre/862203/thanh-nien-thu-do-san-sang-nhap-ngu',
-        'http://hanoimoi.com.vn/Tin-tuc/Ngoai-hang-Anh/862291/cuu-danh-thu-ha-lan-qua-doi-o-tuoi-73',
-        'http://hanoimoi.com.vn/Tin-tuc/Cong-nghe/862276/the-he-chip-intel-core-thu-8-se-khong-thuc-su-vuot-troi',
-        'http://hanoimoi.com.vn/Media/Du-lich/862131/cafe-sua-da-viet-nam-lot-danh-sach-nhung-coc-cafe-ngon-nhat-the-gioi',
-        'http://hanoimoi.com.vn/Media/Chinh-tri/862233/thuong-truc-thanh-uy-ha-noi-gap-mat-cac-hoi-vien-clb-thang-long'
-    ]
+    # urls = [
+    #     'http://hanoimoi.com.vn/Tin-tuc/Gia-dinh/850218/video-mach-ban-lam-vuon-rau-sach-trong-can-bep-nho',
+    #     'http://hanoimoi.com.vn/Media/Chuyen-la/845406/video-co-gai-bi-tum-toc-keo-le-ma-khong-ai-cuu-gay-chu-y-tuan-qua',
+    #     'http://hanoimoi.com.vn/Tin-tuc/Chinh-tri/862286/chu-tich-nuoc-du-le-khanh-thanh-den-tho-vua-mai-hac-de',
+    #     'http://hanoimoi.com.vn/Tin-tuc/Gioi-tre/862203/thanh-nien-thu-do-san-sang-nhap-ngu',
+    #     'http://hanoimoi.com.vn/Tin-tuc/Ngoai-hang-Anh/862291/cuu-danh-thu-ha-lan-qua-doi-o-tuoi-73',
+    #     'http://hanoimoi.com.vn/Tin-tuc/Cong-nghe/862276/the-he-chip-intel-core-thu-8-se-khong-thuc-su-vuot-troi',
+    #     'http://hanoimoi.com.vn/Media/Du-lich/862131/cafe-sua-da-viet-nam-lot-danh-sach-nhung-coc-cafe-ngon-nhat-the-gioi',
+    #     'http://hanoimoi.com.vn/Media/Chinh-tri/862233/thuong-truc-thanh-uy-ha-noi-gap-mat-cac-hoi-vien-clb-thang-long'
+    # ]
     #
     # urls = [
     #     'http://ione.vnexpress.net/tin-tuc/sao/us-uk/video-hot-nhat-the-gioi-2016-adele-hat-tren-xe-3511046.html',
