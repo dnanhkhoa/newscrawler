@@ -45,6 +45,34 @@ class InfoGameVnParser(SubBaseParser):
         def get_post_urls_func(html):
             urls = []
 
+            # Feature posts
+            div_tag = html.find('div', class_='tinnoibat')
+            if div_tag is not None:
+                left_div_tag = div_tag.find('div', class_='left')
+                if left_div_tag is not None:
+                    hot_news_div_tag = left_div_tag.find('div', class_='noibat')
+                    if hot_news_div_tag is not None:
+                        a_tag = hot_news_div_tag.find('a', attrs={'href': True})
+                        if a_tag is not None:
+                            urls.append((a_tag.get('href'), None))
+                        hot_news_div_tag.decompose()
+
+                    right_div_tag = div_tag.find('div', class_='right')
+                    if right_div_tag is not None:
+                        news_div_tags = right_div_tag.find('div', class_='tinmoi')
+                        if news_div_tags is not None:
+                            posts = news_div_tags.find_all('div', class_='tin1', recursive=False)
+                            for post in posts:
+                                a_tag = post.find('a', attrs={'href': True})
+                                if a_tag is not None:
+                                    urls.append((a_tag.get('href'), None))
+
+                    posts = left_div_tag.find_all('div', class_='tin1', recursive=False)
+                    for post in posts:
+                        a_tag = post.find('a', attrs={'href': True})
+                        if a_tag is not None:
+                            urls.append((a_tag.get('href'), None))
+
             # Child posts
             div_tag = html.find('div', class_='danhsachtin')
             if div_tag is None:
@@ -73,11 +101,17 @@ class InfoGameVnParser(SubBaseParser):
         # Sử dụng trong trường hợp không thể lấy được thời gian trực tiếp trên trang
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_time_tag_func'] =
+        self._vars['get_time_tag_func'] = lambda x: x.find('p', class_='tacgia')
 
         # Hàm này sẽ chuyển chuỗi thời gian có được ở hàm trên về đối tượng datetime (phụ thuộc time format mỗi trang)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_datetime_func'] =
+        def get_datetime_func(string):
+            matcher = self._datetime_regex.search(string)
+            if matcher is None:
+                return None
+            return datetime.strptime(matcher.group(1), '%d/%m/%Y %H:%M')
+
+        self._vars['get_datetime_func'] = get_datetime_func
 
         # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
         # def _pre_process(self, html):

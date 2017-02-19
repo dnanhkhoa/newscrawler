@@ -42,17 +42,17 @@ def try_crawler():
     #     'http://baoquocte.vn/xa-hoi/giao-duc'
     # ]
 
-    urls = [
-        'http://www.nss.vn/c66-su-kien.htm',
-        'http://www.nss.vn/c2-san-pham.htm',
-        'http://www.nss.vn/c21-kinh-doanh.htm',
-        'http://www.nss.vn/c116-ngan-hang-so.htm',
-        'http://www.nss.vn/c100-bao-mat.htm',
-        'http://www.nss.vn/c18-song-online.htm',
-        'http://www.nss.vn/c27-game.htm',
-        'http://www.nss.vn/c115-cong-nghe-xanh.htm',
-        'http://www.nss.vn/c6-nhan-luc.htm',
-    ]
+    # urls = [
+    #     'http://www.nss.vn/c66-su-kien.htm',
+    #     'http://www.nss.vn/c2-san-pham.htm',
+    #     'http://www.nss.vn/c21-kinh-doanh.htm',
+    #     'http://www.nss.vn/c116-ngan-hang-so.htm',
+    #     'http://www.nss.vn/c100-bao-mat.htm',
+    #     'http://www.nss.vn/c18-song-online.htm',
+    #     'http://www.nss.vn/c27-game.htm',
+    #     'http://www.nss.vn/c115-cong-nghe-xanh.htm',
+    #     'http://www.nss.vn/c6-nhan-luc.htm',
+    # ]
 
     # urls = [
     #     'http://ione.vnexpress.net/tin-tuc/lam-dep',
@@ -96,15 +96,15 @@ def try_crawler():
     #     'http://giaoducthoidai.vn/lam-dep/'
     # ]
 
-    # urls = [
-    #     'http://infogame.vn/thong-tin.html',
-    #     'http://infogame.vn/chuyen-dong-game.html',
-    #     'http://infogame.vn/cong-dong.html',
-    #     'http://infogame.vn/anh-video.html'
-    # ]
+    urls = [
+        'http://infogame.vn/thong-tin.html',
+        'http://infogame.vn/chuyen-dong-game.html',
+        'http://infogame.vn/cong-dong.html',
+        'http://infogame.vn/anh-video.html'
+    ]
 
-    from_date = '2017-02-17'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
-    to_date = '2017-02-17'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
+    from_date = '2017-02-15'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    to_date = '2017-02-19'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
     for url in urls:
@@ -211,8 +211,8 @@ def try_normalizer():
 
 
 def main():
-    # try_crawler()
-    try_normalizer()
+    try_crawler()
+    #try_normalizer()
     return
 
 

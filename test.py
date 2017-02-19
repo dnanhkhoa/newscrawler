@@ -135,9 +135,10 @@ def main():
                             try:
                                 result = normalizer.normalize(url=post_url)
                                 if not result.is_ok():
-                                    post_data_to_db(post_url, '', category, str(date.today()),
-                                                    datetime.now().strftime('%H:%M:%S'), 0,
-                                                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'), priority)
+                                    print('%s is error', post_url)
+                                    # post_data_to_db(post_url, '', category, str(date.today()),
+                                    #                 datetime.now().strftime('%H:%M:%S'), 0,
+                                    #                 datetime.now().strftime('%Y-%m-%d %H:%M:%S'), priority)
                                     continue
 
                                 content = result.get_content()
@@ -152,8 +153,8 @@ def main():
 
                                 f.write(os.path.dirname(path()) + file_name[2:] + '.raw.tok\r\n')
 
-                                post_data_to_db(post_url, file_name[2:] + '.txt', category, str(date.today()),
-                                                datetime.now().strftime('%H:%M:%S'), 1, publish_date, priority)
+                                # post_data_to_db(post_url, file_name[2:] + '.txt', category, str(date.today()),
+                                #                 datetime.now().strftime('%H:%M:%S'), 1, publish_date, priority)
                             except Exception as e:
                                 debug(post_url)
                                 log(e)
@@ -166,12 +167,12 @@ def main():
 
 if __name__ == '__main__':
     # Ghi lịch sử thực thi
-    log_folder = 'log'
-    make_dirs(log_folder)
-    with open(path(log_folder + '/' + datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f')), 'w') as f:
-        pass
+    # log_folder = 'log'
+    # make_dirs(log_folder)
+    # with open(path(log_folder + '/' + datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f')), 'w') as f:
+    #     pass
 
     print('Running')
     main()
-    notify_cluster()
+    # notify_cluster()
     print('Done')
