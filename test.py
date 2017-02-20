@@ -104,6 +104,8 @@ def main():
         if urls_in_db is None:
             return None
 
+        print(categories_urls)
+
         # Lặp qua từng chuyên mục
         for category_id in categories_urls:
             # Lấy danh sách các đầu báo thuộc chuyên mục đó

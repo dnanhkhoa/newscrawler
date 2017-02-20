@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
+# Done
 from crawler.parser import *
 
 
@@ -39,17 +40,59 @@ class NgoiSaoNetParser(SubBaseParser):
         # Trả về danh sách các urls của các bài viết có trong trang
         # Nếu có thể lấy được thời gian trực tiếp luôn thì mỗi phần tử trong danh sách phải là (url, time)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_post_urls_func'] =
+        def get_post_urls_func(html):
+            urls = []
+
+            div_tag = html.find('div', class_='tnht')
+            if div_tag is not None:
+                # Thumbnail posts
+                post_tag = div_tag.find('div', class_='news')
+                if post_tag is not None:
+                    a_tag = post_tag.find('a', attrs={'href': True})
+                    if a_tag is not None:
+                        urls.append(a_tag.get('href'))
+
+                # Other posts
+                div_tag = div_tag.find('div', class_='newso')
+                if div_tag is not None and div_tag.ul is not None:
+                    posts = div_tag.ul.find_all('li', recursive=False)
+                    for post in posts:
+                        a_tag = post.find('a', attrs={'href': True})
+                        if a_tag is not None:
+                            urls.append(a_tag.get('href'))
+
+            # Child posts
+            ul_tag = html.find('ul', id='news_home')
+            if ul_tag is None:
+                return urls
+
+            posts = ul_tag.find_all('li', recursive=False)
+            for post in posts:
+                a_tag = post.find('a', attrs={'href': True})
+                if a_tag is not None:
+                    urls.append(a_tag.get('href'))
+
+            return urls
+
+        self._vars['get_post_urls_func'] = get_post_urls_func
 
         # Sử dụng trong trường hợp không thể lấy được thời gian trực tiếp trên trang
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_time_tag_func'] =
+        def get_time_tag_func(html):
+            return html.find('span', class_='spanDateTime')
+
+        self._vars['get_time_tag_func'] = get_time_tag_func
 
         # Hàm này sẽ chuyển chuỗi thời gian có được ở hàm trên về đối tượng datetime (phụ thuộc time format mỗi trang)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_datetime_func'] =
+        def get_datetime_func(string):
+            string = string.split(',')[1]
+            parts = string.strip().split(' ')[:-1]
+            return datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')
 
-    # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
-    # def _pre_process(self, html):
-    #     return super()._pre_process(html)
+        self._vars['get_datetime_func'] = get_datetime_func
+
+        # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
+        # def _pre_process(self, html):
+        #     return super()._pre_process(html)

@@ -104,12 +104,21 @@ def try_crawler():
     # ]
 
     urls = [
-        'http://ngoisao.net/tin-tuc/thoi-cuoc/',
-        'http://ngoisao.net/tin-tuc/hau-truong/',
+        'http://ngoisao.net/tin-tuc/thoi-cuoc/24h',
+        'http://ngoisao.net/tin-tuc/thoi-cuoc/thuong-truong',
+        'http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet',
+        'http://ngoisao.net/tin-tuc/hau-truong/chau-a',
+        'http://ngoisao.net/tin-tuc/hau-truong/hollywood',
         'http://ngoisao.net/tin-tuc/thu-gian/dan-choi',
-        'http://ngoisao.net/tin-tuc/phong-cach/lam-dep',
-        'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang',
-        'http://ngoisao.net/tin-tuc/thu-gian/an-choi/'
+        'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/xu-huong',
+        'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/sao-dep',
+        'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/bi-quyet',
+        'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/hot-trend',
+        'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/sao-style',
+        'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/tu-van',
+        'http://ngoisao.net/tin-tuc/thu-gian/an-choi/an',
+        'http://ngoisao.net/tin-tuc/thu-gian/an-choi/choi'
+
     ]
 
     from_date = '2017-02-20'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
@@ -135,14 +144,14 @@ def try_normalizer():
     #     'http://giaoducthoidai.vn/khoa-hoc/ho-mang-chua-khong-lo-cui-dau-khuat-phuc-ban-tay-tho-san-2909122-l.html'
     # ]
 
-    urls = [
-        'http://baochinhphu.vn/Chuyen-hoi-nhap/Tom-xuat-vao-Han-Quoc-phai-chi-dinh-kiem-dich-tu-14/298649.vgp',
-        'http://baochinhphu.vn/Hoat-dong-cua-lanh-dao-Dang-Nha-nuoc/Thu-tuong-Bac-Ninh-can-huong-toi-la-mot-trong-nhung-thanh-pho-sang-tao-nhat/298516.vgp',
-        'http://baochinhphu.vn/The-thao/Van-dong-vien-huan-luyen-vien-xuat-sac-duoc-huong-che-do-cao/298419.vgp',
-        'http://baochinhphu.vn/Cac-bai-phat-bieu-cua-Thu-tuong/Chinh-phu-kien-tao-va-hanh-dong-dong-luc-moi-cho-phat-trien/295394.vgp',
-        'http://baochinhphu.vn/Van-hoa/Yen-Tu-ngay-Hoi-xuan/298478.vgp',
-        'http://baochinhphu.vn/APEC-2017/APEC-phai-khang-dinh-vai-tro-dien-dan-kinh-te-hang-dau/293647.vgp'
-    ]
+    # urls = [
+    #     'http://baochinhphu.vn/Chuyen-hoi-nhap/Tom-xuat-vao-Han-Quoc-phai-chi-dinh-kiem-dich-tu-14/298649.vgp',
+    #     'http://baochinhphu.vn/Hoat-dong-cua-lanh-dao-Dang-Nha-nuoc/Thu-tuong-Bac-Ninh-can-huong-toi-la-mot-trong-nhung-thanh-pho-sang-tao-nhat/298516.vgp',
+    #     'http://baochinhphu.vn/The-thao/Van-dong-vien-huan-luyen-vien-xuat-sac-duoc-huong-che-do-cao/298419.vgp',
+    #     'http://baochinhphu.vn/Cac-bai-phat-bieu-cua-Thu-tuong/Chinh-phu-kien-tao-va-hanh-dong-dong-luc-moi-cho-phat-trien/295394.vgp',
+    #     'http://baochinhphu.vn/Van-hoa/Yen-Tu-ngay-Hoi-xuan/298478.vgp',
+    #     'http://baochinhphu.vn/APEC-2017/APEC-phai-khang-dinh-vai-tro-dien-dan-kinh-te-hang-dau/293647.vgp'
+    # ]
 
     # urls = [
     #     'http://baodatviet.vn/the-gioi/quan-he-quoc-te/ai-chi-tien-ban-cho-hacker-nga-pha-hoai-nha-nuoc-nga-3328984/',
@@ -214,14 +223,22 @@ def try_normalizer():
     #     'http://infogame.vn/cong-nghe/video-clip-tren-tay-sung-thuc-te-ao-made-in-vietnam-16130.html'
     # ]
 
+    urls =[
+        'http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet/phat-ngon-khong-the-bo-qua-cua-sao-viet-trong-tuan-31-3544255.html',
+        'http://ngoisao.net/tin-tuc/hau-truong/hollywood/channing-tatum-be-bong-vo-yeu-tren-bai-bien-3544034.html',
+        'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/nguoi-phu-nu-viet-bi-chong-sat-hai-o-my-3544198.html',
+        'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/nguoi-phu-nu-280-kg-cau-xin-duoc-cuu-3542651.html',
+        'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/ca-co-gai-toi-cuu-lan-ke-dam-dao-chua-ai-den-hoi-tham-3542821.html'
+    ]
+
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
         print(json.dumps(result.get_content(), indent=4, ensure_ascii=False))
 
 
 def main():
-    try_crawler()
-    #try_normalizer()
+    # try_crawler()
+    try_normalizer()
     return
 
 

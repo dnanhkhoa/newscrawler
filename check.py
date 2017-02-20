@@ -41,7 +41,7 @@ def update_status(id):
 
 
 def main():
-    urls = get_urls_from_db(2)
+    urls = get_urls_from_db(14)
     for id, url in urls:
         result = checker.check(url=url)
         if result.is_ok():
