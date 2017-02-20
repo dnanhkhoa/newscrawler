@@ -1,16 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
+# Done
 from checker.basecheckers import *
 
 
-class NameChecker(BaseChecker):
+class BaoDatVietVnChecker(BaseChecker):
     def __init__(self):
         # Bắt buộc phải gọi đầu tiên
         super().__init__()
 
         # Chứa tên miền không có http://www dùng cho parser tự động nhận dạng
-        # self._domain =
+        self._domain = 'baodatviet.vn'
 
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
