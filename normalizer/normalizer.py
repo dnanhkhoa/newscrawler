@@ -6,7 +6,7 @@ from helpers import *
 from normalizer.parser import BaseParser
 
 
-# Lớp đảm nhận nhiệm load các parsers lên frước
+# Lớp đảm nhận nhiệm load các parsers lên trước
 class Normalizer(object):
     def __init__(self):
         self._domain_regex = [regex.compile(r'^https?://(?:www\.)?(\w+(?:\.\w+)+)', regex.IGNORECASE)]

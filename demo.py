@@ -209,9 +209,8 @@ def try_normalizer():
         result = news_normalizer.normalize(url=url, timeout=15)
         print(json.dumps(result.get_content(), indent=4, ensure_ascii=False))
 
-
 def main():
-    try_crawler()
+    #try_crawler()
     #try_normalizer()
     return
 
