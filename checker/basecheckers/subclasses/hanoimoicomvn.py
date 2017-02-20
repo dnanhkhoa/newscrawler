@@ -32,7 +32,8 @@ class HaNoiMoiComVnChecker(BaseChecker):
 
                 if len(history) > 0:
                     location = history[-1].headers.get('location')
-                    return location is not None and '/Media/' in location
+                    matcher = self._bad_link_regex.search(location)
+                    return matcher is None
 
                 return status_code < 300 or status_code >= 500
             except RequestException as e:

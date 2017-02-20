@@ -32,7 +32,9 @@ class BaoChinhPhuVnChecker(BaseChecker):
                 history = response.history
 
                 if len(history) > 0:
-                    return False
+                    location = history[-1].headers.get('location')
+                    matcher = self._bad_link_regex.search(location)
+                    return matcher is None
 
                 if status_code == requests.codes.ok:
                     data = response.content.decode('UTF-8')

@@ -18,6 +18,10 @@ class BaseChecker(object):
         self._vars = {}
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
         self._vars['requests_cookies'] = {}
+        # Customs
+        self._bad_link_regex = regex.compile(
+            r'(?:/4\d{2}|error|broken|page-?not-?found|not-?exist|trang-?bao-?loi|thong-?bao-?loi|bao-?loi|khong-?ton-?tai)',
+            regex.IGNORECASE)
 
     # Tải nội dung web
     def _is_live(self, url, timeout=15, attempts=3):
@@ -31,7 +35,9 @@ class BaseChecker(object):
                 history = response.history
 
                 if len(history) > 0:
-                    return False
+                    location = history[-1].headers.get('location')
+                    matcher = self._bad_link_regex.search(location)
+                    return matcher is None
 
                 return status_code < 300 or status_code >= 500
             except RequestException as e:

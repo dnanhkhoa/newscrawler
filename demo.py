@@ -96,15 +96,24 @@ def try_crawler():
     #     'http://giaoducthoidai.vn/lam-dep/'
     # ]
 
+    # urls = [
+    #     'http://infogame.vn/thong-tin.html',
+    #     'http://infogame.vn/chuyen-dong-game.html',
+    #     'http://infogame.vn/cong-dong.html',
+    #     'http://infogame.vn/anh-video.html'
+    # ]
+
     urls = [
-        'http://infogame.vn/thong-tin.html',
-        'http://infogame.vn/chuyen-dong-game.html',
-        'http://infogame.vn/cong-dong.html',
-        'http://infogame.vn/anh-video.html'
+        'http://ngoisao.net/tin-tuc/thoi-cuoc/',
+        'http://ngoisao.net/tin-tuc/hau-truong/',
+        'http://ngoisao.net/tin-tuc/thu-gian/dan-choi',
+        'http://ngoisao.net/tin-tuc/phong-cach/lam-dep',
+        'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang',
+        'http://ngoisao.net/tin-tuc/thu-gian/an-choi/'
     ]
 
-    from_date = '2017-02-15'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
-    to_date = '2017-02-19'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
+    from_date = '2017-02-20'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    to_date = '2017-02-20'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
     for url in urls:
@@ -211,139 +220,7 @@ def try_normalizer():
 
 
 def main():
-    vs = ["http://baodatviet.vn/chinh-tri-xa-hoi/giao-duc/",
-          "http://vnexpress.net/tin-tuc/phap-luat",
-"http://www.nguoiduatin.vn/c/xa-hoi",
-"http://www.nguoiduatin.vn/c/thoi-trang",
-"http://www.nguoiduatin.vn/c/the-thao",
-"http://www.nguoiduatin.vn/c/the-gioi",
-"http://www.nguoiduatin.vn/c/phap-luat",
-"http://www.nguoiduatin.vn/c/o-to-xe-may",
-"http://www.nguoiduatin.vn/c/kinh-doanh",
-"http://www.nguoiduatin.vn/c/giao-duc",
-"http://www.nguoiduatin.vn/c/giai-tri",
-"http://www.nguoiduatin.vn/c/doi-song",
-"http://www.nguoiduatin.vn/c/dinh-duong",
-"http://www.nguoiduatin.vn/c/cong-nghe",
-"http://vnexpress.net/tin-tuc/the-gioi",
-"http://vnexpress.net/tin-tuc/oto-xe-may",
-"http://vnexpress.net/tin-tuc/khoa-hoc",
-"http://vnexpress.net/tin-tuc/giao-duc",
-"http://vietnamnet.vn/vn/the-thao/",
-"http://vietnamnet.vn/vn/the-gioi/",
-"http://vietnamnet.vn/vn/phap-luat/",
-"http://vietnamnet.vn/vn/kinh-doanh/",
-"http://vietnamnet.vn/vn/giao-duc/",
-"http://vietnamnet.vn/vn/giai-tri/truyen-hinh/",
-"http://vietnamnet.vn/vn/giai-tri/thoi-trang/",
-"http://vietnamnet.vn/vn/giai-tri/the-gioi-sao/",
-"http://vietnamnet.vn/vn/giai-tri/phim/",
-"http://vietnamnet.vn/vn/giai-tri/nhac/",
-"http://vietnamnet.vn/vn/giai-tri/di-san-my-thuat-san-khau/",
-"http://vietnamnet.vn/vn/doi-song/gia-dinh/",
-"http://vietnamnet.vn/vn/doi-song/du-lich/",
-"http://vietnamnet.vn/vn/doi-song/am-thuc/",
-"http://vietnamnet.vn/vn/cong-nghe/",
-"http://vietnamnet.vn/vn/chuyen-trang/oto-xemay/",
-"http://thoidai.com.vn/van-hoa-du-lich/diem-den_t113c12",
-"http://thoidai.com.vn/van-hoa-du-lich/am-thuc_t113c11",
-"http://thoidai.com.vn/the-gioi_t113c6",
-"http://thoidai.com.vn/old/the-thao_t113c59",
-"http://thoidai.com.vn/old/phap-luat_t113c54",
-"http://thoidai.com.vn/kinh-te_t113c14",
-"http://thoidai.com.vn/giao-duc_t113c20",
-"http://thoidai.com.vn/an-toan-giao-thong_t113c95",
-"http://thethao.vnexpress.net/",
-"http://suckhoe.vnexpress.net/",
-"http://sohoa.vnexpress.net/",
-"http://nss.vn/",
-"http://nongnghiep.vn/van-hoa-26-15.html",
-"http://nongnghiep.vn/the-thao-29-15.html",
-"http://nongnghiep.vn/the-gioi-8-15.html",
-"http://nongnghiep.vn/phap-luat-15-15.html",
-"http://nongnghiep.vn/kinh-te-3-15.html",
-"http://nongnghiep.vn/giao-duc-28-15.html",
-"http://nongnghiep.vn/giai-tri-27-15.html",
-"http://ngoisao.net/tin-tuc/thu-gian/dan-choi",
-"http://ngoisao.net/tin-tuc/thu-gian/an-choi/",
-"http://ngoisao.net/tin-tuc/thoi-cuoc/",
-"http://ngoisao.net/tin-tuc/phong-cach/thoi-trang",
-"http://ngoisao.net/tin-tuc/phong-cach/lam-dep",
-"http://ngoisao.net/tin-tuc/hau-truong/",
-"http://laodong.com.vn/van-hoa-giai-tri/",
-"http://laodong.com.vn/thoi-su-xa-hoi/",
-"http://laodong.com.vn/the-thao/",
-"http://laodong.com.vn/the-gioi/",
-"http://laodong.com.vn/phap-luat/",
-"http://laodong.com.vn/lam-dep/",
-"http://laodong.com.vn/kinh-te/",
-"http://laodong.com.vn/giao-duc/",
-"http://laodong.com.vn/du-lich-kham-pha/",
-"http://laodong.com.vn/dinh-duong-am-thuc/",
-"http://laodong.com.vn/cong-nghe/",
-"http://kinhdoanh.vnexpress.net/",
-"http://ione.vnexpress.net/tin-tuc/thoi-trang",
-"http://ione.vnexpress.net/tin-tuc/sao",
-"http://ione.vnexpress.net/tin-tuc/phim",
-"http://ione.vnexpress.net/tin-tuc/lam-dep",
-"http://infogame.vn/cong-nghe.html",
-"http://hanoimoi.com.vn/Danh-muc-tin/741/Hau-truong",
-"http://hanoimoi.com.vn/Danh-muc-tin/601/Oto-xemay",
-"http://hanoimoi.com.vn/Danh-muc-tin/191/Thoi-trang",
-"http://hanoimoi.com.vn/Danh-muc-tin/190/Kinh-te",
-"http://hanoimoi.com.vn/Danh-muc-tin/189/The-gioi",
-"http://hanoimoi.com.vn/Danh-muc-tin/175/Phap-luat",
-"http://hanoimoi.com.vn/Danh-muc-tin/170/The-thao",
-"http://hanoimoi.com.vn/Danh-muc-tin/166/Du-lich",
-"http://hanoimoi.com.vn/Danh-muc-tin/164/Giao-duc",
-"http://hanoimoi.com.vn/Danh-muc-tin/163/Xa-hoi",
-"http://hanoimoi.com.vn/Danh-muc-tin/100/Khoa-hoc",
-"http://giaoducthoidai.vn/the-gioi-sao/",
-"http://giaoducthoidai.vn/the-gioi/",
-"http://giaoducthoidai.vn/phap-luat/",
-"http://giaoducthoidai.vn/lam-dep/",
-"http://giaoducthoidai.vn/kinh-te-xa-hoi/",
-"http://giaoducthoidai.vn/kinh-te-xa-hoi/",
-"http://giaoducthoidai.vn/khoa-hoc/",
-"http://giaoducthoidai.vn/giao-duc/",
-"http://giaitri.vnexpress.net/tin-tuc/thoi-trang",
-"http://giaitri.vnexpress.net/",
-"http://giadinh.vnexpress.net/",
-"http://dulich.vnexpress.net/",
-"http://baoquocte.vn/xa-hoi/giao-duc",
-"http://baoquocte.vn/xa-hoi/doi-song-suc-khoe",
-"http://baoquocte.vn/the-thao",
-"http://baoquocte.vn/the-gioi",
-"http://baoquocte.vn/kinh-te",
-"http://baoquocte.vn/khoa-hoc-cong-nghe",
-"http://baodulich.net.vn/",
-"http://baocongthuong.com.vn/xa-hoi",
-"http://baocongthuong.com.vn/van-hoa/du-lich",
-"http://baocongthuong.com.vn/van-hoa",
-"http://baocongthuong.com.vn/thuong-mai",
-"http://baocongthuong.com.vn/thuong-hieu/oto-xe-may",
-"http://baocongthuong.com.vn/thoi-su/quoc-te",
-"http://baocongthuong.com.vn/tai-chinh",
-"http://baocongthuong.com.vn/khoa-hoc-cong-nghe",
-"http://baocongthuong.com.vn/doanh-nghiep-doanh-nhan",
-"http://baocongthuong.com.vn/cong-nghiep",
-"http://baocongthuong.com.vn/chinh-sach-phap-luat",
-"http://baochinhphu.vn/The-thao/447.vgp",
-"http://baochinhphu.vn/Quoc-te/6.vgp",
-"http://baochinhphu.vn/Phap-luat/29.vgp",
-"http://baochinhphu.vn/Kinh-te/7.vgp",
-"http://baochinhphu.vn/Khoa-hoc-Cong-nghe/8.vgp",
-"http://baochinhphu.vn/Giao-duc/452.vgp",
-"http://baochinhphu.vn/Du-lich/448.vgp",
-"http://baochinhphu.vn/Doi-song/302.vgp",
-]
-    checker = Checker()
-    for v in vs:
-        result = checker.check(url=v)
-        if result.get_status_code() == result.Codes.Unsupported:
-            print(v)
-
-    #try_crawler()
+    try_crawler()
     #try_normalizer()
     return
 

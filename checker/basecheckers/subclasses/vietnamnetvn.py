@@ -27,15 +27,17 @@ class VietNameNetVnChecker(BaseChecker):
                 attempts -= 1
 
                 response = requests.get(url=url, timeout=timeout, cookies=self._vars.get('requests_cookies'))
-                content = response.content.decode('UTF-8')
                 status_code = response.status_code
                 history = response.history
 
-                if '<h1>Không tìm thấy đường dẫn này</h1>' in content:
-                    return False
+                if status_code == requests.codes.ok:
+                    if '<h1>Không tìm thấy đường dẫn này</h1>' in response.content.decode('UTF-8'):
+                        return False
 
                 if len(history) > 0:
-                    return False
+                    location = history[-1].headers.get('location')
+                    matcher = self._bad_link_regex.search(location)
+                    return matcher is None
 
                 return status_code < 300 or status_code >= 500
             except RequestException as e:
