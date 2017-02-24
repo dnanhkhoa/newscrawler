@@ -4,10 +4,12 @@
 # Done
 import urllib
 from abc import ABC, abstractmethod
+from io import BytesIO
 from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
 
 import requests
+from PIL import Image
 from requests import RequestException
 
 from helpers import *
@@ -32,6 +34,7 @@ class BaseParser(ABC):
     def _get_html(self, url, timeout=15, attempts=3):
         assert url is not None, 'Tham số url không được là None'
         while attempts > 0:
+            attempts -= 1
             try:
                 response = requests.get(url=url, timeout=timeout, cookies=self._vars['requests_cookies'],
                                         allow_redirects=False)
@@ -40,7 +43,6 @@ class BaseParser(ABC):
             except RequestException as e:
                 debug(url)
                 log(e)
-            attempts -= 1
         return None
 
     # Kiểm tra image url hợp lệ bằng cách gửi 1 request lên server và xem phản hồi
@@ -53,6 +55,23 @@ class BaseParser(ABC):
             debug(url)
             log(e)
         return False
+
+    def _get_image_size(self, url, timeout=15, attempts=3):
+        assert url is not None, 'Tham số url không được là None'
+        while attempts > 0:
+            attempts -= 1
+            try:
+                response = requests.get(url=url, timeout=timeout, cookies=self._vars['requests_cookies'],
+                                        allow_redirects=True)
+                if response.status_code == requests.codes.ok:
+                    content_type = response.headers.get('Content-Type')
+                    if content_type is None or 'image' not in content_type:
+                        return None
+                    return Image.open(BytesIO(response.content)).size
+            except RequestException as e:
+                debug(url)
+                log(e)
+        return None
 
     # Lấy Content-Type của url
     def _get_mime_type_from_url(self, url):

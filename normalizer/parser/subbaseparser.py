@@ -182,7 +182,13 @@ class SubBaseParser(BaseParser):
 
         img_tags = html.find_all('img')
         for img_tag in img_tags:
-            image_url = self._get_valid_image_url(img_tag.get('src'))
+            image_url = img_tag.get('src')
+            size = self._get_image_size(url=image_url)
+            if size is None or size[0] < 100 or size[1] < 100:
+                img_tag.decompose()
+                continue
+
+            image_url = self._get_valid_image_url(image_url)
 
             # Tìm thẻ caption
             next_div_tag = img_tag.find_next('div')
@@ -509,7 +515,7 @@ class SubBaseParser(BaseParser):
                             child_classes.extend(classes)
                             if len(child_tag.contents) > 0 and (
                                         is_valid_string(child_tag.text, r'\s+') or child_tag.find(
-                                            ['video', 'img']) is not None):
+                                        ['video', 'img']) is not None):
                                 s.append((child_tag, list(set(child_classes))))
                             else:
                                 child_tag.decompose()

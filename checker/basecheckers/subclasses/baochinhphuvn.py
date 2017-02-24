@@ -24,9 +24,8 @@ class BaoChinhPhuVnChecker(BaseChecker):
     def _is_live(self, url, timeout=15, attempts=3):
         assert url is not None, 'Tham số url không được là None'
         while attempts > 0:
+            attempts -= 1
             try:
-                attempts -= 1
-
                 response = requests.get(url=url, timeout=timeout, cookies=self._vars.get('requests_cookies'))
                 status_code = response.status_code
                 history = response.history
