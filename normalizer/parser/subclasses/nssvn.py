@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
-#
+# Done
 from normalizer.parser import *
 
 

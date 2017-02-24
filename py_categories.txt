@@ -11,7 +11,7 @@
 9 http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/sao-style
 9 http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/tu-van
 11 http://ngoisao.net/tin-tuc/thu-gian/an-choi/an
-11 http://ngoisao.net/tin-tuc/thu-gian/an-choi/choi
+7 http://ngoisao.net/tin-tuc/thu-gian/an-choi/choi
 1 http://hanoimoi.com.vn/Danh-muc-tin/163/Xa-hoi
 1 http://hanoimoi.com.vn/Danh-muc-tin/175/Phap-luat
 1 http://baochinhphu.vn/Phap-luat/29.vgp

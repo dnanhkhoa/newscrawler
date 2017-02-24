@@ -153,4 +153,4 @@ class NgoiSaoNetParser(SubBaseParser):
             authors.append(author)
         self._vars['get_author_tag_func'] = None
 
-        return '<br/>'.join(authors)
+        return '\n'.join(authors)

@@ -223,12 +223,16 @@ def try_normalizer():
     #     'http://infogame.vn/cong-nghe/video-clip-tren-tay-sung-thuc-te-ao-made-in-vietnam-16130.html'
     # ]
 
-    urls =[
-        'http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet/phat-ngon-khong-the-bo-qua-cua-sao-viet-trong-tuan-31-3544255.html',
-        'http://ngoisao.net/tin-tuc/hau-truong/hollywood/channing-tatum-be-bong-vo-yeu-tren-bai-bien-3544034.html',
-        'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/nguoi-phu-nu-viet-bi-chong-sat-hai-o-my-3544198.html',
-        'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/nguoi-phu-nu-280-kg-cau-xin-duoc-cuu-3542651.html',
-        'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/ca-co-gai-toi-cuu-lan-ke-dam-dao-chua-ai-den-hoi-tham-3542821.html'
+    # urls =[
+    #     'http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet/phat-ngon-khong-the-bo-qua-cua-sao-viet-trong-tuan-31-3544255.html',
+    #     'http://ngoisao.net/tin-tuc/hau-truong/hollywood/channing-tatum-be-bong-vo-yeu-tren-bai-bien-3544034.html',
+    #     'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/nguoi-phu-nu-viet-bi-chong-sat-hai-o-my-3544198.html',
+    #     'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/nguoi-phu-nu-280-kg-cau-xin-duoc-cuu-3542651.html',
+    #     'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/ca-co-gai-toi-cuu-lan-ke-dam-dao-chua-ai-den-hoi-tham-3542821.html'
+    # ]
+
+    urls = [
+        'http://ngoisao.net/tin-tuc/thu-gian/an-choi/10-loai-rau-cu-quen-thuoc-de-chua-nhieu-hoa-chat-3545343.html'
     ]
 
     for url in urls:

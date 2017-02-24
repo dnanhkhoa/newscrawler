@@ -21,10 +21,12 @@ checker = Checker()
 
 
 # Lấy danh sách tất cả các URLs có trong DB
-def get_urls_from_db(diff=14):
+def get_urls_from_db(params=(14, 16)):
     try:
-        urls = mysql.fetch_all(sql='SELECT `ID`, `URL` FROM `article` WHERE `Status` > 0 AND (CURDATE() - `Date`) > %s',
-                               params=diff)
+        urls = mysql.fetch_all(
+            sql='SELECT `ID`, `URL` FROM `article` WHERE `Status` > 0 '
+                'AND (CURDATE() - `Date`) >= %s AND (CURDATE() - `Date`) <= %s',
+            params=params)
         return [(url.get('ID'), url.get('URL')) for url in urls]
     except Exception as e:
         log(e)
@@ -41,16 +43,22 @@ def update_status(id):
 
 
 def main():
-    urls = get_urls_from_db(14)
-    for id, url in urls:
-        result = checker.check(url=url)
-        if result.is_ok():
-            is_live = result.get_content()
-            if not is_live:
-                print('Die: %s' % url)
-                update_status(id)
-        else:
-            print('Error: %s' % url)
+    try:
+        log_folder = 'check_log'
+        make_dirs(log_folder)
+        with open(path(log_folder + '/' + datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f')), 'w') as f:
+            urls = get_urls_from_db((14, 16))
+            for id, url in urls:
+                result = checker.check(url=url)
+                if result.is_ok():
+                    is_live = result.get_content()
+                    if not is_live:
+                        update_status(id)
+                        f.write('Die: %s\r\n' % url)
+                else:
+                    f.write('Error: %s' % url)
+    except Exception as e:
+        pass
 
 
 if __name__ == '__main__':
