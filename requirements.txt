@@ -6,3 +6,4 @@ html5lib
 pafy
 bleach
 pymysql
+Pillow

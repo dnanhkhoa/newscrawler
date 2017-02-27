@@ -1,7 +1,7 @@
 {
   "database": {
     "user": "root",
-    "password": "vertrigo",
+    "password": "TongHopTin08",
     "db": "mds_tinclc",
     "host": "localhost",
     "port": 3306,
@@ -166,6 +166,6 @@
     "http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/sao-style": "5",
     "http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/tu-van": "5",
     "http://ngoisao.net/tin-tuc/thu-gian/an-choi/an": "2",
-    "http://ngoisao.net/tin-tuc/thu-gian/an-choi/choi": "2"
+    "http://ngoisao.net/tin-tuc/thu-gian/an-choi/choi": "11"
   }
 }

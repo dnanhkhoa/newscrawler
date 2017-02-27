@@ -232,7 +232,7 @@ def try_normalizer():
     # ]
 
     urls = [
-        'http://ngoisao.net/tin-tuc/thu-gian/an-choi/10-loai-rau-cu-quen-thuoc-de-chua-nhieu-hoa-chat-3545343.html'
+        'http://giaoducthoidai.vn/thoi-su/nhom-nguoi-nuoc-ngoai-dung-the-atm-gia-rut-trom-tien-2963790-l.html'
     ]
 
     for url in urls:
