@@ -159,7 +159,7 @@ class HaNoiMoiComVnParser(SubBaseParser):
         div_tag = html.find('div', attrs={'class': 'bold'})
         if div_tag is not None:
             div_tag.decompose()
-        return html
+        return super()._post_process(html)
 
     def _get_author(self, html):
         author = super()._get_author(html)

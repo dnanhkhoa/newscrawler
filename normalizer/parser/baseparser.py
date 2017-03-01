@@ -5,6 +5,7 @@
 import urllib
 from abc import ABC, abstractmethod
 from io import BytesIO
+from socket import timeout as TimeOutError
 from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
 
@@ -46,12 +47,15 @@ class BaseParser(ABC):
         return None
 
     # Kiểm tra image url hợp lệ bằng cách gửi 1 request lên server và xem phản hồi
-    def _is_valid_image_url(self, url):
+    def _is_valid_image_url(self, url, timeout=15):
         assert url is not None, 'Tham số url không được là None'
         try:
-            with urllib.request.urlopen(url_encode(url)) as response:
+            with urllib.request.urlopen(url_encode(url), timeout=timeout) as response:
                 return response.getcode() == 200
         except (HTTPError, URLError) as e:
+            debug(url)
+            log(e)
+        except TimeOutError as e:
             debug(url)
             log(e)
         return False
@@ -74,13 +78,16 @@ class BaseParser(ABC):
         return None
 
     # Lấy Content-Type của url
-    def _get_mime_type_from_url(self, url):
+    def _get_mime_type_from_url(self, url, timeout=15):
         assert url is not None, 'Tham số url không được là None'
         try:
-            with urllib.request.urlopen(url_encode(url)) as response:
+            with urllib.request.urlopen(url_encode(url), timeout=timeout) as response:
                 info = response.info()
                 return info.get_content_type()
         except (HTTPError, URLError) as e:
+            debug(url)
+            log(e)
+        except TimeOutError as e:
             debug(url)
             log(e)
         return None

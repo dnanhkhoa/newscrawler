@@ -117,8 +117,7 @@ class InfoGameVnParser(SubBaseParser):
             content = normalize_string(tag.text)
             if content.startswith('>>'):
                 tag.decompose()
-
-        return html
+        return super()._post_process(html)
 
     def _get_meta_keywords(self, html):
         if html is None:

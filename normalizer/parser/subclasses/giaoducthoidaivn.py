@@ -110,12 +110,19 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-    # def _pre_process(self, html):
-    #     return super()._pre_process(html)
+    def _pre_process(self, html):
+        div_tag = html.find_parent('div', id='articlecontent')
+        if div_tag is not None:
+            p_tag = div_tag.find('p', id='ctl00_mainContent_pLargeImage')
+            if p_tag is not None:
+                p_tag = p_tag.extract()
+                p_tag.name = 'div'
+                html.insert(0, p_tag)
+        return super()._pre_process(html)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _post_process(self, html):
-    #     return html
+    #     return super()._post_process(html)
 
     def _get_mobile_url(self, url):
         return url.replace('giaoducthoidai.vn', 'm.giaoducthoidai.vn')

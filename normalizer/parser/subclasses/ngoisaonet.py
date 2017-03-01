@@ -131,8 +131,7 @@ class NgoiSaoNetParser(SubBaseParser):
             content = normalize_string(tag.text)
             if content.startswith('>>'):
                 tag.decompose()
-
-        return html
+        return super()._post_process(html)
 
     @staticmethod
     def get_author_tag_func(html):

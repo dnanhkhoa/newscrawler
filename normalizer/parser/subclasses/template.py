@@ -92,4 +92,4 @@ class NameParser(SubBaseParser):
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _post_process(self, html):
-    #     return html
+    #     return super()._post_process(html)

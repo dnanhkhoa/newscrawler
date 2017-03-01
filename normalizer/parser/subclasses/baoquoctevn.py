@@ -133,7 +133,7 @@ class BaoQuocTeVnParser(SubBaseParser):
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _post_process(self, html):
-    #     return html
+    #     return super()._post_process(html)
 
     def _get_tags(self, html):
         return super()._get_meta_keywords(html)

@@ -133,7 +133,7 @@ class IOneVnExpressNetParser(SubBaseParser):
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _post_process(self, html):
-    #     return html
+    #     return super()._post_process(html)
 
     def _get_author(self, html):
         author = super()._get_author(html)
