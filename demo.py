@@ -232,7 +232,7 @@ def try_normalizer():
     # ]
 
     urls = [
-        'http://giaoducthoidai.vn/thoi-su/nhom-nguoi-nuoc-ngoai-dung-the-atm-gia-rut-trom-tien-2963790-l.html'
+        'http://giaoducthoidai.vn/thoi-su/gia-thieu-nu-10-lan-lua-tien-nguoi-dan-ong-si-tinh-yeu-qua-mang-2958648.html',
     ]
 
     for url in urls:
@@ -243,6 +243,7 @@ def try_normalizer():
 def main():
     # try_crawler()
     try_normalizer()
+    #r = requests.get('')
     return
 
 
