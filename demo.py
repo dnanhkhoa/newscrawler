@@ -103,26 +103,42 @@ def try_crawler():
     #     'http://infogame.vn/anh-video.html'
     # ]
 
-    urls = [
-        'http://ngoisao.net/tin-tuc/thoi-cuoc/24h',
-        'http://ngoisao.net/tin-tuc/thoi-cuoc/thuong-truong',
-        'http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet',
-        'http://ngoisao.net/tin-tuc/hau-truong/chau-a',
-        'http://ngoisao.net/tin-tuc/hau-truong/hollywood',
-        'http://ngoisao.net/tin-tuc/thu-gian/dan-choi',
-        'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/xu-huong',
-        'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/sao-dep',
-        'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/bi-quyet',
-        'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/hot-trend',
-        'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/sao-style',
-        'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/tu-van',
-        'http://ngoisao.net/tin-tuc/thu-gian/an-choi/an',
-        'http://ngoisao.net/tin-tuc/thu-gian/an-choi/choi'
+    # urls = [
+    #     'http://ngoisao.net/tin-tuc/thoi-cuoc/24h',
+    #     'http://ngoisao.net/tin-tuc/thoi-cuoc/thuong-truong',
+    #     'http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet',
+    #     'http://ngoisao.net/tin-tuc/hau-truong/chau-a',
+    #     'http://ngoisao.net/tin-tuc/hau-truong/hollywood',
+    #     'http://ngoisao.net/tin-tuc/thu-gian/dan-choi',
+    #     'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/xu-huong',
+    #     'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/sao-dep',
+    #     'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/bi-quyet',
+    #     'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/hot-trend',
+    #     'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/sao-style',
+    #     'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/tu-van',
+    #     'http://ngoisao.net/tin-tuc/thu-gian/an-choi/an',
+    #     'http://ngoisao.net/tin-tuc/thu-gian/an-choi/choi'
+    # ]
 
+    # urls = [
+    #     'https://cafeland.vn/quy-hoach/',
+    #     'https://cafeland.vn/tin-tuc/'
+    # ]
+
+    urls = [
+        'http://viettimes.vn/bat-dong-san/',
+        'http://viettimes.vn/du-lich/',
+        'http://viettimes.vn/giai-tri/',
+        'http://viettimes.vn/kinh-doanh/',
+        'http://viettimes.vn/nhip-song-so/',
+        'http://viettimes.vn/quoc-phong/',
+        'http://viettimes.vn/song-xanh/',
+        'http://viettimes.vn/the-gioi/',
+        'http://viettimes.vn/viet-nam/'
     ]
 
-    from_date = '2017-02-20'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
-    to_date = '2017-02-20'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
+    from_date = '2017-03-02'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    to_date = '2017-03-02'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
     for url in urls:
@@ -231,8 +247,21 @@ def try_normalizer():
     #     'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/ca-co-gai-toi-cuu-lan-ke-dam-dao-chua-ai-den-hoi-tham-3542821.html'
     # ]
 
+    # urls = [
+    #     'http://viettimes.vn/vu-mat-20000-usd-de-xuat-khau-gao-co-the-xu-ly-hinh-su-neu-phat-hien-sai-pham-110215.html',
+    #     'http://viettimes.vn/thanh-tra-chinh-phu-kien-nghi-xu-ly-hinh-su-du-an-dai-thanh-cua-dai-gia-dieu-cay-110846.html',
+    #     'http://viettimes.vn/vietlott-mo-thang-3-bang-giai-jackpot-412-ty-110974.html',
+    #     'http://viettimes.vn/video-trai-nghiem-nhanh-galaxy-tab-s3-book-10-va-book-12-110586.html',
+    #     'http://viettimes.vn/mwc-2017-viettel-trinh-dien-hang-loat-san-pham-cong-nghe-thong-tin-110641.html',
+    #     'http://viettimes.vn/smartphone-lg-g6-chac-chan-ho-tro-chong-nuoc-109916.html',
+    #     'http://viettimes.vn/nga-lo-mo-hinh-may-bay-nem-bom-chien-luoc-the-he-moi-video-109941.html'
+    # ]
+
     urls = [
-        'http://giaoducthoidai.vn/thoi-su/gia-thieu-nu-10-lan-lua-tien-nguoi-dan-ong-si-tinh-yeu-qua-mang-2958648.html',
+        'https://cafeland.vn/du-an/khu-phuc-hop-ascott-waterfront-saigon-1271.html',
+        'https://cafeland.vn/tin-tuc/nguoi-dan-co-bi-ho-khi-dang-mua-chung-cu-hien-nay-65113.html',
+        'https://cafeland.vn/quy-hoach/quyet-thu-hoi-du-an-kcn-nam-cam-ranh-cua-vinashin-65115.html',
+        'https://cafeland.vn/tin-tuc/gia-bat-dong-san-trung-quoc-tang-nhanh-nhat-trong-nam-2016-65111.html'
     ]
 
     for url in urls:
@@ -240,10 +269,25 @@ def try_normalizer():
         print(json.dumps(result.get_content(), indent=4, ensure_ascii=False))
 
 
+def try_checker():
+    news_checker = Checker()
+
+    urls = [
+        'http://viettimes.vn/chuyen-gia-nga-viet-nam-tro-thanh-niem-hy-vong-lon-nhat-cua-nhat-ban-110989.html',
+        'http://viettimes.vn/dai-an-oceanbank-nhung-bi-cao-truoc-ngay-ra-toa-110654.html',
+        'http://viettimes.vn/thu-linh-is-thua-nhan-that-bai-keu-goi-thuoc-ha-tau-len-nui-110950.html',
+        'http://viettimes.vn/nga-lo-mo-hinh-may-bay-nem-bom-chien-luoc-the-he-moi-video-109941.html',
+        'http://viettimes.vn/tang-luong-phu-cap-cho-can-bo-cong-nhan-vien-chuc-tu-1-7-110953.html'
+    ]
+
+    for url in urls:
+        result = news_checker.check(url=url, timeout=15)
+        print(result.get_content())
+
 def main():
     # try_crawler()
     try_normalizer()
-    #r = requests.get('')
+    # try_checker()
     return
 
 

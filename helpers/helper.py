@@ -45,20 +45,23 @@ def debug(msg):
 
 # Hàm đổi các kí tự đặc biệt sang kí tự thông thường
 def normalize_special_chars(string):
-    assert string is not None, 'Tham số string không được là None'
+    if string is None:
+        return ''
     return _SPECIAL_CHARS_NORMALIZE_REGEX.sub(lambda m: _SPECIAL_CHARS_NORMALIZE_MAP[m.group(0)], string)
 
 
 # Hàm lọc bỏ các kí tự không cần thiết, các kí tự đặc biệt và các khoảng trắng
 def normalize_string(string):
-    assert string is not None, 'Tham số string không được là None'
+    if string is None:
+        return ''
     string = regex.sub(r'\\+(\S)', r'\g<1>', string)
     return regex.sub(r'\s+', ' ', normalize_special_chars(string)).strip()
 
 
 # Hàm lọc bỏ các kí tự đặc biệt dùng để tạo alt hoặc title
 def remove_special_chars(string):
-    assert string is not None, 'Tham số string không được là None'
+    if string is None:
+        return ''
     return normalize_string(string=regex.sub(r'[\W_]+', ' ', string))
 
 

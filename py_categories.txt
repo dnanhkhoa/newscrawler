@@ -1,3 +1,14 @@
+4 http://viettimes.vn/bat-dong-san/
+7 http://viettimes.vn/du-lich/
+7 http://viettimes.vn/giai-tri/
+4 http://viettimes.vn/kinh-doanh/
+8 http://viettimes.vn/nhip-song-so/
+2 http://viettimes.vn/quoc-phong/
+1 http://viettimes.vn/song-xanh/
+2 http://viettimes.vn/the-gioi/
+1 http://viettimes.vn/viet-nam/
+4 https://cafeland.vn/quy-hoach/
+4 https://cafeland.vn/tin-tuc/
 1 http://ngoisao.net/tin-tuc/thoi-cuoc/24h
 1 http://ngoisao.net/tin-tuc/thoi-cuoc/thuong-truong
 7 http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet

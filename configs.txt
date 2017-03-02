@@ -25,6 +25,17 @@
     "11": "AmThuc"
   },
   "priority_mapping": {
+    "http://viettimes.vn/bat-dong-san/": "8",
+    "http://viettimes.vn/du-lich/": "14",
+    "http://viettimes.vn/giai-tri/": "13",
+    "http://viettimes.vn/kinh-doanh/": "5",
+    "http://viettimes.vn/nhip-song-so/": "8",
+    "http://viettimes.vn/quoc-phong/": "6",
+    "http://viettimes.vn/song-xanh/": "13",
+    "http://viettimes.vn/the-gioi/": "5",
+    "http://viettimes.vn/viet-nam/": "12",
+    "https://cafeland.vn/quy-hoach/": "10",
+    "https://cafeland.vn/tin-tuc/": "9",
     "http://vnexpress.net/tin-tuc/phap-luat": "1",
     "http://giadinh.vnexpress.net/": "2",
     "http://suckhoe.vnexpress.net/": "3",
