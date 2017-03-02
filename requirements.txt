@@ -7,4 +7,3 @@ pafy
 bleach
 pymysql
 Pillow
-html5lib
