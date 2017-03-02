@@ -18,6 +18,7 @@ category_mapping = configs.get('category_mapping')
 priority_mapping = configs.get('priority_mapping')
 clusters = configs.get('clusters')
 ner_path = configs.get('ner_path')
+cluster_api = configs.get('cluster_api')
 
 crawler = Crawler()
 normalizer = Normalizer()
@@ -75,8 +76,7 @@ def write_raw(obj, file_name):
 
 # Gửi yêu cầu cluster
 def notify_cluster():
-    # res = requests.get('http://tinclc.com/cluster')
-    res = requests.get('http://45.118.148.70/cluster')
+    res = requests.get(url=cluster_api)
     if res.status_code == requests.codes.ok:
         write_lines([res.content.decode('UTF-8')], 'response.txt')
 

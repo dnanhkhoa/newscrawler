@@ -1,8 +1,9 @@
 {
+  "cluster_api": "http://45.118.148.71/cluster",
   "database": {
     "user": "root",
-    "password": "TongHopTin08",
-    "db": "mds_tinclc",
+    "password": "TongHopTin0890",
+    "db": "mds_crawl",
     "host": "localhost",
     "port": 3306,
     "charset": "utf8"
