@@ -244,7 +244,7 @@ class SubBaseParser(BaseParser):
             if author_classes is None:
                 author_classes = []
 
-            caption_classes.extend(['desc', 'pic', 'img', 'box', 'cap', 'photo', 'hinh', 'anh', 'def'])
+            caption_classes.extend(['desc', 'pic', 'img', 'box', 'cap', 'photo', 'fig', 'hinh', 'anh', 'def'])
             author_classes.extend(
                 ['author', 'copyright', 'source', 'nguon', 'tac-gia', 'tacgia', 'ban-quyen', 'banquyen'])
 
