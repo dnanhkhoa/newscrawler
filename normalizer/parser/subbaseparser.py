@@ -222,6 +222,12 @@ class SubBaseParser(BaseParser):
 
     # Mỗi đầu báo có thể kế thừa hàm này để xử lí 1 số trường hợp riêng bị như xóa ads,...
     def _pre_process(self, html):
+        # Xử lí các thẻ inline chứa image
+        inline_tags = html.find_all(['a', 'b', 'i', 'small', 'em', 'strong', 'q', 'span'])
+        for inline_tag in inline_tags:
+            img_tag = inline_tag.find('img')
+            if img_tag is not None:
+                inline_tag.name = 'div'
         return html
 
     # Mỗi đầu báo có thể kế thừa hàm này để xử lí 1 số trường hợp riêng bị như xóa ads,...

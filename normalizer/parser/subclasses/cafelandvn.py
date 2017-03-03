@@ -94,13 +94,8 @@ class CafeLandVnParser(SubBaseParser):
     #     return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-    def _pre_process(self, html):
-        span_tags = html.find_all('span')
-        for span_tag in span_tags:
-            img_tag = span_tag.find('img')
-            if img_tag is not None:
-                span_tag.name = 'div'
-        return super()._pre_process(html)
+    # def _pre_process(self, html):
+    #     return super()._pre_process(html)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     # def _post_process(self, html):

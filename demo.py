@@ -264,6 +264,10 @@ def try_normalizer():
         'https://cafeland.vn/tin-tuc/gia-bat-dong-san-trung-quoc-tang-nhanh-nhat-trong-nam-2016-65111.html'
     ]
 
+    # urls = [
+    #     'http://giaoducthoidai.vn/van-hoa/tran-thanh-tro-thanh-toi-do-khi-tiet-lo-qua-khu-cua-dong-nghiep-2991520-l.html'
+    # ]
+
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
         print(json.dumps(result.get_content(), indent=4, ensure_ascii=False))
