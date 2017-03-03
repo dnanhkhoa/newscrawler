@@ -1,5 +1,5 @@
 {
-  "cluster_api": "http://45.118.148.71/cluster",
+  "cluster_api": "http://mdbpik.com/cluster",
   "database": {
     "user": "root",
     "password": "TongHopTin0890",
