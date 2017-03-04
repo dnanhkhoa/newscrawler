@@ -104,6 +104,11 @@ def main():
         if urls_in_db is None:
             return None
 
+        # Hotfix for viettimes.vn
+        for i, url in enumerate(urls_in_db):
+            if 'viettimes.vn' in url:
+                urls_in_db[i] = regex.sub(r'-\d+.html', '', url, flags=regex.IGNORECASE)
+
         # Lặp qua từng chuyên mục
         for category_id in categories_urls:
             # Lấy danh sách các đầu báo thuộc chuyên mục đó
@@ -124,12 +129,26 @@ def main():
                         if not result.is_ok():
                             continue
 
-                        post_urls = result.get_content()
-                        if post_urls is None or len(post_urls) == 0:
+                        org_post_urls = result.get_content()
+                        if org_post_urls is None or len(org_post_urls) == 0:
                             continue
 
-                        post_urls = list(set(post_urls) - set(urls_in_db))
-                        urls_in_db.extend(post_urls)
+                        post_urls = []
+                        post_urls_in_db = []
+
+                        for url in org_post_urls:
+                            if url not in urls_in_db:
+                                if 'viettimes.vn' in url:
+                                    temp_url = regex.sub(r'-\d+.html', '', url, flags=regex.IGNORECASE)
+                                    if temp_url not in urls_in_db:
+                                        post_urls.append(url)
+                                        post_urls_in_db.append(temp_url)
+                                    continue
+
+                                post_urls.append(url)
+                                post_urls_in_db.append(url)
+
+                        urls_in_db.extend(post_urls_in_db)
 
                         for post_url in post_urls:
                             try:
