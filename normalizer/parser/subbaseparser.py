@@ -183,12 +183,13 @@ class SubBaseParser(BaseParser):
         img_tags = html.find_all('img')
         for img_tag in img_tags:
             image_url = img_tag.get('src')
+
+            image_url = self._get_valid_image_url(image_url)
+
             size = self._get_image_size(url=image_url)
             if size is None or size[0] < 100 or size[1] < 100:
                 img_tag.decompose()
                 continue
-
-            image_url = self._get_valid_image_url(image_url)
 
             # Tìm thẻ caption
             next_div_tag = img_tag.find_next('div')
