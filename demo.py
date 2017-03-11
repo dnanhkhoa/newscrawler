@@ -268,8 +268,7 @@ def try_normalizer():
     #     'http://giaoducthoidai.vn/van-hoa/tran-thanh-tro-thanh-toi-do-khi-tiet-lo-qua-khu-cua-dong-nghiep-2991520-l.html'
     # ]
 
-    urls = ['http://nongnghiep.vn/gia-ga-xuong-thap-co-phai-do-ga-nhap-khau-post188397.html',
-            'http://ngoisao.net/interactive/2017/phat-ngon-sao-viet']
+    urls = ['http://viettimes.vn/donald-trump-phai-ra-nhieu-uu-dai-cho-foxconn-neu-muon-san-xuat-iphone-tai-my-112554.html']
 
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
