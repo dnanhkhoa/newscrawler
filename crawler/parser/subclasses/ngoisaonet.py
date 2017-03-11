@@ -72,7 +72,14 @@ class NgoiSaoNetParser(SubBaseParser):
                 if a_tag is not None:
                     urls.append(a_tag.get('href'))
 
-            return urls
+            # Bỏ những link video
+            filtered_urls = []
+            for url in urls:
+                if '/interactive/' in url:
+                    continue
+                filtered_urls.append(url)
+
+            return filtered_urls
 
         self._vars['get_post_urls_func'] = get_post_urls_func
 

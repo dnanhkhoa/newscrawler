@@ -257,16 +257,19 @@ def try_normalizer():
     #     'http://viettimes.vn/nga-lo-mo-hinh-may-bay-nem-bom-chien-luoc-the-he-moi-video-109941.html'
     # ]
 
-    urls = [
-        'https://cafeland.vn/du-an/khu-phuc-hop-ascott-waterfront-saigon-1271.html',
-        'https://cafeland.vn/tin-tuc/nguoi-dan-co-bi-ho-khi-dang-mua-chung-cu-hien-nay-65113.html',
-        'https://cafeland.vn/quy-hoach/quyet-thu-hoi-du-an-kcn-nam-cam-ranh-cua-vinashin-65115.html',
-        'https://cafeland.vn/tin-tuc/gia-bat-dong-san-trung-quoc-tang-nhanh-nhat-trong-nam-2016-65111.html'
-    ]
+    # urls = [
+    #     'https://cafeland.vn/du-an/khu-phuc-hop-ascott-waterfront-saigon-1271.html',
+    #     'https://cafeland.vn/tin-tuc/nguoi-dan-co-bi-ho-khi-dang-mua-chung-cu-hien-nay-65113.html',
+    #     'https://cafeland.vn/quy-hoach/quyet-thu-hoi-du-an-kcn-nam-cam-ranh-cua-vinashin-65115.html',
+    #     'https://cafeland.vn/tin-tuc/gia-bat-dong-san-trung-quoc-tang-nhanh-nhat-trong-nam-2016-65111.html'
+    # ]
 
     # urls = [
     #     'http://giaoducthoidai.vn/van-hoa/tran-thanh-tro-thanh-toi-do-khi-tiet-lo-qua-khu-cua-dong-nghiep-2991520-l.html'
     # ]
+
+    urls = ['http://nongnghiep.vn/gia-ga-xuong-thap-co-phai-do-ga-nhap-khau-post188397.html',
+            'http://ngoisao.net/interactive/2017/phat-ngon-sao-viet']
 
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
