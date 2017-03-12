@@ -25,6 +25,16 @@
     "11": "AmThuc"
   },
   "priority_mapping": {
+    "http://tapchithoitrangtre.com.vn/chan-dung/showbiz": "12",
+    "http://tapchithoitrangtre.com.vn/chan-dung/sao-quoc-te": "12",
+    "http://tapchithoitrangtre.com.vn/chan-dung/tro-chuyen-cung-sao": "12",
+    "http://tapchithoitrangtre.com.vn/phong-cach/lam-dep": "7",
+    "http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang": "7",
+    "http://tapchithoitrangtre.com.vn/phong-cach/ket-hop": "7",
+    "http://tapchithoitrangtre.com.vn/song-khoe/dac-quyen-phai-dep": "5",
+    "http://tapchithoitrangtre.com.vn/song-khoe/dinh-duong": "5",
+    "http://tapchithoitrangtre.com.vn/song-khoe/dai-lo-nhan-sac": "5",
+    "http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe": "5",
     "http://viettimes.vn/bat-dong-san/": "8",
     "http://viettimes.vn/du-lich/": "14",
     "http://viettimes.vn/giai-tri/": "13",

@@ -1,3 +1,13 @@
+7 http://tapchithoitrangtre.com.vn/chan-dung/showbiz
+7 http://tapchithoitrangtre.com.vn/chan-dung/sao-quoc-te
+7 http://tapchithoitrangtre.com.vn/chan-dung/tro-chuyen-cung-sao
+9 http://tapchithoitrangtre.com.vn/phong-cach/lam-dep
+9 http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang
+9 http://tapchithoitrangtre.com.vn/phong-cach/ket-hop
+11 http://tapchithoitrangtre.com.vn/song-khoe/dac-quyen-phai-dep
+11 http://tapchithoitrangtre.com.vn/song-khoe/dinh-duong
+11 http://tapchithoitrangtre.com.vn/song-khoe/dai-lo-nhan-sac
+11 http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe
 4 http://viettimes.vn/bat-dong-san/
 7 http://viettimes.vn/du-lich/
 7 http://viettimes.vn/giai-tri/

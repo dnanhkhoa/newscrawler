@@ -10,6 +10,7 @@ from normalizer import *
 from helpers import *
 from checker import *
 
+
 def try_crawler():
     news_crawler = Crawler()
 
@@ -125,16 +126,31 @@ def try_crawler():
     #     'https://cafeland.vn/tin-tuc/'
     # ]
 
+    # urls = [
+    #     'http://viettimes.vn/bat-dong-san/',
+    #     'http://viettimes.vn/du-lich/',
+    #     'http://viettimes.vn/giai-tri/',
+    #     'http://viettimes.vn/kinh-doanh/',
+    #     'http://viettimes.vn/nhip-song-so/',
+    #     'http://viettimes.vn/quoc-phong/',
+    #     'http://viettimes.vn/song-xanh/',
+    #     'http://viettimes.vn/the-gioi/',
+    #     'http://viettimes.vn/viet-nam/'
+    # ]
+
     urls = [
-        'http://viettimes.vn/bat-dong-san/',
-        'http://viettimes.vn/du-lich/',
-        'http://viettimes.vn/giai-tri/',
-        'http://viettimes.vn/kinh-doanh/',
-        'http://viettimes.vn/nhip-song-so/',
-        'http://viettimes.vn/quoc-phong/',
-        'http://viettimes.vn/song-xanh/',
-        'http://viettimes.vn/the-gioi/',
-        'http://viettimes.vn/viet-nam/'
+        # 'http://tapchithoitrangtre.com.vn/chan-dung/showbiz',
+        # 'http://tapchithoitrangtre.com.vn/chan-dung/sao-quoc-te',
+        # 'http://tapchithoitrangtre.com.vn/chan-dung/tro-chuyen-cung-sao',
+        #
+        # 'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep',
+        # 'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang',
+        # 'http://tapchithoitrangtre.com.vn/phong-cach/ket-hop',
+
+        'http://tapchithoitrangtre.com.vn/song-khoe/dac-quyen-phai-dep',
+        # 'http://tapchithoitrangtre.com.vn/song-khoe/dinh-duong',
+        # 'http://tapchithoitrangtre.com.vn/song-khoe/dai-lo-nhan-sac',
+        # 'http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe'
     ]
 
     from_date = '2017-03-02'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
@@ -268,7 +284,22 @@ def try_normalizer():
     #     'http://giaoducthoidai.vn/van-hoa/tran-thanh-tro-thanh-toi-do-khi-tiet-lo-qua-khu-cua-dong-nghiep-2991520-l.html'
     # ]
 
-    urls = ['http://viettimes.vn/donald-trump-phai-ra-nhieu-uu-dai-cho-foxconn-neu-muon-san-xuat-iphone-tai-my-112554.html']
+    # urls = ['http://viettimes.vn/donald-trump-phai-ra-nhieu-uu-dai-cho-foxconn-neu-muon-san-xuat-iphone-tai-my-112554.html']
+
+    urls = [
+        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/victoria-s-secret-fashion-show-2016-se-dien-ra-tai-paris.html',
+        'http://tapchithoitrangtre.com.vn/chan-dung/showbiz/quang-dung-ky-niem-20-nam-ca-hat.html',
+        'http://tapchithoitrangtre.com.vn/video/huong-dan-lam-dep/bien-hoa-3-phong-cach-di-bien-trong-nhay-mat.html',
+        'http://tapchithoitrangtre.com.vn/video/video-hau-truong/gai-gia-lam-chieu-dinh-trang-chup-hinh.html',
+        'http://tapchithoitrangtre.com.vn/tin-tuc/tin-cap-nhat/phan-dinh-tung-ra-album-y-niem-5-nam-ngay-cuoi.html',
+        'http://tapchithoitrangtre.com.vn/tin-tuc/tin-cap-nhat/khi-cac-nghe-si-tranh-luan-chuyen-tinh-thuong-con-cai.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep/nhung-meo-giup-long-mi-ban-trong-dai-hon.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep/m-a-c-tiep-tuc-gay-sot-voi-dong-phan-mat-moi.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/hai-net-doi-lap-trong-bst-moi-cua-lanvin.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/dries-van-noten-ky-niem-buoi-trinh-dien-lan-thu-100-tai-pfw-thu-dong-2017.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/ngam-nhung-xu-huong-streetstyle-noi-bat-tai-paris-nam-2017.html',
+        'http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe/tap-luyen-tai-nha-tai-sao-khong.html'
+    ]
 
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
@@ -279,16 +310,24 @@ def try_checker():
     news_checker = Checker()
 
     urls = [
-        'http://viettimes.vn/chuyen-gia-nga-viet-nam-tro-thanh-niem-hy-vong-lon-nhat-cua-nhat-ban-110989.html',
-        'http://viettimes.vn/dai-an-oceanbank-nhung-bi-cao-truoc-ngay-ra-toa-110654.html',
-        'http://viettimes.vn/thu-linh-is-thua-nhan-that-bai-keu-goi-thuoc-ha-tau-len-nui-110950.html',
-        'http://viettimes.vn/nga-lo-mo-hinh-may-bay-nem-bom-chien-luoc-the-he-moi-video-109941.html',
-        'http://viettimes.vn/tang-luong-phu-cap-cho-can-bo-cong-nhan-vien-chuc-tu-1-7-110953.html'
+        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/victoria-s-secret-fashion-show-2016-se-dien-ra-tai-paris.html',
+        'http://tapchithoitrangtre.com.vn/chan-dung/showbiz/quang-dung-ky-niem-20-nam-ca-hat.html',
+        'http://tapchithoitrangtre.com.vn/video/huong-dan-lam-dep/bien-hoa-3-phong-cach-di-bien-trong-nhay-mat.html',
+        'http://tapchithoitrangtre.com.vn/video/video-hau-truong/gai-gia-lam-chieu-dinh-trang-chup-hinh.html',
+        'http://tapchithoitrangtre.com.vn/tin-tuc/tin-cap-nhat/phan-dinh-tung-ra-album-y-niem-5-nam-ngay-cuoi.html',
+        'http://tapchithoitrangtre.com.vn/tin-tuc/tin-cap-nhat/khi-cac-nghe-si-tranh-luan-chuyen-tinh-thuong-con-cai.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep/nhung-meo-giup-long-mi-ban-trong-dai-hon.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep/m-a-c-tiep-tuc-gay-sot-voi-dong-phan-mat-moi.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/hai-net-doi-lap-trong-bst-moi-cua-lanvin.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/dries-van-noten-ky-niem-buoi-trinh-dien-lan-thu-100-tai-pfw-thu-dong-2017.html',
+        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/ngam-nhung-xu-huong-streetstyle-noi-bat-tai-paris-nam-2017.html',
+        'http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe/tap-luyen-tai-nha-tai-sao-khong.html'
     ]
 
     for url in urls:
         result = news_checker.check(url=url, timeout=15)
         print(result.get_content())
+
 
 def main():
     # try_crawler()

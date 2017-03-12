@@ -1,4 +1,5 @@
 regex
+dateparser
 requests
 cchardet
 beautifulsoup4

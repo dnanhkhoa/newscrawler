@@ -39,64 +39,72 @@ class SubBaseParser(BaseParser):
         urls = []
         stop = False
 
-        get_post_urls_func = self._vars.get('get_post_urls_func')
-        if get_post_urls_func is None:
-            stop = True
-        else:
-            post_urls = get_post_urls_func(html)
-            if post_urls is None or len(post_urls) == 0:
+        try:
+            get_post_urls_func = self._vars.get('get_post_urls_func')
+            if get_post_urls_func is None:
                 stop = True
             else:
-                if isinstance(post_urls[0], tuple):
-                    post_urls = list(map(lambda x: (self._get_absolute_url(url=x[0], domain=url), x[1]), post_urls))
+                post_urls = get_post_urls_func(html)
+                if post_urls is None or len(post_urls) == 0:
+                    stop = True
+                else:
+                    if isinstance(post_urls[0], tuple):
+                        post_urls = list(map(lambda x: (self._get_absolute_url(url=x[0], domain=url), x[1]), post_urls))
 
-                    last_post_date = post_urls[-1][1]
-                    if last_post_date is None:
-                        last_post_date = self._get_date_from_post(url=post_urls[-1][0], timeout=timeout)
+                        last_post_date = post_urls[-1][1]
+                        if last_post_date is None:
+                            last_post_date = self._get_date_from_post(url=post_urls[-1][0], timeout=timeout)
 
-                    if from_date > last_post_date:
-                        stop = True
-                        for post_url in post_urls:
-                            current_post_date = post_url[1]
-                            if current_post_date is None:
-                                current_post_date = self._get_date_from_post(url=post_url[0], timeout=timeout)
-
-                            if current_post_date is not None and from_date <= current_post_date <= to_date:
-                                urls.append(post_url[0])
-                    else:  # from_date <= last_post_date:
-                        first_post_date = post_urls[0][1]
-                        if first_post_date is None:
-                            first_post_date = self._get_date_from_post(url=post_urls[0][0], timeout=timeout)
-
-                        if first_post_date is not None and first_post_date <= to_date:
-                            urls.extend(list(map(lambda x: x[0], post_urls)))
-                        else:
-                            for post_url in post_urls[1:]:
+                        if from_date > last_post_date:
+                            stop = True
+                            for post_url in post_urls:
                                 current_post_date = post_url[1]
                                 if current_post_date is None:
                                     current_post_date = self._get_date_from_post(url=post_url[0], timeout=timeout)
 
-                                if current_post_date is not None and current_post_date <= to_date:
+                                if current_post_date is not None and from_date <= current_post_date <= to_date:
                                     urls.append(post_url[0])
-                else:
-                    post_urls = list(map(lambda x: self._get_absolute_url(url=x, domain=url), post_urls))
+                        else:  # from_date <= last_post_date:
+                            first_post_date = post_urls[0][1]
+                            if first_post_date is None:
+                                first_post_date = self._get_date_from_post(url=post_urls[0][0], timeout=timeout)
 
-                    last_post_date = self._get_date_from_post(url=post_urls[-1], timeout=timeout)
-                    if from_date > last_post_date:
-                        stop = True
-                        for post_url in post_urls:
-                            current_post_date = self._get_date_from_post(url=post_url, timeout=timeout)
-                            if current_post_date is not None and from_date <= current_post_date <= to_date:
-                                urls.append(post_url)
-                    else:  # from_date <= last_post_date:
-                        first_post_date = self._get_date_from_post(url=post_urls[0], timeout=timeout)
-                        if first_post_date is not None and first_post_date <= to_date:
-                            urls.extend(post_urls)
-                        else:
-                            for post_url in post_urls[1:]:
+                            if first_post_date is not None and first_post_date <= to_date:
+                                urls.extend(list(map(lambda x: x[0], post_urls)))
+                            else:
+                                for post_url in post_urls[1:]:
+                                    current_post_date = post_url[1]
+                                    if current_post_date is None:
+                                        current_post_date = self._get_date_from_post(url=post_url[0], timeout=timeout)
+
+                                    if current_post_date is not None and current_post_date <= to_date:
+                                        urls.append(post_url[0])
+                    else:
+                        post_urls = list(map(lambda x: self._get_absolute_url(url=x, domain=url), post_urls))
+
+                        last_post_date = self._get_date_from_post(url=post_urls[-1], timeout=timeout)
+                        if from_date > last_post_date:
+                            stop = True
+                            for post_url in post_urls:
                                 current_post_date = self._get_date_from_post(url=post_url, timeout=timeout)
-                                if current_post_date is not None and current_post_date <= to_date:
+                                if current_post_date is not None and from_date <= current_post_date <= to_date:
                                     urls.append(post_url)
+                        else:  # from_date <= last_post_date:
+                            first_post_date = self._get_date_from_post(url=post_urls[0], timeout=timeout)
+                            if first_post_date is not None and first_post_date <= to_date:
+                                urls.extend(post_urls)
+                            else:
+                                for post_url in post_urls[1:]:
+                                    current_post_date = self._get_date_from_post(url=post_url, timeout=timeout)
+                                    if current_post_date is not None and current_post_date <= to_date:
+                                        urls.append(post_url)
+        except Exception as e:
+            urls = []
+            stop = True
+
+            debug(url)
+            log(e)
+
         return urls, stop
 
     # Hàm tiền xử lí trước khi gọi hàm get_urls_from_page
