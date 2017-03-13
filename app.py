@@ -20,6 +20,8 @@ clusters = configs.get('clusters')
 ner_path = configs.get('ner_path')
 cluster_api = configs.get('cluster_api')
 
+log_file = None
+
 crawler = Crawler()
 normalizer = Normalizer()
 
@@ -82,6 +84,7 @@ def notify_cluster():
 
 
 def main():
+    global log_file
     try:
         # Đường dẫn đến thư mục chứa các clusters
         cluster_path = '%s/%s' % (clusters, str(date.today()).replace('-', ''))
@@ -150,6 +153,10 @@ def main():
 
                         urls_in_db.extend(post_urls_in_db)
 
+                        # Log danh sách URLS
+                        for post_url in post_urls:
+                            log_file.write('%s\n' % post_url)
+
                         for post_url in post_urls:
                             try:
                                 result = normalizer.normalize(url=post_url)
@@ -184,13 +191,17 @@ def main():
 
 
 if __name__ == '__main__':
+    global log_file
+
     # Ghi lịch sử thực thi
     log_folder = 'log'
     make_dirs(log_folder)
-    with open(path(log_folder + '/' + datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f')), 'w') as f:
-        pass
 
-    print('Running')
+    log_file = open(path(log_folder + '/' + datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f')), 'w')
+    log_file.write('Running...\n')
+
     main()
     notify_cluster()
-    print('Done')
+
+    log_file.write('Done.\n')
+    log_file.close()
