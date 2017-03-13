@@ -186,10 +186,10 @@ class SubBaseParser(BaseParser):
 
             image_url = self._get_valid_image_url(image_url)
 
-            size = self._get_image_size(url=image_url)
-            if size is None or size[0] < 100 or size[1] < 100:
-                img_tag.decompose()
-                continue
+            # size = self._get_image_size(url=image_url)
+            # if size is None or size[0] < 100 or size[1] < 100:
+            #     img_tag.decompose()
+            #     continue
 
             # Tìm thẻ caption
             next_div_tag = img_tag.find_next('div')
