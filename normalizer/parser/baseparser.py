@@ -110,9 +110,9 @@ class BaseParser(ABC):
     def _get_valid_image_url(self, url, domain=None):
         assert url is not None, 'Tham số url không được là None'
         image_url = self._get_absolute_url(url=url, domain=domain)
-        cleaned_image_url = clean_url_query(url=image_url)
-        if self._is_valid_image_url(cleaned_image_url):
-            image_url = cleaned_image_url
+        # cleaned_image_url = clean_url_query(url=image_url)
+        # if self._is_valid_image_url(cleaned_image_url):
+        #     image_url = cleaned_image_url
         return image_url
 
     # Trả về kết quả có cấu trúc theo yêu cầu
