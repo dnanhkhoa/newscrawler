@@ -24,7 +24,7 @@ class CafeLandVnParser(SubBaseParser):
 
         # Tìm thẻ chứa tiêu đề
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_title_tag_func'] = lambda x: x.find('h2', class_='sevenPostTitle')
+        self._vars['get_title_tag_func'] = lambda x: x.find(class_='sevenPostTitle')
 
         # Tìm thẻ chứa nội dung tóm tắt
         # Gán bằng con trỏ hàm hoặc biểu thức lambda

@@ -82,7 +82,7 @@ class IOneVnExpressNetParser(SubBaseParser):
         # Các nhãn: author, center, right, bold, italic
         # Phân cách nhau bởi dấu | và những nhãn nào không được phép thì có tiền tố ^ ở đầu
         # Ví dụ: 'right|bold|author|^center|^italic'
-        self._vars['author_classes_pattern'] = 'right|bold|author'
+        self._vars['author_classes_pattern'] = '(?:(?=.*\\bright\\b)(?=(?:.*\\bbold\\b)?).*)|author'
 
         # Chỉ định tự động xóa tất cả các chuỗi bên dưới tác giả
         # Thích hợp khi bài viết chèn nhiều quảng cảo, links bên dưới mà không có id để xóa

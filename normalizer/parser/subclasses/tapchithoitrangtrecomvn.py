@@ -24,6 +24,8 @@ class TapchithoitrangtreComVnParser(SubBaseParser):
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
+        self.image_url_regex = regex.compile(r'src=([^&]+)', regex.IGNORECASE)
+
         # THAY ĐỔI CÁC HÀM TRONG VARS ĐỂ THAY ĐỔI CÁC THAM SỐ CỦA HÀM CHA
 
         # Tìm thẻ chứa tiêu đề
@@ -117,6 +119,16 @@ class TapchithoitrangtreComVnParser(SubBaseParser):
     # def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
     #     return super()._handle_video(html, default_thumbnail_url, timeout)
 
+    def fix_image_url(self, url):
+        if 'timthumb.php' in url:
+            matcher = self.image_url_regex.search(url)
+            if matcher is not None:
+                image_src = matcher.group(1)
+                if not image_src.startswith('/'):
+                    image_src = '/' + image_src
+                return 'http://cdn.tapchithoitrangtre.com.vn' + image_src
+        return url
+
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     def _pre_process(self, html):
         h5_tag = html.find('h5')
@@ -125,8 +137,11 @@ class TapchithoitrangtreComVnParser(SubBaseParser):
         return super()._pre_process(html)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-    # def _post_process(self, html):
-    #     return super()._post_process(html)
+    def _post_process(self, html):
+        img_tags = html.find_all('img', attrs={'src': True})
+        for img_tag in img_tags:
+            img_tag['src'] = self.fix_image_url(url=img_tag.get('src'))
+        return super()._post_process(html)
 
     def _get_author(self, html):
         if html is None:
@@ -158,3 +173,13 @@ class TapchithoitrangtreComVnParser(SubBaseParser):
 
     def _get_meta_description(self, html):
         return super()._get_summary(html)
+
+    def _get_og_image(self, html):
+        if html is None:
+            return None
+
+        meta_tag = html.find('meta', attrs={'property': 'og:image', 'content': True})
+        if meta_tag is None:
+            return None
+
+        return self.fix_image_url(url=meta_tag.get('content'))

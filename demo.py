@@ -214,16 +214,16 @@ def try_normalizer():
     #     'http://hanoimoi.com.vn/Media/Chinh-tri/862233/thuong-truc-thanh-uy-ha-noi-gap-mat-cac-hoi-vien-clb-thang-long'
     # ]
     #
-    # urls = [
-    #     'http://ione.vnexpress.net/tin-tuc/sao/us-uk/video-hot-nhat-the-gioi-2016-adele-hat-tren-xe-3511046.html',
-    #     'http://ione.vnexpress.net/tin-tuc/thoi-trang/bo-anh-mac-vay-to-son-loe-loet-cua-mau-nam-next-top-gay-tranh-cai-3539779.html'
-    #     'http://ione.vnexpress.net/tin-tuc/lam-dep/co-gai-makeup-xinh-dep-bang-do-an-trong-tu-lanh-3509827.html',
-    #     'http://ione.vnexpress.net/tin-tuc/nhip-song/nhung-kiet-tac-rong-co-the-khien-rong-hai-phong-chao-thua-3528937.html',
-    #     'http://ione.vnexpress.net/tin-tuc/sao/viet-nam/co-gai-nguoi-han-hat-hit-big-bang-tai-giong-hat-viet-gay-phan-khich-3540185.html',
-    #     'http://ione.vnexpress.net/tin-tuc/lam-dep/dang-dep/mau-noi-y-xu-han-mat-ngay-tho-body-boc-lua-3540144.html',
-    #     'http://ione.vnexpress.net/photo/thoi-trang/con-gai-donald-trump-sanh-dieu-so-voi-20-nam-truoc-3539813.html',
-    #     'http://ione.vnexpress.net/tin-tuc/sao/chau-a/tzuyu-kiem-duoc-36-ty-dong-sau-hon-mot-nam-debut-3512802.html',
-    # ]
+    urls = [
+        'http://ione.vnexpress.net/tin-tuc/sao/us-uk/video-hot-nhat-the-gioi-2016-adele-hat-tren-xe-3511046.html',
+        'http://ione.vnexpress.net/tin-tuc/thoi-trang/bo-anh-mac-vay-to-son-loe-loet-cua-mau-nam-next-top-gay-tranh-cai-3539779.html'
+        'http://ione.vnexpress.net/tin-tuc/lam-dep/co-gai-makeup-xinh-dep-bang-do-an-trong-tu-lanh-3509827.html',
+        'http://ione.vnexpress.net/tin-tuc/nhip-song/nhung-kiet-tac-rong-co-the-khien-rong-hai-phong-chao-thua-3528937.html',
+        'http://ione.vnexpress.net/tin-tuc/sao/viet-nam/co-gai-nguoi-han-hat-hit-big-bang-tai-giong-hat-viet-gay-phan-khich-3540185.html',
+        'http://ione.vnexpress.net/tin-tuc/lam-dep/dang-dep/mau-noi-y-xu-han-mat-ngay-tho-body-boc-lua-3540144.html',
+        'http://ione.vnexpress.net/photo/thoi-trang/con-gai-donald-trump-sanh-dieu-so-voi-20-nam-truoc-3539813.html',
+        'http://ione.vnexpress.net/tin-tuc/sao/chau-a/tzuyu-kiem-duoc-36-ty-dong-sau-hon-mot-nam-debut-3512802.html',
+    ]
 
     # urls = [
     #     'http://nongnghiep.vn/video-trung-quoc-xay-cau-phao-dai-hon-1000-m-trong-27-phut-post183533.html',
@@ -286,20 +286,20 @@ def try_normalizer():
 
     # urls = ['http://viettimes.vn/donald-trump-phai-ra-nhieu-uu-dai-cho-foxconn-neu-muon-san-xuat-iphone-tai-my-112554.html']
 
-    urls = [
-        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/victoria-s-secret-fashion-show-2016-se-dien-ra-tai-paris.html',
-        'http://tapchithoitrangtre.com.vn/chan-dung/showbiz/quang-dung-ky-niem-20-nam-ca-hat.html',
-        'http://tapchithoitrangtre.com.vn/video/huong-dan-lam-dep/bien-hoa-3-phong-cach-di-bien-trong-nhay-mat.html',
-        'http://tapchithoitrangtre.com.vn/video/video-hau-truong/gai-gia-lam-chieu-dinh-trang-chup-hinh.html',
-        'http://tapchithoitrangtre.com.vn/tin-tuc/tin-cap-nhat/phan-dinh-tung-ra-album-y-niem-5-nam-ngay-cuoi.html',
-        'http://tapchithoitrangtre.com.vn/tin-tuc/tin-cap-nhat/khi-cac-nghe-si-tranh-luan-chuyen-tinh-thuong-con-cai.html',
-        'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep/nhung-meo-giup-long-mi-ban-trong-dai-hon.html',
-        'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep/m-a-c-tiep-tuc-gay-sot-voi-dong-phan-mat-moi.html',
-        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/hai-net-doi-lap-trong-bst-moi-cua-lanvin.html',
-        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/dries-van-noten-ky-niem-buoi-trinh-dien-lan-thu-100-tai-pfw-thu-dong-2017.html',
-        'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/ngam-nhung-xu-huong-streetstyle-noi-bat-tai-paris-nam-2017.html',
-        'http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe/tap-luyen-tai-nha-tai-sao-khong.html'
-    ]
+    # urls = [
+    #     'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/victoria-s-secret-fashion-show-2016-se-dien-ra-tai-paris.html',
+    #     'http://tapchithoitrangtre.com.vn/chan-dung/showbiz/quang-dung-ky-niem-20-nam-ca-hat.html',
+    #     'http://tapchithoitrangtre.com.vn/video/huong-dan-lam-dep/bien-hoa-3-phong-cach-di-bien-trong-nhay-mat.html',
+    #     'http://tapchithoitrangtre.com.vn/video/video-hau-truong/gai-gia-lam-chieu-dinh-trang-chup-hinh.html',
+    #     'http://tapchithoitrangtre.com.vn/tin-tuc/tin-cap-nhat/phan-dinh-tung-ra-album-y-niem-5-nam-ngay-cuoi.html',
+    #     'http://tapchithoitrangtre.com.vn/tin-tuc/tin-cap-nhat/khi-cac-nghe-si-tranh-luan-chuyen-tinh-thuong-con-cai.html',
+    #     'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep/nhung-meo-giup-long-mi-ban-trong-dai-hon.html',
+    #     'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep/m-a-c-tiep-tuc-gay-sot-voi-dong-phan-mat-moi.html',
+    #     'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/hai-net-doi-lap-trong-bst-moi-cua-lanvin.html',
+    #     'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/dries-van-noten-ky-niem-buoi-trinh-dien-lan-thu-100-tai-pfw-thu-dong-2017.html',
+    #     'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang/ngam-nhung-xu-huong-streetstyle-noi-bat-tai-paris-nam-2017.html',
+    #     'http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe/tap-luyen-tai-nha-tai-sao-khong.html'
+    # ]
 
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
