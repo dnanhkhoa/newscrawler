@@ -15,7 +15,6 @@ configs = read_json('configs.txt')
 # Dùng để code nhanh
 db = configs.get('database')
 category_mapping = configs.get('category_mapping')
-priority_mapping = configs.get('priority_mapping')
 clusters = configs.get('clusters')
 ner_path = configs.get('ner_path')
 cluster_api = configs.get('cluster_api')
@@ -81,8 +80,22 @@ def notify_cluster():
         write_lines([res.content.decode('UTF-8')], 'response.txt')
 
 
+def load_data(file_path):
+    categories = []
+    priorities = {}
+    lines = read_lines(file_path)
+    for line in lines:
+        parts = line.split('\t')
+        if len(parts) < 3: continue
+        categories.append((parts[0], parts[1]))
+        priorities[parts[1]] = parts[2]
+    return categories, priorities
+
+
 def main():
     try:
+        categories, priority_mapping = load_data('mapping.txt')
+
         # Đường dẫn đến thư mục chứa các clusters
         cluster_path = '%s/%s' % (clusters, str(date.today()).replace('-', ''))
 
@@ -94,10 +107,8 @@ def main():
         categories_urls = collections.defaultdict(lambda: [])
 
         # Đọc danh sách URLs chuyên mục
-        lines = read_lines(configs.get('category_file'))
-        for line in lines:
-            category_id, url = line.split(' ')
-            categories_urls[category_id].append(url)
+        for parts in categories:
+            categories_urls[parts[0]].append(parts[1])
 
         # Danh sách các URLs đã crawl
         urls_in_db = get_urls_from_db()
