@@ -69,8 +69,7 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_datetime_func(string):
             string = string.split(',')[1]
-            parts = string.strip().split(' ')[:-1]
-            return datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')
+            return datetime.strptime(string.strip(), '%d/%m/%Y %H:%M')
 
         self._vars['get_datetime_func'] = get_datetime_func
 
