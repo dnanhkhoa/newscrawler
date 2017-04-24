@@ -76,15 +76,15 @@ def try_crawler():
     #     'http://hanoimoi.com.vn/Danh-muc-tin/741/Hau-truong'
     # ]
 
-    # urls = [
-    #     'http://nongnghiep.vn/giai-tri-27-15.html',
-    #     'http://nongnghiep.vn/giao-duc-28-15.html',
-    #     'http://nongnghiep.vn/kinh-te-3-15.html',
-    #     'http://nongnghiep.vn/phap-luat-15-15.html',
-    #     'http://nongnghiep.vn/the-gioi-8-15.html',
-    #     'http://nongnghiep.vn/the-thao-29-15.html',
-    #     'http://nongnghiep.vn/van-hoa-26-15.html'
-    # ]
+    urls = [
+        'http://nongnghiep.vn/giai-tri-27-15.html',
+        'http://nongnghiep.vn/giao-duc-28-15.html',
+        'http://nongnghiep.vn/kinh-te-3-15.html',
+        'http://nongnghiep.vn/phap-luat-15-15.html',
+        'http://nongnghiep.vn/the-gioi-8-15.html',
+        'http://nongnghiep.vn/the-thao-29-15.html',
+        'http://nongnghiep.vn/van-hoa-26-15.html'
+    ]
 
     # urls = [
     #     'http://giaoducthoidai.vn/kinh-te-xa-hoi/',
@@ -110,15 +110,14 @@ def try_crawler():
     #     'http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet',
     #     'http://ngoisao.net/tin-tuc/hau-truong/chau-a',
     #     'http://ngoisao.net/tin-tuc/hau-truong/hollywood',
-    #     'http://ngoisao.net/tin-tuc/thu-gian/dan-choi',
-    #     'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/xu-huong',
-    #     'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/sao-dep',
-    #     'http://ngoisao.net/tin-tuc/phong-cach/lam-dep/bi-quyet',
-    #     'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/hot-trend',
-    #     'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/sao-style',
-    #     'http://ngoisao.net/tin-tuc/phong-cach/thoi-trang/tu-van',
-    #     'http://ngoisao.net/tin-tuc/thu-gian/an-choi/an',
-    #     'http://ngoisao.net/tin-tuc/thu-gian/an-choi/choi'
+    #     'http://ngoisao.net/tin-tuc/an-choi/choi-dau',
+    #     'http://ngoisao.net/tin-tuc/dan-choi',
+    #     'http://ngoisao.net/tin-tuc/lam-dep/sao-dep',
+    #     'http://ngoisao.net/tin-tuc/lam-dep/bi-quyet',
+    #     'http://ngoisao.net/tin-tuc/thoi-trang/xu-huong',
+    #     'http://ngoisao.net/tin-tuc/thoi-trang/sao-style',
+    #     'http://ngoisao.net/tin-tuc/thoi-trang/tu-van',
+    #     'http://ngoisao.net/tin-tuc/an-choi/an-gi'
     # ]
 
     # urls = [
@@ -153,12 +152,12 @@ def try_crawler():
         # 'http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe'
     # ]
 
-    urls = [
-        'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham'
-    ]
+    # urls = [
+    #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham'
+    # ]
 
-    from_date = '2017-03-02'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
-    to_date = '2017-03-30'  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
+    from_date = '2017-04-23'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    to_date = None  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
     for url in urls:
@@ -259,13 +258,9 @@ def try_normalizer():
     #     'http://infogame.vn/cong-nghe/video-clip-tren-tay-sung-thuc-te-ao-made-in-vietnam-16130.html'
     # ]
 
-    # urls =[
-    #     'http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet/phat-ngon-khong-the-bo-qua-cua-sao-viet-trong-tuan-31-3544255.html',
-    #     'http://ngoisao.net/tin-tuc/hau-truong/hollywood/channing-tatum-be-bong-vo-yeu-tren-bai-bien-3544034.html',
-    #     'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/nguoi-phu-nu-viet-bi-chong-sat-hai-o-my-3544198.html',
-    #     'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/nguoi-phu-nu-280-kg-cau-xin-duoc-cuu-3542651.html',
-    #     'http://ngoisao.net/tin-tuc/thoi-cuoc/24h/ca-co-gai-toi-cuu-lan-ke-dam-dao-chua-ai-den-hoi-tham-3542821.html'
-    # ]
+    urls =[
+        'http://ngoisao.net/tin-tuc/an-choi/an-gi/10-dung-cu-lam-bep-khien-ban-tron-mat-ngac-nhien-3565511.html'
+    ]
 
     # urls = [
     #     'http://viettimes.vn/vu-mat-20000-usd-de-xuat-khau-gao-co-the-xu-ly-hinh-su-neu-phat-hien-sai-pham-110215.html',
@@ -282,10 +277,6 @@ def try_normalizer():
     #     'https://cafeland.vn/tin-tuc/nguoi-dan-co-bi-ho-khi-dang-mua-chung-cu-hien-nay-65113.html',
     #     'https://cafeland.vn/quy-hoach/quyet-thu-hoi-du-an-kcn-nam-cam-ranh-cua-vinashin-65115.html',
     #     'https://cafeland.vn/tin-tuc/gia-bat-dong-san-trung-quoc-tang-nhanh-nhat-trong-nam-2016-65111.html'
-    # ]
-
-    # urls = [
-    #     'http://giaoducthoidai.vn/van-hoa/tran-thanh-tro-thanh-toi-do-khi-tiet-lo-qua-khu-cua-dong-nghiep-2991520-l.html'
     # ]
 
     # urls = ['http://viettimes.vn/donald-trump-phai-ra-nhieu-uu-dai-cho-foxconn-neu-muon-san-xuat-iphone-tai-my-112554.html']
@@ -305,11 +296,11 @@ def try_normalizer():
     #     'http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe/tap-luyen-tai-nha-tai-sao-khong.html'
     # ]
 
-    urls = [
-        'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/kham-pha-the-gioi-am-thuc-cung-the-tin-dung-techcombank-visa',
-        'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/sai-canh-binh-an-loc-toi-ngap-tran',
-        'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/nghi-ngoi-thoa-thich-tich-luy-dam-bay'
-    ]
+    # urls = [
+    #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/kham-pha-the-gioi-am-thuc-cung-the-tin-dung-techcombank-visa',
+    #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/sai-canh-binh-an-loc-toi-ngap-tran',
+    #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/nghi-ngoi-thoa-thich-tich-luy-dam-bay'
+    # ]
 
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)

@@ -43,23 +43,13 @@ class NgoiSaoNetParser(SubBaseParser):
         def get_post_urls_func(html):
             urls = []
 
-            div_tag = html.find('div', class_='tnht')
+            div_tag = html.find('div', id='box_tintop_new')
             if div_tag is not None:
-                # Thumbnail posts
-                post_tag = div_tag.find('div', class_='news')
-                if post_tag is not None:
-                    a_tag = post_tag.find('a', attrs={'href': True})
+                posts = div_tag.find_all('li')
+                for post in posts:
+                    a_tag = post.find('a', attrs={'href': True})
                     if a_tag is not None:
                         urls.append(a_tag.get('href'))
-
-                # Other posts
-                div_tag = div_tag.find('div', class_='newso')
-                if div_tag is not None and div_tag.ul is not None:
-                    posts = div_tag.ul.find_all('li', recursive=False)
-                    for post in posts:
-                        a_tag = post.find('a', attrs={'href': True})
-                        if a_tag is not None:
-                            urls.append(a_tag.get('href'))
 
             # Child posts
             ul_tag = html.find('ul', id='news_home')
@@ -75,7 +65,7 @@ class NgoiSaoNetParser(SubBaseParser):
             # Bỏ những link video
             filtered_urls = []
             for url in urls:
-                if '/interactive/' in url:
+                if '/interactive/' in url or '/video/' in url:
                     continue
                 filtered_urls.append(url)
 
