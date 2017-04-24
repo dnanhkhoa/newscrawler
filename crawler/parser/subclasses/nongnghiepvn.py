@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
-# Done
 from crawler.parser import *
 
 
@@ -36,85 +35,71 @@ class NongNghiepVnParser(SubBaseParser):
         # Trả về danh sách các urls của các bài viết có trong trang
         # Nếu có thể lấy được thời gian trực tiếp luôn thì mỗi phần tử trong danh sách phải là (url, time)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_post_urls_func'] = lambda x: x
+        def get_post_urls_func(html):
+            urls = []
+
+            # Thumbnail posts
+            div_tag = html.find('div', class_='nn-row-main')
+            if div_tag is not None:
+                main_tag = div_tag.find('div', class_='nn-content')
+                if main_tag is not None:
+                    a_tag = main_tag.find('a', attrs={'href': True})
+                    if a_tag is not None:
+                        urls.append((a_tag.get('href'), None))
+
+                sub_main_tag = div_tag.find('div', class_='nn-list-thumb-dt')
+                if sub_main_tag is not None and sub_main_tag.ul is not None:
+                    li_tags = sub_main_tag.ul.find_all('li', recursive=False)
+                    for li_tag in li_tags:
+                        a_tag = li_tag.find('a', attrs={'href': True})
+                        if a_tag is not None:
+                            urls.append((a_tag.get('href'), None))
+
+            # Child posts
+            div_tag = html.find('div', id='listScroll')
+            if div_tag is None:
+                return None
+
+            ul_tag = div_tag.find('ul')
+            if ul_tag is None:
+                return None
+
+            posts = ul_tag.find_all('li', recursive=False)
+            for post in posts:
+                a_tag = post.find('a', attrs={'href': True})
+                time_tag = post.find('span', class_='nn-time-post')
+                if a_tag is not None and time_tag is not None:
+                    time = time_tag.text.strip()
+                    parts = time.split(' ')
+                    urls.append((a_tag.get('href'), datetime.strptime(' '.join(parts[:-1]), '%d/%m/%Y, %H:%M')))
+
+            return urls
+
+        self._vars['get_post_urls_func'] = get_post_urls_func
 
         # Sử dụng trong trường hợp không thể lấy được thời gian trực tiếp trên trang
         # Hàm này sẽ trả về thẻ chứa thời gian trong html của bài viết
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_time_tag_func'] =
+        def get_time_tag_func(html):
+            return html.find('span', class_='nn-time-post')
+
+        self._vars['get_time_tag_func'] = get_time_tag_func
 
         # Hàm này sẽ chuyển chuỗi thời gian có được ở hàm trên về đối tượng datetime (phụ thuộc time format mỗi trang)
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_datetime_func'] =
+        def get_datetime_func(string):
+            parts = string.strip().split(' ')
+            return datetime.strptime(' '.join(parts[:-1]), '%d/%m/%Y, %H:%M')
+
+        self._vars['get_datetime_func'] = get_datetime_func
 
     # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
     # def _pre_process(self, html):
     #     return super()._pre_process(html)
 
     def _get_next_page(self, url, timeout=15):
-        source = []
-        page_id = 0
+        return super()._get_next_page(url, timeout)[0], url
 
-        if isinstance(url, tuple):
-            category_id, page_id = url
-        else:
-            raw_html = self._get_html(url=url, timeout=timeout)
-            if raw_html is None:
-                log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
-                return None
-
-            category_id_regex = regex.compile(r"var catid = '([^']+)'", regex.IGNORECASE)
-            matcher = category_id_regex.search(raw_html)
-            if matcher is None:
-                return None
-
-            category_id = matcher.group(1)
-
-            html = get_soup(raw_html)
-            div_tag = html.find('div', class_='p-news-modtop')
-            if div_tag is not None:
-                a_tag = div_tag.find('a', attrs={'href': True})
-                time_tag = div_tag.find('p', class_='fon3')
-                if a_tag is not None and time_tag is not None:
-                    time = time_tag.text.strip()
-                    parts = time.split(' ')[:-1]
-                    source.append((a_tag.get('href'), datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')))
-
-        data = self._get_posts(category_id=category_id, page_id=page_id)
-        if data is None:
-            return None
-
-        data = json.loads(data, encoding='UTF-8')
-        data = data.get('d')
-        if data is not None or len(data.strip()) > 0:
-            html = get_soup(data).body
-            item_tags = html.find_all('div', class_='item')
-            for item_tag in item_tags:
-                a_tag = item_tag.find('a', attrs={'href': True})
-                time_tag = item_tag.find('p', class_='fon3')
-                if a_tag is not None and time_tag is not None:
-                    time = time_tag.text.strip()
-                    parts = time.split(' ')[:-1]
-                    source.append((a_tag.get('href'), datetime.strptime(' '.join(parts), '%d/%m/%Y %H:%M')))
-
-        return source, (category_id, page_id + 1)
-
-    def _get_absolute_url(self, url, domain=None):
-        return url
-
-    def _get_posts(self, category_id, page_id, timeout=15):
-        headers = {
-            'Content-Type': 'application/json; charset=UTF-8',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-        data = {
-            'catid': category_id,
-            'date': '',
-            'enddate': '',
-            'pageindex': page_id
-        }
-        response = requests.post(url='http://nongnghiep.vn///Ajaxloads/ServiceData.asmx/GetNewsDataScrollNews',
-                                 headers=headers, data=json.dumps(data), timeout=timeout, allow_redirects=True)
-        if response.status_code == requests.codes.ok:
-            return response.content.decode('UTF-8')
-        return None
+    def _get_urls_from_page(self, url, html, from_date=None, to_date=None, timeout=15):
+        url = '%s?date=%s&endate=%s' % (url, from_date.date().strftime('%d/%m/%Y'), to_date.date().strftime('%d/%m/%Y'))
+        return super()._get_urls_from_page(url, html, from_date, to_date, timeout)[0], True

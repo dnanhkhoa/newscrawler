@@ -23,7 +23,7 @@
 1	http://giaoducthoidai.vn/phap-luat/	22
 1	http://baoquocte.vn/xa-hoi/doi-song-suc-khoe	23
 1	http://nongnghiep.vn/phap-luat-15-15.html	24
-1	http://nongnghiep.vn/van-hoa-26-15.html	25
+1	http://nongnghiep.vn/van-hoa-86-15.html	25
 2	http://vnexpress.net/tin-tuc/the-gioi	99
 2	http://vietnamnet.vn/vn/the-gioi/	2
 2	http://laodong.com.vn/the-gioi/	3
@@ -78,7 +78,7 @@
 5	http://baochinhphu.vn/Giao-duc/452.vgp	7
 5	http://hanoimoi.com.vn/Danh-muc-tin/164/Giao-duc	8
 5	http://baoquocte.vn/xa-hoi/giao-duc	9
-5	http://nongnghiep.vn/giao-duc-28-15.html	10
+5	http://nongnghiep.vn/giao-duc-84-15.html	10
 6	http://thethao.vnexpress.net/	99
 6	http://vietnamnet.vn/vn/the-thao/	2
 6	http://laodong.com.vn/the-thao/	3
@@ -87,7 +87,7 @@
 6	http://thoidai.com.vn/old/the-thao_t113c59	6
 6	http://baoquocte.vn/the-thao	7
 6	http://baochinhphu.vn/The-thao/447.vgp	8
-6	http://nongnghiep.vn/the-thao-29-15.html	9
+6	http://nongnghiep.vn/the-thao-90-15.html	9
 7	http://giaitri.vnexpress.net/	99
 7	http://ngoisao.net/tin-tuc/hau-truong/showbiz-viet	98
 7	http://ngoisao.net/tin-tuc/hau-truong/chau-a	98
@@ -109,7 +109,7 @@
 7	http://viettimes.vn/du-lich/	15
 7	http://giaoducthoidai.vn/the-gioi-sao/	16
 7	http://baocongthuong.com.vn/van-hoa	17
-7	http://nongnghiep.vn/giai-tri-27-15.html	18
+7	http://nongnghiep.vn/giai-tri-87-15.html	18
 7	http://hanoimoi.com.vn/Danh-muc-tin/741/Hau-truong	19
 7	http://infogame.vn/thong-tin.html	20
 7	http://infogame.vn/chuyen-dong-game.html	20

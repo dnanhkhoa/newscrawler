@@ -199,6 +199,7 @@ class SubBaseParser(BaseParser):
                 if html is None:
                     break
 
+                # Có thời gian thì kiểm tra lại toàn bộ trước khi đổi url=url sang url=next_url
                 urls_from_page, stop = self._get_urls_from_page(url=url, html=html, from_date=from_date,
                                                                 to_date=to_date, timeout=timeout)
 

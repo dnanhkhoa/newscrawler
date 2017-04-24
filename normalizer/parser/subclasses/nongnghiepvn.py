@@ -43,16 +43,15 @@ class NongNghiepVnParser(SubBaseParser):
         # Tìm thẻ chứa chuỗi thời gian đăng bài
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_time_tag_func(html):
-            return html.find('span', attrs={'itemprop': 'datePublished'})
+            return html.find('span', class_='nn-time-post')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
 
         # Định dạng chuỗi thời gian và trả về đối tượng datetime
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_datetime_func(string):
-            time = string.strip()
-            parts = time.split(' ')[:-1]
-            return datetime.strptime(' '.join(parts), '%d/%m/%Y, %H:%M')
+            parts = string.strip().split(' ')
+            return datetime.strptime(' '.join(parts[:-1]), '%d/%m/%Y, %H:%M')
 
         self._vars['get_datetime_func'] = get_datetime_func
 
@@ -68,16 +67,16 @@ class NongNghiepVnParser(SubBaseParser):
 
         # Chỉ định thẻ chứa nội dung chính
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_main_content_tag_func'] = lambda x: x.find('div', attrs={'itemprop': 'articleBody'})
+        self._vars['get_main_content_tag_func'] = lambda x: x.find('div', class_='nn-text-post')
 
         # Chỉ định thẻ chứa tên tác giả
         # Khi sử dụng thẻ này thì sẽ tự động không sử dụng tính năng tự động nhận dạng tên tác giả
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_author_tag_func(html):
-            div_tag = html.find('div', class_='content')
+            div_tag = html.find('main')
             if div_tag is None:
                 return None
-            return div_tag.find('span', style='text-transform: uppercase; font-weight: bold;')
+            return div_tag.find('div', class_='nn-user-post')
 
         self._vars['get_author_tag_func'] = get_author_tag_func
 
@@ -156,4 +155,11 @@ class NongNghiepVnParser(SubBaseParser):
         return super()._get_meta_keywords(html)
 
     def _get_og_image(self, html):
-        return super()._get_og_image(html).replace('nongnghiep.vn', 'image.nongnghiep.vn')
+        if html is None:
+            return None
+
+        meta_tag = html.find('meta', attrs={'property': 'og:image:url', 'content': True})
+        if meta_tag is None:
+            return None
+
+        return meta_tag.get('content')

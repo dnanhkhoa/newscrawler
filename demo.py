@@ -7,7 +7,6 @@ os.environ['PAFY_BACKEND'] = 'internal'
 
 from crawler import *
 from normalizer import *
-from helpers import *
 from checker import *
 
 
@@ -77,13 +76,13 @@ def try_crawler():
     # ]
 
     urls = [
-        'http://nongnghiep.vn/giai-tri-27-15.html',
-        'http://nongnghiep.vn/giao-duc-28-15.html',
-        'http://nongnghiep.vn/kinh-te-3-15.html',
         'http://nongnghiep.vn/phap-luat-15-15.html',
+        'http://nongnghiep.vn/van-hoa-86-15.html',
         'http://nongnghiep.vn/the-gioi-8-15.html',
-        'http://nongnghiep.vn/the-thao-29-15.html',
-        'http://nongnghiep.vn/van-hoa-26-15.html'
+        'http://nongnghiep.vn/kinh-te-3-15.html',
+        'http://nongnghiep.vn/giao-duc-84-15.html',
+        'http://nongnghiep.vn/the-thao-90-15.html',
+        'http://nongnghiep.vn/giai-tri-87-15.html'
     ]
 
     # urls = [
@@ -138,18 +137,18 @@ def try_crawler():
     # ]
 
     # urls = [
-        # 'http://tapchithoitrangtre.com.vn/chan-dung/showbiz',
-        # 'http://tapchithoitrangtre.com.vn/chan-dung/sao-quoc-te',
-        # 'http://tapchithoitrangtre.com.vn/chan-dung/tro-chuyen-cung-sao',
-        #
-        # 'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep',
-        # 'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang',
-        # 'http://tapchithoitrangtre.com.vn/phong-cach/ket-hop',
+    # 'http://tapchithoitrangtre.com.vn/chan-dung/showbiz',
+    # 'http://tapchithoitrangtre.com.vn/chan-dung/sao-quoc-te',
+    # 'http://tapchithoitrangtre.com.vn/chan-dung/tro-chuyen-cung-sao',
+    #
+    # 'http://tapchithoitrangtre.com.vn/phong-cach/lam-dep',
+    # 'http://tapchithoitrangtre.com.vn/phong-cach/thoi-trang',
+    # 'http://tapchithoitrangtre.com.vn/phong-cach/ket-hop',
 
-        # 'http://tapchithoitrangtre.com.vn/song-khoe/dac-quyen-phai-dep',
-        # 'http://tapchithoitrangtre.com.vn/song-khoe/dinh-duong',
-        # 'http://tapchithoitrangtre.com.vn/song-khoe/dai-lo-nhan-sac',
-        # 'http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe'
+    # 'http://tapchithoitrangtre.com.vn/song-khoe/dac-quyen-phai-dep',
+    # 'http://tapchithoitrangtre.com.vn/song-khoe/dinh-duong',
+    # 'http://tapchithoitrangtre.com.vn/song-khoe/dai-lo-nhan-sac',
+    # 'http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe'
     # ]
 
     # urls = [
@@ -228,15 +227,17 @@ def try_normalizer():
     #     'http://ione.vnexpress.net/tin-tuc/sao/chau-a/tzuyu-kiem-duoc-36-ty-dong-sau-hon-mot-nam-debut-3512802.html',
     # ]
 
-    # urls = [
-    #     'http://nongnghiep.vn/video-trung-quoc-xay-cau-phao-dai-hon-1000-m-trong-27-phut-post183533.html',
-    #     'http://nongnghiep.vn/video-nguoi-dan-ong-bi-dan-ho-vo-den-chet-trong-vuon-thu-trung-quoc-post186004.html',
-    #     'http://nongnghiep.vn/video-nu-cau-tac-bi-deo-cho-chet-vao-co-post177680.html',
-    #     'http://nongnghiep.vn/video-kim-jong-nam-bi-sat-hai-nhu-the-nao-post187146.html',
-    #     'http://nongnghiep.vn/tung-doan-xe-noi-dai-truoc-cong-lam-thao-post186584.html',
-    #     'http://nongnghiep.vn/nu-sinh-tphcm-se-mac-ao-dai-it-nhat-2-buoi-tuan-post186679.html',
-    #     'http://nongnghiep.vn/tao-dieu-kien-thuan-loi-cung-ung-dich-vu-giao-duc-dao-tao-post186386.html'
-    # ]
+    urls = ['http://nongnghiep.vn/kiem-tra-doanh-nghiep-trung-quoc-quyt-tien-danh-ba-bau-post192325.html',
+            'http://nongnghiep.vn/vu-vinh-phuc-ha-sat-nan-nhan-xong-hung-thu-nhan-tin-bao-cong-an-noi-giau-xac-post192264.html',
+            'http://nongnghiep.vn/ten-cuop-tiem-vang-dien-cuong-na-dan-vao-3-canh-sat-post192251.html',
+            'http://nongnghiep.vn/dang-dieu-tra-lam-ro-don-to-cao-nhom-nguoi-la-dung-sung-de-doa-chu-nha-nghi-viet-thanh-post192270.html',
+            'http://nongnghiep.vn/tron-truy-na-21-nam-ra-dau-thu-duoc-dinh-chi-vu-an-post192207.html',
+            'http://nongnghiep.vn/ten-cuop-tiem-vang-dien-cuong-na-dan-vao-3-canh-sat-post192251.html',
+            'http://nongnghiep.vn/thu-tuc-dang-ky-khai-sinh-cho-tre-bi-bo-roi-post192192.html',
+            'http://nongnghiep.vn/rung-dong-chong-ho-sat-hai-me-vo-bat-coc-con-trai-nguoi-tinh-post192236.html',
+            'http://nongnghiep.vn/bat-nguyen-pho-tong-giam-doc-donga-bank-post192202.html',
+            'http://nongnghiep.vn/bat-qua-tang-12-doi-tuong-danh-bac-thu-giu-142-trieu-dong-post192198.html',
+            'http://nongnghiep.vn/bat-qua-tang-12-doi-tuong-to-chuc-danh-bac-trong-quan-caphe-post192177.html']
 
     # urls = [
     #     'http://www.nss.vn/ca2-n35240-video-dung-oc-sen-de-ve-sinh-iphone-7.htm',
@@ -258,9 +259,9 @@ def try_normalizer():
     #     'http://infogame.vn/cong-nghe/video-clip-tren-tay-sung-thuc-te-ao-made-in-vietnam-16130.html'
     # ]
 
-    urls =[
-        'http://ngoisao.net/tin-tuc/an-choi/an-gi/10-dung-cu-lam-bep-khien-ban-tron-mat-ngac-nhien-3565511.html'
-    ]
+    # urls =[
+    #     'http://ngoisao.net/tin-tuc/an-choi/an-gi/10-dung-cu-lam-bep-khien-ban-tron-mat-ngac-nhien-3565511.html'
+    # ]
 
     # urls = [
     #     'http://viettimes.vn/vu-mat-20000-usd-de-xuat-khau-gao-co-the-xu-ly-hinh-su-neu-phat-hien-sai-pham-110215.html',
