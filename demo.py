@@ -75,15 +75,15 @@ def try_crawler():
     #     'http://hanoimoi.com.vn/Danh-muc-tin/741/Hau-truong'
     # ]
 
-    urls = [
-        'http://nongnghiep.vn/phap-luat-15-15.html',
-        'http://nongnghiep.vn/van-hoa-86-15.html',
-        'http://nongnghiep.vn/the-gioi-8-15.html',
-        'http://nongnghiep.vn/kinh-te-3-15.html',
-        'http://nongnghiep.vn/giao-duc-84-15.html',
-        'http://nongnghiep.vn/the-thao-90-15.html',
-        'http://nongnghiep.vn/giai-tri-87-15.html'
-    ]
+    # urls = [
+    #     'http://nongnghiep.vn/phap-luat-15-15.html',
+    #     'http://nongnghiep.vn/van-hoa-86-15.html',
+    #     'http://nongnghiep.vn/the-gioi-8-15.html',
+    #     'http://nongnghiep.vn/kinh-te-3-15.html',
+    #     'http://nongnghiep.vn/giao-duc-84-15.html',
+    #     'http://nongnghiep.vn/the-thao-90-15.html',
+    #     'http://nongnghiep.vn/giai-tri-87-15.html'
+    # ]
 
     # urls = [
     #     'http://giaoducthoidai.vn/kinh-te-xa-hoi/',
@@ -154,6 +154,11 @@ def try_crawler():
     # urls = [
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham'
     # ]
+
+    urls = [
+        'http://ione.vnexpress.net/tin-tuc/chiem-tinh',
+        'http://ngoisao.net/tin-tuc/trac-nghiem'
+    ]
 
     from_date = '2017-04-23'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
     to_date = None  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
@@ -227,17 +232,18 @@ def try_normalizer():
     #     'http://ione.vnexpress.net/tin-tuc/sao/chau-a/tzuyu-kiem-duoc-36-ty-dong-sau-hon-mot-nam-debut-3512802.html',
     # ]
 
-    urls = ['http://nongnghiep.vn/kiem-tra-doanh-nghiep-trung-quoc-quyt-tien-danh-ba-bau-post192325.html',
-            'http://nongnghiep.vn/vu-vinh-phuc-ha-sat-nan-nhan-xong-hung-thu-nhan-tin-bao-cong-an-noi-giau-xac-post192264.html',
-            'http://nongnghiep.vn/ten-cuop-tiem-vang-dien-cuong-na-dan-vao-3-canh-sat-post192251.html',
-            'http://nongnghiep.vn/dang-dieu-tra-lam-ro-don-to-cao-nhom-nguoi-la-dung-sung-de-doa-chu-nha-nghi-viet-thanh-post192270.html',
-            'http://nongnghiep.vn/tron-truy-na-21-nam-ra-dau-thu-duoc-dinh-chi-vu-an-post192207.html',
-            'http://nongnghiep.vn/ten-cuop-tiem-vang-dien-cuong-na-dan-vao-3-canh-sat-post192251.html',
-            'http://nongnghiep.vn/thu-tuc-dang-ky-khai-sinh-cho-tre-bi-bo-roi-post192192.html',
-            'http://nongnghiep.vn/rung-dong-chong-ho-sat-hai-me-vo-bat-coc-con-trai-nguoi-tinh-post192236.html',
-            'http://nongnghiep.vn/bat-nguyen-pho-tong-giam-doc-donga-bank-post192202.html',
-            'http://nongnghiep.vn/bat-qua-tang-12-doi-tuong-danh-bac-thu-giu-142-trieu-dong-post192198.html',
-            'http://nongnghiep.vn/bat-qua-tang-12-doi-tuong-to-chuc-danh-bac-trong-quan-caphe-post192177.html']
+    # urls = ['http://nongnghiep.vn/kiem-tra-doanh-nghiep-trung-quoc-quyt-tien-danh-ba-bau-post192325.html',
+    #         'http://nongnghiep.vn/vu-vinh-phuc-ha-sat-nan-nhan-xong-hung-thu-nhan-tin-bao-cong-an-noi-giau-xac-post192264.html',
+    #         'http://nongnghiep.vn/ten-cuop-tiem-vang-dien-cuong-na-dan-vao-3-canh-sat-post192251.html',
+    #         'http://nongnghiep.vn/dang-dieu-tra-lam-ro-don-to-cao-nhom-nguoi-la-dung-sung-de-doa-chu-nha-nghi-viet-thanh-post192270.html',
+    #         'http://nongnghiep.vn/tron-truy-na-21-nam-ra-dau-thu-duoc-dinh-chi-vu-an-post192207.html',
+    #         'http://nongnghiep.vn/ten-cuop-tiem-vang-dien-cuong-na-dan-vao-3-canh-sat-post192251.html',
+    #         'http://nongnghiep.vn/thu-tuc-dang-ky-khai-sinh-cho-tre-bi-bo-roi-post192192.html',
+    #         'http://nongnghiep.vn/rung-dong-chong-ho-sat-hai-me-vo-bat-coc-con-trai-nguoi-tinh-post192236.html',
+    #         'http://nongnghiep.vn/bat-nguyen-pho-tong-giam-doc-donga-bank-post192202.html',
+    #         'http://nongnghiep.vn/bat-qua-tang-12-doi-tuong-danh-bac-thu-giu-142-trieu-dong-post192198.html',
+    #         'http://nongnghiep.vn/bat-qua-tang-12-doi-tuong-to-chuc-danh-bac-trong-quan-caphe-post192177.html'
+    #         ]
 
     # urls = [
     #     'http://www.nss.vn/ca2-n35240-video-dung-oc-sen-de-ve-sinh-iphone-7.htm',
@@ -301,6 +307,15 @@ def try_normalizer():
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/kham-pha-the-gioi-am-thuc-cung-the-tin-dung-techcombank-visa',
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/sai-canh-binh-an-loc-toi-ngap-tran',
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/nghi-ngoi-thoa-thich-tich-luy-dam-bay'
+    # ]
+
+    urls = [
+        'http://ione.vnexpress.net/tin-tuc/chiem-tinh/horo/khi-12-chom-sao-say-ruou-3576702.html'
+    ]
+    # urls = [
+    #     'http://ngoisao.net/tin-tuc/trac-nghiem/thu-tu-cua-ban-3578676.html',
+    #     'http://ngoisao.net/tin-tuc/trac-nghiem/gieo-que-tuan-1-5-3578682.html',
+    #     'http://ngoisao.net/tin-tuc/trac-nghiem/van-may-cua-ban-thang-thu-ba-tu-5-4-den-5-5-3565491.html'
     # ]
 
     for url in urls:

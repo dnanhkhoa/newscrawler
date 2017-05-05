@@ -22,6 +22,7 @@ class NgoiSaoNetParser(SubBaseParser):
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
 
+        self._sub_url_regex = regex.compile(r'\d+-p\d+\.html', regex.IGNORECASE)
         self._video_regex = regex.compile(r"var videoSource = '([^']+)'", regex.IGNORECASE)
         self._video_thumbnail_regex = regex.compile(r"var thumbnail_url = '([^']+)'", regex.IGNORECASE)
 
@@ -121,15 +122,48 @@ class NgoiSaoNetParser(SubBaseParser):
         return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-    # def _pre_process(self, html):
-    #     return super()._pre_process(html)
+    def _pre_process(self, html):
+        if html is None:
+            return None
+
+        page = html.find_parent('html')
+        if page is not None:
+            meta_url = page.find('meta', attrs={'property': 'og:url', 'content': True})
+            if meta_url is not None:
+                page_url = meta_url.get('content')
+                main_matcher = self._sub_url_regex.search(page_url)
+                if '/tin-tuc/trac-nghiem/' in page_url and main_matcher is None:
+                    a_tags = html.find_all('a', attrs={'href': True})
+                    url_map = {}
+                    filtered_tags = []
+                    for a_tag in a_tags:
+                        sub_url = a_tag.get('href')
+                        matcher = self._sub_url_regex.search(sub_url)
+                        if '/tin-tuc/trac-nghiem/' in sub_url and matcher is not None:
+                            if url_map.get(sub_url, False) is False:
+                                url_map[sub_url] = True
+                                filtered_tags.append((a_tag, sub_url))
+                    for a_tag, sub_url in filtered_tags:
+                        result = self.parse(url=sub_url)
+                        if not result.is_ok():
+                            continue
+                        sub_content = result.get_content()['Content']
+                        sub_content = get_soup(sub_content).body
+                        sub_content.name = 'div'
+                        a_tag.insert_before(sub_content)
+
+        tags = html.find_all('div', class_='xemthem_new_ver width_common')
+        for tag in tags:
+            tag.decompose()
+
+        return super()._pre_process(html)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     def _post_process(self, html):
         tags = html.find_all('div', recursive=False)
         for tag in tags:
             content = normalize_string(tag.text)
-            if content.startswith('>>'):
+            if content.startswith('>>') or content.startswith('<<'):
                 tag.decompose()
         return super()._post_process(html)
 
