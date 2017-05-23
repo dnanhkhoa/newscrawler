@@ -1,9 +1,9 @@
 {
-  "cluster_api": "http://mdbpik.com/cluster",
+  "cluster_api": "http://.../cluster",
   "database": {
-    "user": "root",
-    "password": "TongHopTin0890",
-    "db": "mds_crawl",
+    "user": "",
+    "password": "",
+    "db": "",
     "host": "localhost",
     "port": 3306,
     "charset": "utf8"
