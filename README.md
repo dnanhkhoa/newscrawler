@@ -2,4 +2,4 @@
 
 Support: Python 3
 
-Run command `python demo.py` for for demonstration purpose.
+Run command `python demo.py` for demonstration purpose.
