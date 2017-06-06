@@ -21,6 +21,8 @@
     "8": "CongNghe",
     "9": "LamDep",
     "10": "XeCo",
-    "11": "AmThuc"
+    "11": "AmThuc",
+    "13": "BoiToan",
+    "14": "SucKhoe"
   }
 }
