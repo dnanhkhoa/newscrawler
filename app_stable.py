@@ -38,7 +38,7 @@ def get_urls_from_db():
 
 
 # Thêm dữ liệu vào DB
-def post_data_to_db(url, file_path, category, post_date, post_time, status, publish_date, priority):
+def post_data_to_db(url, file_path, category, post_date, post_time, status, publish_date, priority, parent_url=None):
     params = {
         'URL': url,
         'Path': file_path,
@@ -48,7 +48,8 @@ def post_data_to_db(url, file_path, category, post_date, post_time, status, publ
         'Status': status,
         'PublishDate': publish_date,
         'ID_Attachment': 0,
-        'Priority': priority
+        'Priority': priority,
+        'Parent': parent_url
     }
     mysql.insert('article', params=params)
 
@@ -86,7 +87,8 @@ def load_data(file_path):
     lines = read_lines(file_path)
     for line in lines:
         parts = line.split('\t')
-        if len(parts) < 3: continue
+        if len(parts) < 3:
+            continue
         categories.append((parts[0], parts[1]))
         priorities[parts[1]] = parts[2]
     return categories, priorities
@@ -151,20 +153,25 @@ def main():
                                                     datetime.now().strftime('%Y-%m-%d %H:%M:%S'), priority)
                                     continue
 
-                                content = result.get_content()
+                                results = result.get_content()
+                                for content in results:
+                                    parent_url = content.pop('parent_url', None)
 
-                                publish_date = content.get('PublishDate')
+                                    child_url = content.get('Url')
+                                    publish_date = content.get('PublishDate')
 
-                                file_name = '%s/%s/%sK' % (
-                                    cluster_path, category, datetime.now().strftime('%H%M%S%f')[:-3])
+                                    file_name = '%s/%s/%sK' % (
+                                        cluster_path, category, datetime.now().strftime('%H%M%S%f')[:-3])
 
-                                write_json(content, file_name + '.txt')
-                                write_raw(content, file_name + '.raw')
+                                    write_json(content, file_name + '.txt')
+                                    write_raw(content, file_name + '.raw')
 
-                                f.write(os.path.dirname(path()) + file_name[2:] + '.raw.tok\r\n')
+                                    f.write(os.path.dirname(path()) + file_name[2:] + '.raw.tok\r\n')
 
-                                post_data_to_db(post_url, file_name[2:] + '.txt', category, str(date.today()),
-                                                datetime.now().strftime('%H:%M:%S'), 1, publish_date, priority)
+                                    post_data_to_db(child_url, file_name[2:] + '.txt', category, str(date.today()),
+                                                    datetime.now().strftime('%H:%M:%S'), 1, publish_date, priority,
+                                                    parent_url)
+
                             except Exception as e:
                                 debug(post_url)
                                 log(e)

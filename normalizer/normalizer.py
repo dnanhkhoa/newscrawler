@@ -32,7 +32,7 @@ class Normalizer(object):
                     break
 
         if domain is None:
-            log('Tên miền %s chưa được hỗ trợ.' % domain)
+            log('Tên miền của %s chưa được hỗ trợ.' % url)
             return Result(status_code=Result.Codes.Unsupported)
 
         return self._parser[domain].parse(url=url, timeout=timeout)

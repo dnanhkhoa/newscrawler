@@ -155,10 +155,12 @@ def try_crawler():
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham'
     # ]
 
-    urls = [
-        'http://ione.vnexpress.net/tin-tuc/chiem-tinh',
-        'http://ngoisao.net/tin-tuc/trac-nghiem'
-    ]
+    # urls = [
+    #     'http://ngoisao.net/tin-tuc/trac-nghiem',
+    #     'http://ione.vnexpress.net/tin-tuc/chiem-tinh'
+    # ]
+
+    urls = ['http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe']
 
     from_date = '2017-04-23'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
     to_date = None  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
@@ -308,19 +310,13 @@ def try_normalizer():
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/sai-canh-binh-an-loc-toi-ngap-tran',
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/nghi-ngoi-thoa-thich-tich-luy-dam-bay'
     # ]
-
-    urls = [
-        'http://ione.vnexpress.net/tin-tuc/chiem-tinh/horo/khi-12-chom-sao-say-ruou-3576702.html'
-    ]
-    # urls = [
-    #     'http://ngoisao.net/tin-tuc/trac-nghiem/thu-tu-cua-ban-3578676.html',
-    #     'http://ngoisao.net/tin-tuc/trac-nghiem/gieo-que-tuan-1-5-3578682.html',
-    #     'http://ngoisao.net/tin-tuc/trac-nghiem/van-may-cua-ban-thang-thu-ba-tu-5-4-den-5-5-3565491.html'
-    # ]
+    urls = ['http://ione.vnexpress.net/tin-tuc/chiem-tinh/trac-nghiem/tiet-lo-4-pham-chat-tot-dep-nhat-trong-con-nguoi-ban-qua-1-cau-hoi-3592934.html']
 
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
-        print(json.dumps(result.get_content(), indent=4, ensure_ascii=False))
+        content = result.get_content()
+        print(len(content))
+        print(json.dumps(content, indent=4, ensure_ascii=False))
 
 
 def try_checker():

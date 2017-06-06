@@ -183,6 +183,7 @@ class SubBaseParser(BaseParser):
         img_tags = html.find_all('img')
         for img_tag in img_tags:
             image_url = img_tag.get('src')
+            image_data_link = img_tag.get('data-link')
 
             image_url = self._get_valid_image_url(image_url)
 
@@ -209,13 +210,13 @@ class SubBaseParser(BaseParser):
                 caption_string = next_div_tag.text
 
                 if regex.search(r'(?:caption|center|italic)', ' '.join(list(set(next_div_classes))),
-                                regex.IGNORECASE) is not None or regex.search(r'(?:(?:ảnh|nguồn)[^:]*:)',
+                                regex.IGNORECASE) is not None or regex.search(r'(?:(?:ảnh|nguồn)[^\n:]{0,20}:)',
                                                                               caption_string,
                                                                               regex.IGNORECASE) is not None:
                     caption_tag = create_caption_tag(caption_string)
                     next_div_tag.replace_with(caption_tag)
 
-            new_img_tag = create_image_tag(url=image_url, alt=title)
+            new_img_tag = create_image_tag(url=image_url, alt=title, data_link=image_data_link)
             img_tag.insert_before(new_img_tag)
             img_tag.decompose()
 
@@ -587,9 +588,9 @@ class SubBaseParser(BaseParser):
             tag.attrs = {'class': classes} if len(classes) > 0 else {}
 
         attrs = {
-            'video': ['width', 'height', 'controls', 'onclick', 'poster', 'youtube'],
+            'video': ['width', 'height', 'controls', 'onclick', 'poster', 'youtube', 'data-dummy', 'data-link'],
             'source': ['src', 'type'],
-            'img': ['src', 'alt'],
+            'img': ['src', 'alt', 'data-link'],
             'div': ['class'],
             'span': ['class']
         }
@@ -819,9 +820,7 @@ class SubBaseParser(BaseParser):
         content = self._get_content(html=normalized_content)
         plain = self._get_plain(html=normalized_content)
 
-        json_result = self._build_json(url=url, mobile_url=mobile_url, title=post_title, alias=alias,
-                                       meta_keywords=meta_keywords, meta_description=meta_description,
-                                       publish_date=publish_date, author=author, tags=tags, thumbnail=thumbnail,
-                                       summary=summary, content=content, plain=plain)
-
-        return Result(content=json_result)
+        return self._build_json(url=url, mobile_url=mobile_url, title=post_title, alias=alias,
+                                meta_keywords=meta_keywords, meta_description=meta_description,
+                                publish_date=publish_date, author=author, tags=tags, thumbnail=thumbnail,
+                                summary=summary, content=content, plain=plain)

@@ -179,11 +179,15 @@ def create_video_tag(src, thumbnail=None, mime_type=None, width=375, height=280,
 
 
 # Tạo thẻ image theo format yêu cầu
-def create_image_tag(url, alt, image_tag_name='img'):
+def create_image_tag(url, alt, data_link=None, image_tag_name='img'):
     assert url is not None, 'Tham số url không được là None'
     image_tag = create_html_tag(image_tag_name)
     image_tag['src'] = url
     image_tag['alt'] = remove_special_chars(alt)
+
+    if data_link is not None:
+        image_tag['data-linkto'] = data_link
+
     return image_tag
 
 

@@ -2,10 +2,11 @@
 # -*- coding: utf8 -*-
 
 # Done
-import urllib
 from abc import ABC, abstractmethod
 from io import BytesIO
+from queue import Queue
 from socket import timeout as TimeOutError
+from urllib import request
 from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
 
@@ -47,10 +48,11 @@ class BaseParser(ABC):
         return None
 
     # Kiểm tra image url hợp lệ bằng cách gửi 1 request lên server và xem phản hồi
-    def _is_valid_image_url(self, url, timeout=15):
+    @staticmethod
+    def _is_valid_image_url(url, timeout=15):
         assert url is not None, 'Tham số url không được là None'
         try:
-            with urllib.request.urlopen(url_encode(url), timeout=timeout) as response:
+            with request.urlopen(url_encode(url), timeout=timeout) as response:
                 return response.getcode() == 200
         except (HTTPError, URLError) as e:
             debug(url)
@@ -78,10 +80,11 @@ class BaseParser(ABC):
         return None
 
     # Lấy Content-Type của url
-    def _get_mime_type_from_url(self, url, timeout=15):
+    @staticmethod
+    def _get_mime_type_from_url(url, timeout=15):
         assert url is not None, 'Tham số url không được là None'
         try:
-            with urllib.request.urlopen(url_encode(url), timeout=timeout) as response:
+            with request.urlopen(url_encode(url), timeout=timeout) as response:
                 info = response.info()
                 return info.get_content_type()
         except (HTTPError, URLError) as e:
@@ -100,7 +103,8 @@ class BaseParser(ABC):
         return urljoin(domain, url)
 
     # Trả về alias từ url của bài viết
-    def _get_alias(self, url):
+    @staticmethod
+    def _get_alias(url):
         assert url is not None, 'Tham số url không được là None'
         obj = urlparse(url)
         alias = obj.path.strip('/').split('/')[-1]
@@ -230,4 +234,26 @@ class BaseParser(ABC):
             log('Không thể tải mã nguồn HTML từ địa chỉ %s' % url)
             return Result(status_code=Result.Codes.URLError)
 
-        return self._parse(url=url, html=get_soup(raw_html), timeout=timeout)
+        self._vars['url_queue'] = url_queue = Queue()
+        self._vars['visited_urls'] = visited_urls = {url: True}
+
+        results = [self._parse(url=url, html=get_soup(raw_html), timeout=timeout)]
+
+        while not url_queue.empty():
+            parent_url, child_url = url_queue.get()
+
+            if child_url in visited_urls:
+                continue
+
+            visited_urls[child_url] = True
+
+            child_raw_html = self._get_html(url=child_url, timeout=timeout)
+            if child_raw_html is None:
+                log('Không thể tải mã nguồn HTML từ địa chỉ con %s' % child_url)
+                continue
+
+            res = self._parse(url=child_url, html=get_soup(child_raw_html), timeout=timeout)
+            res['parent_url'] = parent_url
+            results.append(res)
+
+        return Result(content=results)

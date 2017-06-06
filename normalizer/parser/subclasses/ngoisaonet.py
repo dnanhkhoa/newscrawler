@@ -126,31 +126,35 @@ class NgoiSaoNetParser(SubBaseParser):
         if html is None:
             return None
 
+        url_queue = self._vars['url_queue']
+        visited_urls = self._vars['visited_urls']
+
         page = html.find_parent('html')
         if page is not None:
             meta_url = page.find('meta', attrs={'property': 'og:url', 'content': True})
             if meta_url is not None:
-                page_url = meta_url.get('content')
-                main_matcher = self._sub_url_regex.search(page_url)
-                if '/tin-tuc/trac-nghiem/' in page_url and main_matcher is None:
+                parent_url = meta_url.get('content')
+                if '/tin-tuc/trac-nghiem/' in parent_url:
                     a_tags = html.find_all('a', attrs={'href': True})
-                    url_map = {}
-                    filtered_tags = []
                     for a_tag in a_tags:
-                        sub_url = a_tag.get('href')
-                        matcher = self._sub_url_regex.search(sub_url)
-                        if '/tin-tuc/trac-nghiem/' in sub_url and matcher is not None:
-                            if url_map.get(sub_url, False) is False:
-                                url_map[sub_url] = True
-                                filtered_tags.append((a_tag, sub_url))
-                    for a_tag, sub_url in filtered_tags:
-                        result = self.parse(url=sub_url)
-                        if not result.is_ok():
-                            continue
-                        sub_content = result.get_content()['Content']
-                        sub_content = get_soup(sub_content).body
-                        sub_content.name = 'div'
-                        a_tag.insert_before(sub_content)
+                        child_url = a_tag.get('href')
+                        child_url_matcher = self._sub_url_regex.search(child_url)
+                        if '/tin-tuc/trac-nghiem/' in child_url and child_url_matcher is not None:
+                            if child_url not in visited_urls:
+                                # Thêm vào hàng đợi
+                                url_queue.put((parent_url, child_url))
+
+                            data_link = '/tin-tuc/s/%s' % self._get_alias(url=child_url)
+
+                            # Sửa lại link
+                            img_tags = a_tag.find_all('img')
+                            for img_tag in img_tags:
+                                img_tag['data-link'] = data_link
+
+                            if len(normalize_string(a_tag.text)) > 0:
+                                a_tag.name = 'video'
+                                a_tag['data-link'] = data_link
+                                a_tag['data-dummy'] = True
 
         tags = html.find_all('div', class_='xemthem_new_ver width_common')
         for tag in tags:
@@ -163,8 +167,16 @@ class NgoiSaoNetParser(SubBaseParser):
         tags = html.find_all('div', recursive=False)
         for tag in tags:
             content = normalize_string(tag.text)
-            if content.startswith('>>') or content.startswith('<<'):
+            if content.startswith('>>') or content.startswith('<<') or content.startswith('Xem thêm:'):
                 tag.decompose()
+
+        link_tags = html.find_all('video', attrs={'data-dummy': True})
+        for link_tag in link_tags:
+            attrs_before = link_tag.attrs
+            link_tag.name = 'a'
+            link_tag.attrs = {'href': attrs_before['data-link']}
+            link_tag.wrap(create_html_tag('p'))
+
         return super()._post_process(html)
 
     @staticmethod

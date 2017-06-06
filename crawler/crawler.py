@@ -32,7 +32,7 @@ class Crawler(object):
                     break
 
         if domain is None:
-            log('Tên miền %s chưa được hỗ trợ.' % domain)
+            log('Tên miền của %s chưa được hỗ trợ.' % url)
             return Result(status_code=Result.Codes.Unsupported)
 
         return Result(
