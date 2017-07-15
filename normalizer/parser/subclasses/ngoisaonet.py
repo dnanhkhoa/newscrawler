@@ -129,6 +129,8 @@ class NgoiSaoNetParser(SubBaseParser):
         url_queue = self._vars['url_queue']
         visited_urls = self._vars['visited_urls']
 
+        table_stack = self._vars['table_stack'] = []
+
         page = html.find_parent('html')
         if page is not None:
             meta_url = page.find('meta', attrs={'property': 'og:url', 'content': True})
@@ -154,7 +156,23 @@ class NgoiSaoNetParser(SubBaseParser):
                             if len(normalize_string(a_tag.text)) > 0:
                                 a_tag.name = 'video'
                                 a_tag['data-link'] = data_link
-                                a_tag['data-dummy'] = True
+                                a_tag['data-dummy'] = 'hyperlink'
+
+                    table_tags = html.find_all('table', recursive=False)
+                    for table_tag in table_tags:
+                        video_tag = create_html_tag('video')
+                        video_tag['data-dummy'] = 'table'
+                        table_tag.wrap(video_tag)
+                        table_stack.append(table_tag.extract())
+
+        # Xóa bài viết liên quan
+        # table_tags = html.find_all('table', class_='tbl_insert', recursive=False)
+        # if len(table_tags) > 0:
+        #     img_tag = table_tags[-1].find('img', attrs={'src': True})
+        #     if img_tag is not None:
+        #         img_src = img_tag.get('src')
+        #         if self._get_image_size(url=img_src) == (200, 120):
+        #             table_tags[-1].decompose()
 
         tags = html.find_all('div', class_='xemthem_new_ver width_common')
         for tag in tags:
@@ -167,10 +185,17 @@ class NgoiSaoNetParser(SubBaseParser):
         tags = html.find_all('div', recursive=False)
         for tag in tags:
             content = normalize_string(tag.text)
-            if content.startswith('>>') or content.startswith('<<') or content.startswith('Xem thêm:'):
+            if content.startswith('>>') or content.startswith('<<') or content.startswith(
+                    'Xem thêm:') or content.startswith('Xem tiếp'):
                 tag.decompose()
 
-        link_tags = html.find_all('video', attrs={'data-dummy': True})
+        table_stack = self._vars['table_stack']
+        table_tags = html.find_all('video', attrs={'data-dummy': 'table'}, recursive=False)
+        for table_tag in table_tags:
+            if len(table_stack) > 0:
+                table_tag.replace_with(table_stack.pop(0))
+
+        link_tags = html.find_all('video', attrs={'data-dummy': 'hyperlink'})
         for link_tag in link_tags:
             attrs_before = link_tag.attrs
             link_tag.name = 'a'

@@ -310,7 +310,7 @@ def try_normalizer():
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/sai-canh-binh-an-loc-toi-ngap-tran',
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/nghi-ngoi-thoa-thich-tich-luy-dam-bay'
     # ]
-    urls = ['http://ione.vnexpress.net/tin-tuc/chiem-tinh/trac-nghiem/tiet-lo-4-pham-chat-tot-dep-nhat-trong-con-nguoi-ban-qua-1-cau-hoi-3592934.html']
+    urls = ['http://ngoisao.net/tin-tuc/trac-nghiem/thu-tu-cua-ban-3611875.html']
 
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
