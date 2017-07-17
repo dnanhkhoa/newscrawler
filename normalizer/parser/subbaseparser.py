@@ -162,7 +162,7 @@ class SubBaseParser(BaseParser):
         video_tags = html.find_all('iframe', attrs={'src': True, 'height': True})
         for video_tag in video_tags:
             video_url = video_tag.get('src')
-            if '.youtu' not in video_url:
+            if '.youtu' not in video_url and 'youtube.com' not in video_url:
                 continue
 
             width = video_tag.get('width')
