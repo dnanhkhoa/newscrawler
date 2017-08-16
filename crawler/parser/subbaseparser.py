@@ -32,7 +32,7 @@ class SubBaseParser(BaseParser):
             return None
 
         # Hàm datetime_func sẽ format time theo định dạng chỉ định
-        return get_datetime_func(normalize_string(time_tag.text))
+        return get_datetime_func(normalize_string(time_tag if isinstance(time_tag, str) else time_tag.text))
 
     # Hàm duyệt tìm các urls của bài viết trong trang
     def _get_urls_from_page(self, url, html, from_date=None, to_date=None, timeout=15):
@@ -83,6 +83,10 @@ class SubBaseParser(BaseParser):
                         post_urls = list(map(lambda x: self._get_absolute_url(url=x, domain=url), post_urls))
 
                         last_post_date = self._get_date_from_post(url=post_urls[-1], timeout=timeout)
+
+                        if last_post_date is None:
+                            debug(post_urls[-1])
+
                         if from_date > last_post_date:
                             stop = True
                             for post_url in post_urls:

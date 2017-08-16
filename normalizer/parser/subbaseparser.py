@@ -154,7 +154,7 @@ class SubBaseParser(BaseParser):
         if time_tag is None:
             return None
 
-        return get_datetime_func(normalize_string(time_tag.text))
+        return get_datetime_func(normalize_string(time_tag if isinstance(time_tag, str) else time_tag.text))
 
     # Xử lí các videos có trong bài viết
     def _handle_video(self, html, default_thumbnail_url=None, timeout=15):

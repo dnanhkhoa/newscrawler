@@ -140,12 +140,13 @@ class IOneVnExpressNetParser(SubBaseParser):
             meta_url = page.find('meta', attrs={'property': 'og:url', 'content': True})
             if meta_url is not None:
                 parent_url = meta_url.get('content')
-                if '/tin-tuc/chiem-tinh/' in parent_url:
+                if '/tin-tuc/chiem-tinh/' in parent_url or '/tin-tuc/vui-doc/' in parent_url:
                     a_tags = html.find_all('a', attrs={'href': True})
                     for a_tag in a_tags:
                         child_url = a_tag.get('href')
                         child_url_matcher = self._sub_url_regex.search(child_url)
-                        if '/tin-tuc/chiem-tinh/' in child_url and child_url_matcher is not None:
+                        if ('/tin-tuc/chiem-tinh/' in child_url or '/tin-tuc/vui-doc/' in child_url) \
+                                and child_url_matcher is not None:
                             if child_url not in visited_urls:
                                 # Thêm vào hàng đợi
                                 url_queue.put((parent_url, child_url))

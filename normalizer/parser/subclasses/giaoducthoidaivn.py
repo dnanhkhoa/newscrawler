@@ -41,7 +41,11 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         def get_time_tag_func(html):
             div_tag = html.find('div', class_='toolbar')
             if div_tag is None:
-                return None
+                matcher = regex.search(r'<div class="time-social clearfix">\s*<time>([^>]+) GMT\+7<\/time>', str(html),
+                                       regex.IGNORECASE)
+                if matcher is None:
+                    return None
+                return matcher.group(1)
             return div_tag.find('span', class_='time')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
@@ -66,7 +70,13 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
 
         # Chỉ định thẻ chứa nội dung chính
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_main_content_tag_func'] = lambda x: x.find('div', id='abody')
+        def get_main_content_tag_func(html):
+            content_tag = html.find('div', id='abody')
+            if content_tag is None:
+                content_tag = get_soup(str(html)).find('div', id='abody')
+            return content_tag
+
+        self._vars['get_main_content_tag_func'] = get_main_content_tag_func
 
         # Chỉ định thẻ chứa tên tác giả
         # Khi sử dụng thẻ này thì sẽ tự động không sử dụng tính năng tự động nhận dạng tên tác giả

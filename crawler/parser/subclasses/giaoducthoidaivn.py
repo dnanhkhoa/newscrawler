@@ -60,7 +60,11 @@ class GiaoDucThoiDaiVnParser(SubBaseParser):
         def get_time_tag_func(html):
             div_tag = html.find('div', class_='toolbar')
             if div_tag is None:
-                return None
+                matcher = regex.search(r'<div class="time-social clearfix">\s*<time>([^>]+) GMT\+7<\/time>', str(html),
+                                       regex.IGNORECASE)
+                if matcher is None:
+                    return None
+                return matcher.group(1)
             return div_tag.find('span', class_='time')
 
         self._vars['get_time_tag_func'] = get_time_tag_func
