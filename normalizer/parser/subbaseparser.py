@@ -13,6 +13,8 @@ class SubBaseParser(BaseParser):
         super().__init__()
         # URL ảnh mặc định dùng làm thumbnail cho video khi chưa play
         self._default_video_thumbnail_url = None
+        # Mẫu youtube video link
+        self._youtube_id_regex = regex.compile(r'(?:youtu\.be|youtube\.com)\/(?:watch\?v=)?([\w-]+)', regex.IGNORECASE)
 
     # Hàm trả về mobile url nếu có
     def _get_mobile_url(self, url):
@@ -155,6 +157,22 @@ class SubBaseParser(BaseParser):
             return None
 
         return get_datetime_func(normalize_string(time_tag if isinstance(time_tag, str) else time_tag.text))
+
+    # Xử lí các youtube videos có trong bài viết
+    def _handle_youtube_video(self, html):
+        # Tìm các thẻ div chứa youtube link
+        div_tags = html.find_all('div')
+        for div_tag in div_tags:
+            if len(div_tag.attrs) > 1:
+                for value in div_tag.attrs.values():
+                    if isinstance(value, str):
+                        youtube_id = self._youtube_id_regex.search(value)
+                        if youtube_id is not None:
+                            video_url = 'https://www.youtube.com/embed/' + youtube_id.group(1)
+                            div_tag.replace_with(
+                                create_video_tag(src=video_url, width=640, height=360, is_youtube=True))
+                            break
+        return html
 
     # Xử lí các videos có trong bài viết
     def _handle_video(self, html, default_thumbnail_url=None, timeout=15):
@@ -562,6 +580,9 @@ class SubBaseParser(BaseParser):
             return None
 
         main_content_tag.attrs = {}
+
+        # Xử lí các youtube videos nhúng trong bài viết
+        main_content_tag = self._handle_youtube_video(html=main_content_tag)
 
         # Xử lí thẻ video
         main_content_tag = self._handle_video(html=main_content_tag,

@@ -15,6 +15,8 @@ import pafy
 import regex
 from bs4 import BeautifulSoup
 
+DEBUG = True
+
 _APP_PATH = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
 
 # Ghi log
@@ -30,7 +32,7 @@ _SPECIAL_CHARS_NORMALIZE_MAP = dict(zip(_SPECIAL_CHARS, _NORMAL_CHARS))
 _SPECIAL_CHARS_NORMALIZE_REGEX = regex.compile('|'.join(_SPECIAL_CHARS))
 
 # Rút trích youtube id từ url
-_YOUTUBE_ID_REGEX = regex.compile(r'(?:youtu\.be|youtube\.com)\/(?:watch\?v=)?([\w\W]+)', regex.IGNORECASE)
+_YOUTUBE_ID_REGEX = regex.compile(r'(?:youtu\.be|youtube\.com)\/(?:watch\?v=)?([\w-]+)', regex.IGNORECASE)
 
 
 # Hàm ghi log
@@ -39,8 +41,9 @@ def log(msg):
 
 
 # Hàm in dữ liệu ra màn hình để DEBUG
-def debug(msg):
-    print(msg)
+def debug(*args, **kwargs):
+    if DEBUG:
+        print(*args, **kwargs)
 
 
 # Hàm đổi các kí tự đặc biệt sang kí tự thông thường
