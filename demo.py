@@ -160,9 +160,28 @@ def try_crawler():
     #     'http://ione.vnexpress.net/tin-tuc/chiem-tinh'
     # ]
 
-    urls = ['http://tapchithoitrangtre.com.vn/song-khoe/suc-khoe']
+    # urls = ['http://ndh.vn/dau-tu.htm',
+    #         'http://ndh.vn/vi-mo-c145.htm',
+    #         'http://ndh.vn/tieu-dung.htm',
+    #         'http://ndh.vn/loi-song-c99.htm',
+    #         'http://ndh.vn/tai-chinh-ca-nhan.htm']
 
-    from_date = '2017-04-23'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    # urls = [
+    #     'http://bizlive.vn/chinh-tri-xa-hoi/',
+    #     'http://bizlive.vn/kinh-te-dau-tu/',
+    #     'http://bizlive.vn/vang-tien/',
+    #     'http://bizlive.vn/thiet-bi-so/',
+    #     'http://bizlive.vn/247/'
+    # ]
+
+    urls = [
+        'http://www.nhandan.com.vn/kinhte/thoi_su',
+        'http://www.nhandan.com.vn/vanhoa/dien-dan',
+        'http://www.nhandan.com.vn/xahoi/tin-tuc',
+        'http://www.nhandan.com.vn/thegioi/tin-tuc'
+    ]
+
+    from_date = '2017-09-13'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
     to_date = None  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
@@ -310,7 +329,28 @@ def try_normalizer():
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/sai-canh-binh-an-loc-toi-ngap-tran',
     #     'https://www.techcombank.com.vn/khach-hang-ca-nhan/chuong-trinh-uu-dai/khuyen-mai-cho-san-pham/nghi-ngoi-thoa-thich-tich-luy-dam-bay'
     # ]
-    urls = ['http://viettimes.vn/ven-man-bi-mat-quang-cao-chup-boi-iphone-128340.html']
+    # urls = ['http://ndh.vn/moi-thu-apple-vua-cong-bo-cach-day-vai-gio-tai-wwdc-2017-2017060608245547p0c6.news',
+    #         'http://ndh.vn/apple-chinh-thuc-trinh-lang-3-iphone-moi-iphone-x-gia-tu-999-usd-20170913051944550p0c6.news',
+    #         'http://ndh.vn/canh-xep-hang-lai-tai-dien-du-iphone-8-con-chua-ra-mat-20170912025022860p0c6.news',
+    #         'http://ndh.vn/iphone-1-thap-ky-15-dong-san-pham-hon-1-ty-chiec-ban-ra-va-bom-tan-sap-trinh-lang-20170830092137948p0c6.news']
+    # urls = [
+    #     'http://bizlive.vn/noi-dung-so/ung-dung-cuoi-tuan-lam-the-nao-de-luu-lai-moi-tin-nhan-tren-iphone-3191149.html',
+    #     'http://bizlive.vn/ngan-hang/tiep-tuc-nong-viec-xac-dinh-khoan-thiet-hai-1576-ty-dong-o-oceanbank-3188757.html',
+    #     'http://bizlive.vn/vang-tien/chu-tich-ssi-viet-nam-nen-som-co-khung-phap-ly-thua-nhan-bitcoin-la-mot-loai-hang-hoa-3191911.html',
+    #     'http://bizlive.vn/doanh-nghiep/chan-dung-doanh-nghiep-bong-bach-tuyet-no-luc-hoi-sinh-tu-scandal-kinh-dien-co-duoc-den-dap-3191581.html',
+    #     'http://bizlive.vn/thiet-bi-so/5-smartphone-dot-pha-nhat-trong-10-nam-qua-3189698.html',
+    #     'http://bizlive.vn/cong-nghe/cong-nghe-tuan-qua-apple-ra-mat-smartphone-sang-chanh-iphone-x-thaco-lam-nha-phan-phoi-bmw-3190818.html',
+    #     'http://bizlive.vn/chinh-tri-xa-hoi/video-buyt-nhanh-brt-o-ha-noi-dang-hoat-dong-the-nao-3174754.html',
+    #     'http://bizlive.vn/kinh-doanh/video-nhung-chuoi-ca-phe-dinh-dam-bo-cuoc-tai-viet-nam-3191404.html',
+    #     'http://bizlive.vn/quy-hoach/video-grab-va-uber-khien-tphcm-vo-quy-hoach-xe-taxi-3184572.html'
+    # ]
+
+    urls = [
+        'http://www.nhandan.com.vn/chinhtri/item/34115502-ky-niem-50-nam-long-an-duoc-phong-tang-danh-hieu-trung-dung-kien-cuong-toan-dan-danh-giac.html',
+        'http://www.nhandan.com.vn/thegioi/tin-tuc/item/34119802-my-khang-dinh-uu-tien-no-luc-ngoai-giao-trong-van-de-tieu-tien.html',
+        'http://www.nhandan.com.vn/thegioi/cua-so-the-gioi/item/34113702-can-canh-sao-tho-tu-con-tau-vu-tru-cassini.html',
+        'http://www.nhandan.com.vn/cuoituan/doi-song-van-hoa/item/33971902-nhung-khoang-trong-can-duoc-lap-day.html'
+    ]
 
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
@@ -342,7 +382,26 @@ def try_checker():
         print(result.get_content())
 
 
+def test():
+    from incapsula import IncapSession
+    import time
+    UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36'
+
+    for i in range(10):
+        sess = IncapSession(user_agent=UA)
+        try:
+
+            r = sess.get('http://congluan.vn')
+            debug(r.content.decode())
+        except Exception as e:
+            debug(e)
+        sess.close()
+        time.sleep(10)
+
+
 def main():
+    # test()
+    # return
     # try_crawler()
     try_normalizer()
     # try_checker()
