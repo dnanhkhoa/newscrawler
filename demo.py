@@ -402,8 +402,8 @@ def test():
 def main():
     # test()
     # return
-    # try_crawler()
-    try_normalizer()
+    try_crawler()
+    # try_normalizer()
     # try_checker()
     return
 
