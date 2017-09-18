@@ -69,7 +69,7 @@ class NhanDanComVnParser(SubBaseParser):
                 if a_tag is not None and post_date_tag is not None:
                     post_date_matcher = self._post_date_regex.search(normalize_string(post_date_tag.text))
                     if post_date_matcher is not None and int(post_date_matcher.group(1)) < datetime.now().hour:
-                        urls.append(a_tag.get('href'))
+                        urls.append(self._get_absolute_url(url=a_tag.get('href'), domain=url))
 
             post_tags = div_tags[1].find_all('div', class_='media')
             for post_tag in post_tags:
@@ -78,7 +78,7 @@ class NhanDanComVnParser(SubBaseParser):
                 if a_tag is not None and post_date_tag is not None:
                     post_date_matcher = self._post_date_regex.search(normalize_string(post_date_tag.text))
                     if post_date_matcher is not None and int(post_date_matcher.group(1)) < datetime.now().hour:
-                        urls.append(a_tag.get('href'))
+                        urls.append(self._get_absolute_url(url=a_tag.get('href'), domain=url))
 
             post_tags = div_tags[2].find_all('div', class_='media',
                                              style='margin:10px;padding-bottom: 10px;border-bottom: 1px solid #ccc')
@@ -88,6 +88,6 @@ class NhanDanComVnParser(SubBaseParser):
                 if a_tag is not None and post_date_tag is not None:
                     post_date_matcher = self._post_date_regex.search(normalize_string(post_date_tag.text))
                     if post_date_matcher is not None and int(post_date_matcher.group(1)) < datetime.now().hour:
-                        urls.append(a_tag.get('href'))
+                        urls.append(self._get_absolute_url(url=a_tag.get('href'), domain=url))
 
         return list(set(urls)), None
