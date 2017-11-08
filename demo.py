@@ -174,14 +174,20 @@ def try_crawler():
     #     'http://bizlive.vn/247/'
     # ]
 
+    # urls = [
+    #     'http://www.nhandan.com.vn/kinhte/thoi_su',
+    #     'http://www.nhandan.com.vn/vanhoa/dien-dan',
+    #     'http://www.nhandan.com.vn/xahoi/tin-tuc',
+    #     'http://www.nhandan.com.vn/thegioi/tin-tuc'
+    # ]
+
     urls = [
-        'http://www.nhandan.com.vn/kinhte/thoi_su',
-        'http://www.nhandan.com.vn/vanhoa/dien-dan',
-        'http://www.nhandan.com.vn/xahoi/tin-tuc',
-        'http://www.nhandan.com.vn/thegioi/tin-tuc'
+        # "http://songmoi.vn/danh-muc/goc-nhin",
+        # "http://songmoi.vn/danh-muc/phong-su-anh",
+        "http://songmoi.vn/danh-muc/tin-len-ke"
     ]
 
-    from_date = '2017-09-13'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    from_date = '2017-10-01'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
     to_date = None  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
@@ -345,11 +351,15 @@ def try_normalizer():
     #     'http://bizlive.vn/quy-hoach/video-grab-va-uber-khien-tphcm-vo-quy-hoach-xe-taxi-3184572.html'
     # ]
 
+    # urls = [
+    #     'http://www.nhandan.com.vn/chinhtri/item/34115502-ky-niem-50-nam-long-an-duoc-phong-tang-danh-hieu-trung-dung-kien-cuong-toan-dan-danh-giac.html',
+    #     'http://www.nhandan.com.vn/thegioi/tin-tuc/item/34119802-my-khang-dinh-uu-tien-no-luc-ngoai-giao-trong-van-de-tieu-tien.html',
+    #     'http://www.nhandan.com.vn/thegioi/cua-so-the-gioi/item/34113702-can-canh-sao-tho-tu-con-tau-vu-tru-cassini.html',
+    #     'http://www.nhandan.com.vn/cuoituan/doi-song-van-hoa/item/33971902-nhung-khoang-trong-can-duoc-lap-day.html'
+    # ]
+
     urls = [
-        'http://www.nhandan.com.vn/chinhtri/item/34115502-ky-niem-50-nam-long-an-duoc-phong-tang-danh-hieu-trung-dung-kien-cuong-toan-dan-danh-giac.html',
-        'http://www.nhandan.com.vn/thegioi/tin-tuc/item/34119802-my-khang-dinh-uu-tien-no-luc-ngoai-giao-trong-van-de-tieu-tien.html',
-        'http://www.nhandan.com.vn/thegioi/cua-so-the-gioi/item/34113702-can-canh-sao-tho-tu-con-tau-vu-tru-cassini.html',
-        'http://www.nhandan.com.vn/cuoituan/doi-song-van-hoa/item/33971902-nhung-khoang-trong-can-duoc-lap-day.html'
+        'http://songmoi.vn/cach-thanh-tra-ky-la-cac-xuong-san-xuat-banh-trung-thu-100-dat-chuan-54959.html'
     ]
 
     for url in urls:
@@ -402,8 +412,8 @@ def test():
 def main():
     # test()
     # return
-    try_crawler()
-    # try_normalizer()
+    # try_crawler()
+    try_normalizer()
     # try_checker()
     return
 

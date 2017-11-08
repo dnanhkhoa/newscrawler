@@ -105,7 +105,7 @@ class IOneVnExpressNetParser(SubBaseParser):
         video_tags = html.find_all('div', attrs={'data-component-type': 'video', 'data-component-value': True})
         for video_tag in video_tags:
             video_id = video_tag.get('data-component-value')
-            source = self._get_html('http://video.vnexpress.net/parser.html?t=2&id=%s' % video_id, timeout=timeout)
+            source = self._get_html('https://video.vnexpress.net/parser.html?t=2&id=%s' % video_id, timeout=timeout)
             if source is not None:
                 video_thumbnail_url = default_thumbnail_url
                 thumbnail_matcher = self._video_thumbnail_regex.search(source)
