@@ -778,6 +778,8 @@ class SubBaseParser(BaseParser):
         thumbnail_url = self._get_og_image(html=html) if get_thumbnail_url_func is None \
             else get_thumbnail_url_func(html)
 
+        thumbnail_url = thumbnail_url and thumbnail_url.strip()
+
         if thumbnail_url is None or not self._is_valid_image_url(url=thumbnail_url):
             img_tag = main_content_tag.find('img', attrs={'src': True})
             return None if img_tag is None else img_tag.get('src')
