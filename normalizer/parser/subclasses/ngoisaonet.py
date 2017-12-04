@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
+from copy import deepcopy
+
 # Done
 from normalizer.parser import *
 
@@ -17,10 +19,10 @@ class NgoiSaoNetParser(SubBaseParser):
         self._domain = 'ngoisao.net'
 
         # Chứa tên miền đầy đủ và không có / cuối cùng dùng để tìm url tuyệt đối
-        self._full_domain = 'http://ngoisao.net'
+        self._full_domain = 'https://ngoisao.net'
 
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
-        # self._domain_regex =
+        self._domain_regex = [regex.compile(r'video.(ngoisao.net)', regex.IGNORECASE)]
 
         self._sub_url_regex = regex.compile(r'\d+-p\d+\.html', regex.IGNORECASE)
         self._video_regex = regex.compile(r"var videoSource = '([^']+)'", regex.IGNORECASE)
@@ -92,7 +94,37 @@ class NgoiSaoNetParser(SubBaseParser):
         # self._vars['get_thumbnail_url_func'] =
 
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
-        # self._vars[''] =
+        # Tạo bộ parser riêng cho video
+        video_parser = deepcopy(self)
+
+        # Time
+        def get_datetime_vid_func(string):
+            string = string.split(',')[-1]
+            parts = string.strip().split(' ')[:-1]
+            return datetime.strptime(' '.join(parts), '%d/%m/%y %H:%M')
+
+        video_parser._vars['get_datetime_func'] = get_datetime_vid_func
+
+        def get_main_content_tag_vid_func(html):
+            div_tag = html.find('div', class_='fck_detail')
+            return div_tag and div_tag.div
+
+        video_parser._vars['get_main_content_tag_func'] = get_main_content_tag_vid_func
+
+        def get_author_tag_div_func(html):
+            div_tag = html.find('p', class_='author_top')
+            return div_tag and div_tag.strong
+
+        video_parser._vars['get_author_tag_func'] = get_author_tag_div_func
+
+        video_parser._vars['get_tags_tag_func'] = lambda x: x.find('div', id='box_tag')
+
+        video_parser._pre_process = super(NgoiSaoNetParser, video_parser)._pre_process
+        video_parser._post_process = super(NgoiSaoNetParser, video_parser)._post_process
+        video_parser._get_author = super(NgoiSaoNetParser, video_parser)._get_author
+
+        video_parser.parse_video = super(NgoiSaoNetParser, video_parser)._parse
+        self._vars['video_parser'] = video_parser
 
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
@@ -118,6 +150,28 @@ class NgoiSaoNetParser(SubBaseParser):
                     video_tag.insert_before(new_video_tag)
 
             video_tag.decompose()
+
+        script_tags = html.find_all('script')
+        if len(script_tags) > 0:
+            first_script = script_tags[0]
+            script_code = first_script.text
+
+            # Thumbnail
+            thumbnail_matcher = regex.search(r'thumbnail_url="([^"]+)"', script_code, regex.IGNORECASE)
+            if thumbnail_matcher is not None:
+                thumbnail_url = thumbnail_matcher.group(1)
+                if self._is_valid_image_url(url=thumbnail_url):
+                    video_thumbnail_url = thumbnail_url
+
+            # Video URL
+            matcher = regex.findall(r"videoSource\d+p = '([^']+)'", script_code, regex.IGNORECASE)
+            if len(matcher) > 0:
+                video_url = matcher[-1]
+                new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
+                                                 mime_type=self._get_mime_type_from_url(url=video_url))
+                first_script.insert_before(new_video_tag)
+
+            first_script.decompose()
 
         return super()._handle_video(html, default_thumbnail_url, timeout)
 
@@ -224,3 +278,20 @@ class NgoiSaoNetParser(SubBaseParser):
         self._vars['get_author_tag_func'] = None
 
         return '\n'.join(authors)
+
+    def _parse(self, url, html, timeout=15):
+        video_domain = 'video.ngoisao.net'
+        if video_domain in url:
+            div_tag = html.find('div', class_='video_hot')
+            a_tag = div_tag and div_tag.find('a', attrs={'href': True})
+            if a_tag is None:
+                return None
+
+            domain = self._full_domain.replace(self._domain, video_domain)
+            video_page_url = self._get_absolute_url(url=a_tag.get('href'), domain=domain)
+            raw_html = self._get_html(url=video_page_url, timeout=timeout)
+            if raw_html is None:
+                return None
+            return self._vars['video_parser'].parse_video(url=video_page_url, html=get_soup(raw_html), timeout=timeout)
+
+        return super()._parse(url, html, timeout)

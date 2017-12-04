@@ -237,7 +237,11 @@ class BaseParser(ABC):
         self._vars['url_queue'] = url_queue = Queue()
         self._vars['visited_urls'] = visited_urls = {url: True}
 
-        results = [self._parse(url=url, html=get_soup(raw_html), timeout=timeout)]
+        results = []
+
+        response = self._parse(url=url, html=get_soup(raw_html), timeout=timeout)
+        if response is not None:
+            results.append(response)
 
         while not url_queue.empty():
             parent_url, child_url = url_queue.get()
@@ -253,7 +257,8 @@ class BaseParser(ABC):
                 continue
 
             res = self._parse(url=child_url, html=get_soup(child_raw_html), timeout=timeout)
-            res['parent_url'] = parent_url
-            results.append(res)
+            if res is not None:
+                res['parent_url'] = parent_url
+                results.append(res)
 
         return Result(content=results)

@@ -182,12 +182,19 @@ def try_crawler():
     # ]
 
     urls = [
-        # "http://songmoi.vn/danh-muc/goc-nhin",
-        # "http://songmoi.vn/danh-muc/phong-su-anh",
-        "http://songmoi.vn/danh-muc/tin-len-ke"
+        'http://www.nguoiduatin.vn/c/video-giai-tri',
+        'http://www.nguoiduatin.vn/c/ho-so',
+        'http://www.nguoiduatin.vn/c/giai-tri'
     ]
 
-    from_date = '2017-10-01'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
+    # urls = [
+    #     'https://video.ngoisao.net/24h',
+    #     'http://ndh.vn/home.video',
+    #     'http://video.vietnamnet.vn/an-ngon-c-aas/',
+    #     'https://video.vnexpress.net/camera-ban-doc',
+    # ]
+
+    from_date = '2017-12-01'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
     to_date = None  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
     timeout = 15  # Thời gian chờ tối đa
 
@@ -358,8 +365,19 @@ def try_normalizer():
     #     'http://www.nhandan.com.vn/cuoituan/doi-song-van-hoa/item/33971902-nhung-khoang-trong-can-duoc-lap-day.html'
     # ]
 
+    # urls = [
+    #     'http://www.nguoiduatin.vn/clip-co-tien-le-100-dong-bot-cai-lay-van-un-xe-va-xa-tram-a349728.html',
+    #     'http://www.nguoiduatin.vn/clip-hot-boy-han-quoc-to-tinh-thanh-cong-tai-vi-yeu-ma-den--a349553.html',
+    #     'http://www.nguoiduatin.vn/clip-fan-nu-ngat-xiu-ngay-trong-dem-liveshow-cua-noo-phuoc-thinh-a349496.html',
+    #     'http://www.nguoiduatin.vn/nam-dinh-bat-khan-cap-nghi-pham-sat-hai-nguoi-phu-nu-duoi-cong-a349741.html',
+    #     'http://www.nguoiduatin.vn/khoi-to-ke-dung-dao-giet-nu-sinh-lop-12-vi-bi-de-nghi-chia-tay-a349729.html',
+    #     'http://www.nguoiduatin.vn/don-noel-voi-cay-thong-lap-rap-sieu-doc-chi-co-gia-vai-chuc-nghin-a349704.html'
+    # ]
+
     urls = [
-        'http://songmoi.vn/cach-thanh-tra-ky-la-cac-xuong-san-xuat-banh-trung-thu-100-dat-chuan-54959.html'
+        'https://video.vnexpress.net/the-thao/bong-da',
+        'https://video.vnexpress.net/xa-hoi',
+        'https://video.vnexpress.net/camera-ban-doc'
     ]
 
     for url in urls:

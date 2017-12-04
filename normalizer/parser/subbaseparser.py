@@ -203,7 +203,8 @@ class SubBaseParser(BaseParser):
             image_url = img_tag.get('src')
             image_data_link = img_tag.get('data-link')
 
-            image_url = self._get_valid_image_url(image_url)
+            if 'data:image' not in image_url:
+                image_url = self._get_valid_image_url(image_url)
 
             # size = self._get_image_size(url=image_url)
             # if size is None or size[0] < 100 or size[1] < 100:
@@ -616,8 +617,11 @@ class SubBaseParser(BaseParser):
             'span': ['class']
         }
 
+        protocols = bleach.ALLOWED_PROTOCOLS
+        protocols.append('data')
+
         filtered_content = bleach.clean(main_content_tag, tags=['main', 'div', 'br', 'video', 'source', 'img', 'span'],
-                                        attributes=attrs, strip=True, strip_comments=True)
+                                        protocols=protocols, attributes=attrs, strip=True, strip_comments=True)
 
         filtered_content_tag = get_soup(filtered_content, clear_special_chars=True).main.extract()
 

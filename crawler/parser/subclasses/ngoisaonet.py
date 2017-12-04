@@ -14,10 +14,10 @@ class NgoiSaoNetParser(SubBaseParser):
         self._domain = 'ngoisao.net'
 
         # Chứa tên miền đầy đủ và không có / cuối cùng dùng để tìm url tuyệt đối
-        self._full_domain = 'http://ngoisao.net'
+        self._full_domain = 'https://ngoisao.net'
 
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
-        # self._domain_regex =
+        self._domain_regex = [regex.compile(r'video.(ngoisao.net)', regex.IGNORECASE)]
 
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
         # self._vars[''] =
@@ -93,3 +93,8 @@ class NgoiSaoNetParser(SubBaseParser):
         # Sử dụng khi muốn xóa gì đó trên trang chứa danh sách các bài viết
         # def _pre_process(self, html):
         #     return super()._pre_process(html)
+
+    def parse(self, url, from_date=None, to_date=None, timeout=15):
+        if 'video.ngoisao.net' in url:
+            return [url]
+        return super().parse(url, from_date, to_date, timeout)

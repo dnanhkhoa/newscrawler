@@ -1,25 +1,23 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
-from copy import deepcopy
-
 # Done
 from normalizer.parser import *
 
 
-class NdhVnParser(SubBaseParser):
+class VideoVnexpressNetParser(SubBaseParser):
     def __init__(self):
         # Bắt buộc phải gọi đầu tiên
         super().__init__()
 
         # Tên trang web sử dụng kiểu Title Case
-        self._source_page = 'Người Đồng Hành'
+        self._source_page = 'VNExpress'
 
         # Chứa tên miền không có http://www dùng cho parser tự động nhận dạng
-        self._domain = 'ndh.vn'
+        self._domain = 'video.vnexpress.net'
 
         # Chứa tên miền đầy đủ và không có / cuối cùng dùng để tìm url tuyệt đối
-        self._full_domain = 'http://ndh.vn'
+        self._full_domain = 'https://video.vnexpress.net'
 
         # Custom các regex dùng để parse một số trang dùng subdomain (ví dụ: *.vnexpress.net)
         # self._domain_regex =
@@ -28,25 +26,39 @@ class NdhVnParser(SubBaseParser):
 
         # Tìm thẻ chứa tiêu đề
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_title_tag_func'] = lambda x: x.find('div', class_='title-detail')
+        self._vars['get_title_tag_func'] = lambda x: x.find('h1', class_='title_detail_video')
 
         # Tìm thẻ chứa nội dung tóm tắt
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_summary_tag_func'] = lambda x: x.find('div', class_='shapo-detail')
+        # self._vars['get_summary_tag_func'] =
 
         # Tìm thẻ chứa danh sách các thẻ a chứa keyword bên trong
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_tags_tag_func'] = lambda x: x.find('ul', class_='ullinksmall')
+        # self._vars['get_tags_tag_func'] =
 
         # Tìm thẻ chứa chuỗi thời gian đăng bài
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_time_tag_func'] = lambda x: x.find('span', class_='sub-time')
+        def get_time_tag_func(html):
+            div_tag = html.find('div', class_='block_timer')
+            a_tag = div_tag and div_tag.a
+            if a_tag is not None:
+                a_tag.decompose()
+
+            meta_tag = html.find('meta', attrs={'name': 'twitter:image', 'content': True})
+            if meta_tag is not None:
+                matcher = regex.search(r'\.net\/(\d{4}\/\d{2}\/\d{2})\/',
+                                       meta_tag.get('content'), regex.IGNORECASE)
+                if matcher is not None:
+                    div_tag.append(' - ' + matcher.group(1))
+            return div_tag
+
+        self._vars['get_time_tag_func'] = get_time_tag_func
 
         # Định dạng chuỗi thời gian và trả về đối tượng datetime
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
         def get_datetime_func(string):
-            parts = string.split(' ')
-            return datetime.strptime('%s %s' % (parts[1], parts[-1]), '%H:%M %d/%m/%Y')
+            parts = regex.split(r'\s+-\s+', string, regex.IGNORECASE)
+            return datetime.strptime('%s %s' % (parts[0], parts[2]), '%H:%M %Y/%m/%d')
 
         self._vars['get_datetime_func'] = get_datetime_func
 
@@ -62,12 +74,16 @@ class NdhVnParser(SubBaseParser):
 
         # Chỉ định thẻ chứa nội dung chính
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_main_content_tag_func'] = lambda x: x.find('div', class_='main-detail')
+        self._vars['get_main_content_tag_func'] = lambda x: x.find('div', class_='lead_detail_video')
 
         # Chỉ định thẻ chứa tên tác giả
         # Khi sử dụng thẻ này thì sẽ tự động không sử dụng tính năng tự động nhận dạng tên tác giả
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        self._vars['get_author_tag_func'] = lambda x: x.find('p', class_='name-writer')
+        def get_author_tag_func(html):
+            tag = html.find('div', class_='author_mail')
+            return tag and tag.find('strong')
+
+        self._vars['get_author_tag_func'] = get_author_tag_func
 
         # Chỉ định các nhãn được phép và không được phép dùng để dự đoán author
         # Các nhãn: author, center, right, bold, italic
@@ -86,36 +102,7 @@ class NdhVnParser(SubBaseParser):
         # self._vars['get_thumbnail_url_func'] =
 
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
-        # Tạo bộ parser riêng cho video
-        video_parser = deepcopy(self)
-
-        video_parser._vars['get_main_content_tag_func'] = lambda x: x.find('div', id='cne-player')
-
-        video_parser._pre_process = super(NdhVnParser, video_parser)._pre_process
-
-        def post_process_vid(html):
-            html.clear()
-            html_tag = html.find_parent('html')
-            if html_tag is not None:
-                # Thumbnail
-                image_tag = html_tag.find('link', attrs={'rel': 'image_src', 'href': True})
-                thumbnail_url = image_tag.get('href')
-                if self._is_valid_image_url(url=thumbnail_url):
-                    video_thumbnail_url = thumbnail_url
-
-                # Video URL
-                video_tag = html_tag.find('link', attrs={'rel': 'video_src', 'href': True})
-                video_url = video_tag.get('href')
-                new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
-                                                 mime_type=self._get_mime_type_from_url(url=video_url))
-                html.append(new_video_tag)
-
-            return html
-
-        video_parser._post_process = post_process_vid
-
-        video_parser.parse_video = super(NdhVnParser, video_parser)._parse
-        self._vars['video_parser'] = video_parser
+        # self._vars[''] =
 
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
@@ -124,33 +111,49 @@ class NdhVnParser(SubBaseParser):
     #     return super()._handle_video(html, default_thumbnail_url, timeout)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
-    def _pre_process(self, html):
-        main_html = html.find_parent('html')
-        if main_html is not None:
-            thumbnail_tag = main_html.find('meta', attrs={'itemprop': 'thumbnailUrl', 'content': True})
-            if thumbnail_tag is not None:
-                thumbnail_tag.attrs = {'property': 'og:image', 'content': thumbnail_tag.get('content')}
-
-        return super()._pre_process(html)
+    # def _pre_process(self, html):
+    #     return super()._pre_process(html)
 
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     def _post_process(self, html):
-        tags = html.find_all('div', recursive=False)
-        for tag in tags:
-            content = normalize_string(tag.text)
-            if content.startswith('>>') or content.startswith('<<') or content.startswith(
-                    'Xem thêm:') or content.startswith('Xem tiếp'):
-                tag.decompose()
+        # Thumbnail
+        thumbnail_url = self._get_thumbnail(html)
+        if self._is_valid_image_url(url=thumbnail_url):
+            video_thumbnail_url = thumbnail_url
+
+        tag = html.find_parent('html')
+        tag = tag and tag.find('div', id='content_script')
+        tag = tag and tag.script
+        if tag is not None:
+            script_code = tag.text
+
+            # Video URL
+            matcher = regex.findall(r"s\d+:\s*'([^']+)'", script_code, regex.IGNORECASE)
+            if len(matcher) > 0:
+                video_url = matcher[-1]
+                new_video_tag = create_video_tag(src=video_url, thumbnail=video_thumbnail_url,
+                                                 mime_type=self._get_mime_type_from_url(url=video_url))
+                html.append(new_video_tag)
+
         return super()._post_process(html)
 
+    def _get_tags(self, html):
+        return super()._get_meta_keywords(html)
+
     def _parse(self, url, html, timeout=15):
-        if 'ndh.vn/home.video' in url:
-            div_tag = html.find('div', attrs={'class': 'fb-like', 'data-href': True})
-            if div_tag is None:
-                return None
-            video_page_url = div_tag.get('data-href')
-            raw_html = self._get_html(url=video_page_url, timeout=timeout)
-            if raw_html is None:
-                return None
-            return self._vars['video_parser'].parse_video(url=video_page_url, html=get_soup(raw_html), timeout=timeout)
-        return super()._parse(url, html, timeout)
+        tag = html.find('div', id='content_script')
+        tag = tag and tag.script
+        if tag is None:
+            return None
+
+        script_code = tag.text
+        matcher = regex.search(r"VideoVNE.page_url = '([^']+)'", script_code, regex.IGNORECASE)
+        if matcher is None:
+            return None
+
+        video_page_url = matcher.group(1)
+        raw_html = self._get_html(url=video_page_url, timeout=timeout)
+        if raw_html is None:
+            return None
+
+        return super()._parse(video_page_url, get_soup(raw_html), timeout)
