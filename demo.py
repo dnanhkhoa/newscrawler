@@ -181,18 +181,22 @@ def try_crawler():
     #     'http://www.nhandan.com.vn/thegioi/tin-tuc'
     # ]
 
-    urls = [
-        'http://www.nguoiduatin.vn/c/video-giai-tri',
-        'http://www.nguoiduatin.vn/c/ho-so',
-        'http://www.nguoiduatin.vn/c/giai-tri'
-    ]
-
     # urls = [
     #     'https://video.ngoisao.net/24h',
     #     'http://ndh.vn/home.video',
     #     'http://video.vietnamnet.vn/an-ngon-c-aas/',
     #     'https://video.vnexpress.net/camera-ban-doc',
     # ]
+
+    urls = [
+        'http://laodong.vn/video-cong-nghe/',
+        'http://laodong.vn/video-giai-tri/',
+        'http://laodong.vn/video-kham-pha/',
+        'http://laodong.vn/video-the-gioi/',
+        'http://laodong.vn/video-the-thao/',
+        'http://laodong.vn/video-thoi-su/',
+        'https://laodong.vn/kinh-te/'
+    ]
 
     from_date = '2017-12-01'  # Để None nếu muốn lấy thời gian min hiện tại (%Y-%m-%d 00:00:00)
     to_date = None  # Để None nếu muốn lấy thời gian max hiện tại (%Y-%m-%d 23:59:59)
@@ -375,16 +379,21 @@ def try_normalizer():
     # ]
 
     urls = [
-        'https://video.vnexpress.net/the-thao/bong-da',
-        'https://video.vnexpress.net/xa-hoi',
-        'https://video.vnexpress.net/camera-ban-doc'
+        'https://laodong.vn/video-cong-nghe',
+        'https://laodong.vn/video-giai-tri',
+        'https://laodong.vn/video-kham-pha',
+        'https://laodong.vn/video-the-gioi',
+        'https://laodong.vn/video-the-thao',
+        'https://laodong.vn/video-thoi-su',
+        'https://laodong.vn/kinh-te'
     ]
 
     for url in urls:
         result = news_normalizer.normalize(url=url, timeout=15)
-        content = result.get_content()
-        print(len(content))
-        print(json.dumps(content, indent=4, ensure_ascii=False))
+        if result.is_ok():
+            content = result.get_content()
+            print(len(content))
+            print(json.dumps(content, indent=4, ensure_ascii=False))
 
 
 def try_checker():

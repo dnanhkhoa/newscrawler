@@ -11,7 +11,7 @@ class VideoVietnamnetVnParser(SubBaseParser):
         super().__init__()
 
         # Tên trang web sử dụng kiểu Title Case
-        self._source_page = 'Việt Nam Net'
+        self._source_page = 'Video Việt Nam Net'
 
         # Chứa tên miền không có http://www dùng cho parser tự động nhận dạng
         self._domain = 'video.vietnamnet.vn'
