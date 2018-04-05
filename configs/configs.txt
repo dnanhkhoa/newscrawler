@@ -1,7 +1,7 @@
 {
   "cluster_api": "http://.../cluster",
   "database": {
-    "user": "",
+    "user": "",
     "password": "",
     "db": "",
     "host": "localhost",
@@ -23,6 +23,7 @@
     "10": "XeCo",
     "11": "AmThuc",
     "13": "BoiToan",
-    "14": "SucKhoe"
+    "14": "SucKhoe",
+    "15": "HaiHuoc"
   }
 }
