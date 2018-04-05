@@ -8,3 +8,4 @@ pafy
 bleach
 pymysql
 Pillow
+logone
