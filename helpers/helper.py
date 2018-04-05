@@ -334,8 +334,8 @@ def create_parser_from_files(folder_path, base_class):
                     if instance.get_domain() is None:
                         continue
                     parsers[instance.get_domain()] = instance
-                except TypeError as e:
-                    log(e)
+                except TypeError:
+                    pass
     return parsers
 
 # *****************************
