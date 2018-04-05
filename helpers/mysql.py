@@ -27,23 +27,23 @@ class MySQL(object):
                                          charset=self.charset,
                                          cursorclass=pymysql.cursors.DictCursor)
             with connection.cursor() as cursor:
-                if func is not None:
+                if func:
                     return func(connection, cursor)
         except Exception as e:
             log(e)
         finally:
-            if connection is not None:
+            if connection:
                 connection.close()
 
     def fetch_one(self, sql, params=None):
-        def do(connection, cursor):
+        def do(_, cursor):
             cursor.execute(sql, params)
             return cursor.fetchone()
 
         return self.query(do)
 
     def fetch_all(self, sql, params=None):
-        def do(connection, cursor):
+        def do(_, cursor):
             cursor.execute(sql, params)
             return cursor.fetchall()
 

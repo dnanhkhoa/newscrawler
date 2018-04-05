@@ -4,13 +4,13 @@
 # Done
 import importlib
 import json
-import logging
 import os
 from datetime import datetime
 from inspect import getmembers, isclass
 from os.path import splitext
 from urllib.parse import urlparse, quote
 
+import logone
 import pafy
 import regex
 from bs4 import BeautifulSoup
@@ -18,9 +18,6 @@ from bs4 import BeautifulSoup
 DEBUG = True
 
 _APP_PATH = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), os.pardir))
-
-# Ghi log
-_LOGGER = logging.getLogger(__name__)
 
 # Tạo thẻ html
 _BEAUTIFUL_SOUP = BeautifulSoup(features='html5lib')
@@ -37,7 +34,7 @@ _YOUTUBE_ID_REGEX = regex.compile(r'(?:youtu\.be|youtube\.com)\/(?:watch\?v=)?([
 
 # Hàm ghi log
 def log(msg):
-    _LOGGER.exception(msg=msg)
+    logone.exception(msg=msg)
 
 
 # Hàm in dữ liệu ra màn hình để DEBUG
@@ -95,7 +92,7 @@ def url_encode(url):
     return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
 
 
-# Lấy direct link tạm thời từ youtube
+# (Dedicated) Lấy direct link tạm thời từ youtube
 def get_direct_youtube_video(url):
     assert url is not None, 'Tham số url không được là None'
 
@@ -337,8 +334,8 @@ def create_parser_from_files(folder_path, base_class):
                     if instance.get_domain() is None:
                         continue
                     parsers[instance.get_domain()] = instance
-                except TypeError:
-                    pass
+                except TypeError as e:
+                    log(e)
     return parsers
 
 # *****************************
