@@ -34,7 +34,7 @@ _YOUTUBE_ID_REGEX = regex.compile(r'(?:youtu\.be|youtube\.com)\/(?:watch\?v=)?([
 
 # Hàm ghi log
 def log(msg):
-    logone.exception(msg=msg)
+    logone.exception(msg)
 
 
 # Hàm in dữ liệu ra màn hình để DEBUG
@@ -81,20 +81,23 @@ def format_datetime(obj):
 
 # Xóa bỏ các tham số query có trong url
 def clean_url_query(url):
-    assert url is not None, 'Tham số url không được là None'
+    if url is None:
+        return None
     obj = urlparse(url)
     return '%s://%s%s' % (obj.scheme, obj.netloc, obj.path)
 
 
 # Hàm chuẩn hóa url (thường dùng nếu URL chứa kí tự Unicode)
 def url_encode(url):
-    assert url is not None, 'Tham số url không được là None'
+    if url is None:
+        return None
     return quote(url, safe="%/:=&?~#+!$,;'@()*[]")
 
 
 # (Dedicated) Lấy direct link tạm thời từ youtube
 def get_direct_youtube_video(url):
-    assert url is not None, 'Tham số url không được là None'
+    if url is None:
+        return None
 
     # Method 1
     # youtube_id = _YOUTUBE_ID_REGEX.search(url)
@@ -297,7 +300,6 @@ def write_json(obj, file_name):
 
 # Định dạng lại chuỗi json cho dễ nhìn
 def prettify_json(obj):
-    assert obj is not None, 'Tham số obj không được là None'
     return json.dumps(obj=obj, indent=4, ensure_ascii=False)
 
 

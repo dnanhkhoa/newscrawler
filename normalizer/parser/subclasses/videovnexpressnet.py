@@ -84,7 +84,7 @@ class VideoVnexpressNetParser(SubBaseParser):
         # self._vars['get_thumbnail_url_func'] =
 
         # Biến vars có thể được sử dụng cho nhiều mục đích khác
-        # self._vars[''] =
+        self._vars['requests_cookies']['vvneold'] = '1'
 
     # Hàm xử lí video có trong bài, tùy mỗi player mà có cách xử lí khác nhau
     # Khi xử lí xong cần thay thế thẻ đó thành thẻ video theo format qui định
@@ -99,9 +99,9 @@ class VideoVnexpressNetParser(SubBaseParser):
     # Sử dụng khi muốn xóa phần tử nào đó trên trang để việc parse được thuận tiện
     def _post_process(self, html):
         # Thumbnail
-        thumbnail_url = self._get_thumbnail(html)
-        if self._is_valid_image_url(url=thumbnail_url):
-            video_thumbnail_url = thumbnail_url
+        video_thumbnail_url = self._get_thumbnail(html)
+        if not self._is_valid_image_url(url=video_thumbnail_url):
+            video_thumbnail_url = None
 
         tag = html.find_parent('html')
         tag = tag and tag.find('div', id='content_script')
@@ -174,7 +174,7 @@ class VideoVnexpressNetParser(SubBaseParser):
             return None
 
         script_code = tag.text
-        matcher = regex.search(r"VideoVNE.page_url = '([^']+)'", script_code, regex.IGNORECASE)
+        matcher = regex.search(r"VideoVNE.page_url\s*=\s*'([^']+)'", script_code, regex.IGNORECASE)
         if matcher is None:
             return None
 

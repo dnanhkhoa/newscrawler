@@ -5,9 +5,7 @@
 from abc import ABC, abstractmethod
 from io import BytesIO
 from queue import Queue
-from socket import timeout as TimeOutError
 from urllib import request
-from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin
 
 import requests
@@ -33,8 +31,11 @@ class BaseParser(ABC):
         self._vars['requests_cookies'] = {}
 
     # Tải nội dung web
+    # OK
     def _get_html(self, url, timeout=15, attempts=3):
-        assert url is not None, 'Tham số url không được là None'
+        if url is None:
+            return None
+
         while attempts > 0:
             attempts -= 1
             try:
@@ -43,27 +44,28 @@ class BaseParser(ABC):
                 if response.status_code == requests.codes.ok:
                     return response.content.decode('UTF-8')
             except RequestException as e:
-                debug(url)
-                log(e)
+                logone.debug('URL: %s' % url)
+                logone.exception(e)
         return None
 
-    # Kiểm tra image url hợp lệ bằng cách gửi 1 request lên server và xem phản hồi
+    # Kiểm tra image url hợp lệ bằng cách gửi 1 request lên server và xem mã phản hồi
+    # OK
     @staticmethod
     def _is_valid_image_url(url, timeout=15):
-        assert url is not None, 'Tham số url không được là None'
+        if url is None:
+            return False
         try:
             with request.urlopen(url_encode(url), timeout=timeout) as response:
                 return response.getcode() == 200
-        except (HTTPError, URLError) as e:
-            debug(url)
-            log(e)
-        except TimeOutError as e:
-            debug(url)
-            log(e)
+        except Exception as e:
+            logone.debug('%s: %s' % (str(e), url))
         return False
 
+    # OK
     def _get_image_size(self, url, timeout=15, attempts=3):
-        assert url is not None, 'Tham số url không được là None'
+        if url is None:
+            return None
+
         while attempts > 0:
             attempts -= 1
             try:
@@ -74,45 +76,50 @@ class BaseParser(ABC):
                     if content_type is None or 'image' not in content_type:
                         return None
                     return Image.open(BytesIO(response.content)).size
-            except RequestException as e:
-                debug(url)
-                log(e)
+            except Exception as e:
+                logone.debug('%s: %s' % (str(e), url))
         return None
 
     # Lấy Content-Type của url
+    # OK
     @staticmethod
     def _get_mime_type_from_url(url, timeout=15):
-        assert url is not None, 'Tham số url không được là None'
+        if url is None:
+            return None
         try:
             with request.urlopen(url_encode(url), timeout=timeout) as response:
                 info = response.info()
                 return info.get_content_type()
-        except (HTTPError, URLError) as e:
-            debug(url)
-            log(e)
-        except TimeOutError as e:
-            debug(url)
-            log(e)
+        except Exception as e:
+            logone.debug('%s: %s' % (str(e), url))
         return None
 
     # Trả về URL tuyệt đối
+    # OK
     def _get_absolute_url(self, url, domain=None):
-        assert url is not None, 'Tham số url không được là None'
+        if url is None:
+            return None
         if domain is None:
             domain = self._full_domain
         return urljoin(domain, url)
 
     # Trả về alias từ url của bài viết
+    # OK
     @staticmethod
     def _get_alias(url):
-        assert url is not None, 'Tham số url không được là None'
+        if url is None:
+            return None
+
         obj = urlparse(url)
         alias = obj.path.strip('/').split('/')[-1]
         return alias
 
     # Trả về image url hợp lệ
+    # OK
     def _get_valid_image_url(self, url, domain=None):
-        assert url is not None, 'Tham số url không được là None'
+        if url is None:
+            return None
+
         image_url = self._get_absolute_url(url=url, domain=domain)
         # cleaned_image_url = clean_url_query(url=image_url)
         # if self._is_valid_image_url(cleaned_image_url):
@@ -120,6 +127,7 @@ class BaseParser(ABC):
         return image_url
 
     # Trả về kết quả có cấu trúc theo yêu cầu
+    # OK
     def _build_json(self, url=None, mobile_url=None, title=None, alias=None, meta_keywords=None, meta_description=None,
                     publish_date=None, author=None, tags=None, thumbnail=None, summary=None, content=None, plain=None):
 

@@ -9,18 +9,21 @@ from normalizer import *
 from crawler import *
 from helpers import *
 
+# Log
+logone.set_level(level=logone.DEBUG)
+logone.redirect_stdout(enabled=True, log_level=logone.DEBUG)
+logone.redirect_stderr(enabled=True, log_level=logone.ERROR)
+logone.use_file(enabled=True, file_name='logs/app.log', level=logone.DEBUG, when='d', interval=1, backup_count=30)
+
 # Load cấu hình
-configs = read_json('configs.txt')
+configs = read_json('configs/configs.txt')
 
 # Dùng để code nhanh
 db = configs.get('database')
 category_mapping = configs.get('category_mapping')
-priority_mapping = configs.get('priority_mapping')
 clusters = configs.get('clusters')
 ner_path = configs.get('ner_path')
 cluster_api = configs.get('cluster_api')
-
-log_file = None
 
 crawler = Crawler()
 normalizer = Normalizer()
@@ -36,12 +39,12 @@ def get_urls_from_db():
         urls = mysql.fetch_all(sql='SELECT `URL` FROM `article`', params=None)
         return [url.get('URL') for url in urls]
     except Exception as e:
-        log(e)
+        logone.exception(e)
     return None
 
 
 # Thêm dữ liệu vào DB
-def post_data_to_db(url, file_path, category, post_date, post_time, status, publish_date, priority):
+def post_data_to_db(url, file_path, category, post_date, post_time, status, publish_date, priority, parent_url=None):
     params = {
         'URL': url,
         'Path': file_path,
@@ -51,7 +54,8 @@ def post_data_to_db(url, file_path, category, post_date, post_time, status, publ
         'Status': status,
         'PublishDate': publish_date,
         'ID_Attachment': 0,
-        'Priority': priority
+        'Priority': priority,
+        'Parent': parent_url
     }
     mysql.insert('article', params=params)
 
@@ -73,19 +77,34 @@ def write_raw(obj, file_name):
             ]
             f.write(('\r\n'.join(r) + '\r\n').encode('UTF-8'))
         except Exception as e:
-            log(e)
+            logone.exception(e)
 
 
 # Gửi yêu cầu cluster
 def notify_cluster():
     res = requests.get(url=cluster_api)
     if res.status_code == requests.codes.ok:
-        write_lines([res.content.decode('UTF-8')], 'response.txt')
+        write_lines([res.content.decode('UTF-8')],
+                    'logs/response/response-%s.txt' % datetime.now().strftime('%H%M%S%f')[:-3])
+
+
+def load_data(file_path):
+    categories = []
+    priorities = {}
+    lines = read_lines(file_path)
+    for line in lines:
+        parts = line.split('\t')
+        if len(parts) < 3:
+            continue
+        categories.append((parts[0], parts[1]))
+        priorities[parts[1]] = parts[2]
+    return categories, priorities
 
 
 def main():
-    global log_file
     try:
+        categories, priority_mapping = load_data('configs/mapping.txt')
+
         # Đường dẫn đến thư mục chứa các clusters
         cluster_path = '%s/%s' % (clusters, str(date.today()).replace('-', ''))
 
@@ -97,20 +116,13 @@ def main():
         categories_urls = collections.defaultdict(lambda: [])
 
         # Đọc danh sách URLs chuyên mục
-        lines = read_lines(configs.get('category_file'))
-        for line in lines:
-            category_id, url = line.split(' ')
-            categories_urls[category_id].append(url)
+        for parts in categories:
+            categories_urls[parts[0]].append(parts[1])
 
         # Danh sách các URLs đã crawl
         urls_in_db = get_urls_from_db()
         if urls_in_db is None:
             return None
-
-        # Hotfix for viettimes.vn
-        for i, url in enumerate(urls_in_db):
-            if 'viettimes.vn' in url:
-                urls_in_db[i] = regex.sub(r'-\d+.html', '', url, flags=regex.IGNORECASE)
 
         # Lặp qua từng chuyên mục
         for category_id in categories_urls:
@@ -132,30 +144,12 @@ def main():
                         if not result.is_ok():
                             continue
 
-                        org_post_urls = result.get_content()
-                        if org_post_urls is None or len(org_post_urls) == 0:
+                        post_urls = result.get_content()
+                        if post_urls is None or len(post_urls) == 0:
                             continue
 
-                        post_urls = []
-                        post_urls_in_db = []
-
-                        for url in org_post_urls:
-                            if url not in urls_in_db:
-                                if 'viettimes.vn' in url:
-                                    temp_url = regex.sub(r'-\d+.html', '', url, flags=regex.IGNORECASE)
-                                    if temp_url not in urls_in_db:
-                                        post_urls.append(url)
-                                        post_urls_in_db.append(temp_url)
-                                    continue
-
-                                post_urls.append(url)
-                                post_urls_in_db.append(url)
-
-                        urls_in_db.extend(post_urls_in_db)
-
-                        # Log danh sách URLS
-                        for post_url in post_urls:
-                            log_file.write('%s\n' % post_url)
+                        post_urls = list(set(post_urls) - set(urls_in_db))
+                        urls_in_db.extend(post_urls)
 
                         for post_url in post_urls:
                             try:
@@ -166,42 +160,37 @@ def main():
                                                     datetime.now().strftime('%Y-%m-%d %H:%M:%S'), priority)
                                     continue
 
-                                content = result.get_content()
+                                results = result.get_content()
+                                for content in results:
+                                    parent_url = content.pop('parent_url', None)
 
-                                publish_date = content.get('PublishDate')
+                                    child_url = content.get('Url')
+                                    publish_date = content.get('PublishDate')
 
-                                file_name = '%s/%s/%sK' % (
-                                    cluster_path, category, datetime.now().strftime('%H%M%S%f')[:-3])
+                                    file_name = '%s/%s/%sK' % (
+                                        cluster_path, category, datetime.now().strftime('%H%M%S%f')[:-3])
 
-                                write_json(content, file_name + '.txt')
-                                write_raw(content, file_name + '.raw')
+                                    write_json(content, file_name + '.txt')
+                                    write_raw(content, file_name + '.raw')
 
-                                f.write(os.path.dirname(path()) + file_name[2:] + '.raw.tok\r\n')
+                                    f.write(os.path.dirname(path()) + file_name[2:] + '.raw.tok\r\n')
 
-                                post_data_to_db(post_url, file_name[2:] + '.txt', category, str(date.today()),
-                                                datetime.now().strftime('%H:%M:%S'), 1, publish_date, priority)
+                                    post_data_to_db(child_url, file_name[2:] + '.txt', category, str(date.today()),
+                                                    datetime.now().strftime('%H:%M:%S'), 1, publish_date, priority,
+                                                    parent_url)
+
                             except Exception as e:
-                                debug(post_url)
-                                log(e)
+                                logone.debug('URL: %s' % post_url)
+                                logone.exception(e)
                     except Exception as e:
-                        debug(category_url)
-                        log(e)
+                        logone.debug('URL: %s' % category_url)
+                        logone.exception(e)
     except Exception as e:
-        log(e)
+        logone.exception(e)
 
 
 if __name__ == '__main__':
-    global log_file
-
-    # Ghi lịch sử thực thi
-    log_folder = 'log'
-    make_dirs(log_folder)
-
-    log_file = open(path(log_folder + '/' + datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f')), 'w')
-    log_file.write('Running...\n')
-
+    logone.info('Running (%s)' % datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f'))
     main()
     notify_cluster()
-
-    log_file.write('Done.\n')
-    log_file.close()
+    logone.info('Done (%s)' % datetime.now().strftime('%Y-%m-%d-%H-%M-%S-%f'))

@@ -33,7 +33,7 @@ class BaoChinhPhuVnParser(SubBaseParser):
 
         # Tìm thẻ chứa nội dung tóm tắt
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_summary_tag_func'] =
+        self._vars['get_summary_tag_func'] = lambda x: x.find('div', class_='summary')
 
         # Tìm thẻ chứa danh sách các thẻ a chứa keyword bên trong
         # Gán bằng con trỏ hàm hoặc biểu thức lambda

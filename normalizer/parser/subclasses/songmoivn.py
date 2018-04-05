@@ -28,7 +28,7 @@ class SongMoiVnParser(SubBaseParser):
 
         # Tìm thẻ chứa nội dung tóm tắt
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
-        # self._vars['get_summary_tag_func'] =
+        self._vars['get_summary_tag_func'] = lambda x: x.find('h3', class_='title-article')
 
         # Tìm thẻ chứa danh sách các thẻ a chứa keyword bên trong
         # Gán bằng con trỏ hàm hoặc biểu thức lambda
@@ -125,3 +125,6 @@ class SongMoiVnParser(SubBaseParser):
 
     def _get_meta_keywords(self, html):
         return super()._get_tags(html)
+
+    def _get_meta_description(self, html):
+        return super()._get_summary(html)

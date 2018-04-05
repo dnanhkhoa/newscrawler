@@ -620,7 +620,7 @@ class SubBaseParser(BaseParser):
         protocols = bleach.ALLOWED_PROTOCOLS
         protocols.append('data')
 
-        filtered_content = bleach.clean(main_content_tag, tags=['main', 'div', 'br', 'video', 'source', 'img', 'span'],
+        filtered_content = bleach.clean(str(main_content_tag), tags=['main', 'div', 'br', 'video', 'source', 'img', 'span'],
                                         protocols=protocols, attributes=attrs, strip=True, strip_comments=True)
 
         filtered_content_tag = get_soup(filtered_content, clear_special_chars=True).main.extract()

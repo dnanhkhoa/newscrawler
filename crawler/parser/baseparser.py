@@ -25,24 +25,30 @@ class BaseParser(ABC):
         self._vars['requests_cookies'] = {}
 
     # Tải nội dung web
+    # OK
     def _get_html(self, url, timeout=15, attempts=3):
-        assert url is not None, 'Tham số url không được là None'
+        if url is None:
+            return None
+
         while attempts > 0:
+            attempts -= 1
             try:
                 response = requests.get(url=url, timeout=timeout, cookies=self._vars.get('requests_cookies'),
                                         allow_redirects=False)
                 if response.status_code == requests.codes.ok:
                     return response.content.decode('UTF-8')
             except RequestException as e:
-                debug(url)
-                log(e)
-            attempts -= 1
+                logone.debug('URL: %s' % url)
+                logone.exception(e)
         return None
 
     # Trả về URL tuyệt đối
+    # OK
     # Tham số url làm segments hoặc url cần được đổi sang url tuyệt đối
     # Tham số domain đóng góp làm tiền tố  cho url tuyệt đối
     def _get_absolute_url(self, url, domain=None):
+        if url is None:
+            return None
         if domain is None:
             domain = self._full_domain
         return urljoin(domain, url)
